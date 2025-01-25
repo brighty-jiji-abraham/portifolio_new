@@ -64,3 +64,232 @@ nav a:hover {
         0px 4px 8px rgba(0, 255, 255, 0.5),
         0px 8px 16px rgba(0, 255, 255, 0.5);
 }
+
+/* Hamburger Menu Styles */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.hamburger .line {
+    width: 100%;
+    height: 4px;
+    background-color: #000;
+    border-radius: 10px;
+}
+
+header h2{
+    text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.5);
+    color: #ffffff;
+    font-weight: bold;
+    transition: 1s cubic-bezier(0.250, 0.460, 0.450, 0.940);
+}
+
+/* Styling for the typed content and expanded parts */
+.typed-content {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.typed-content.show {
+    transition-duration: 200ms;
+    -o-transition-duration: 200ms ;
+    opacity: 1;
+}
+
+.typed-expanded {
+    display: inline-block;
+    width: 0px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.typed-part {
+    opacity: 0;
+    visibility: hidden;
+    display: inline-block;
+    transition: opacity 0.3s ease, visibility 0s ease 0.3s;
+  }
+  
+  .typed-part.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+
+.expand{
+    width: fit-content;
+    padding-right: 5px;
+}
+
+.typed-expanded.expand {
+    opacity: 1;
+}
+
+.part {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.part1.show {
+    opacity: 1;
+}
+
+.part2.show {
+    opacity: 1;
+}
+
+.part3.show {
+    opacity: 1;
+}
+
+.part1 {
+    transition-delay: 0s;
+}
+
+.part2 {
+    transition-delay: 0s;
+}
+
+.part3 {
+    transition-delay: 0s;
+}
+
+
+/* Mobile and Tablet Responsiveness */
+
+/* For Tablets (Max-width 1024px) */
+@media screen and (max-width: 1024px) {
+    header {
+        overflow: visible;
+        min-width: calc(100vw - 80px);
+        max-width: calc(100vw - 10px);
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav a {
+        font-size: 16px;
+        padding: 8px;
+        min-width: 50px;
+    }
+
+    /* Make hamburger visible */
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        display: none;
+        width: 200px;
+        flex-direction: column;
+        align-items: center;
+        background-color: rgba(0, 247, 255, 0.293);
+        text-shadow: -7px -2px 9px rgba(255, 255, 255, 0.507);
+        transition-duration: 0.4s;
+        box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5),
+            0px 2px 4px rgba(0, 255, 255, 0.5),
+            0px 4px 8px rgba(0, 255, 255, 0.5),
+            0px 8px 16px rgba(0, 255, 255, 0.5);
+        position: absolute;
+        top: 10px;
+        margin-right: 250px;
+        border-radius: 20px;
+        padding: 20px 0;
+        z-index: 20;
+        overflow: hidden;
+        backdrop-filter: blur(20px);
+
+    }
+
+    .nav-links::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid rgba(0, 247, 255, 0.379);
+        filter: blur(20px);
+        background-image: url(../../assets/v904-nunny-012-b.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        /* background-image: linear-gradient(180deg, rgba(0, 247, 255, 0), rgba(0, 247, 255, 0.816), rgb(0, 247, 255));; */
+        z-index: -1;
+    }
+
+    .nav-links.show {
+        display: flex;
+        position: absolute;
+    }
+
+    .nav-links a {
+        padding: 12px;
+        width: 50%;
+        text-align: center;
+        min-width: 50px;
+    }
+}
+
+/* For Mobile (Max-width 768px) */
+@media screen and (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        font-size: 14px;
+        padding: 6px 12px;
+        min-width: 50px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}
+
+/* For Small Mobile (Max-width 480px) */
+@media screen and (max-width: 480px) {
+    header {
+        top: 20px;
+        min-width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        padding: 10px 15px;
+        margin: 10px;
+        border-radius: 60px;
+    }
+
+    .nav-links {
+        display: none;
+        width: 200px;
+        top: 100px;
+        margin-right: 250px;
+        border-radius: 20px;
+        padding: 20px 0;
+    }
+
+    .nav-links.show {
+        display: grid;
+        justify-items: center;
+        /* Centers the items horizontally */
+        left: 0;
+        position: absolute;
+        width: 100%;
+    }
+
+    nav a {
+        font-size: 12px;
+        padding: 4px 8px;
+        min-width: 40px;
+    }
+}
