@@ -7,7 +7,7 @@ const Header = () => {
   const typedElement = useRef(null);
   const rightyTyped = useRef(null);
   const ijiTyped = useRef(null);
-  const rahamTyped = useRef(null);
+  const brahamTyped = useRef(null);
   const [animationState, setAnimationState] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -66,10 +66,10 @@ const Header = () => {
           });
           setAnimationState(6);
 
-          // Type "raham"
+          // Type "braham"
           await new Promise(resolve => setTimeout(resolve, 100));
-          rahamTyped.current = new Typed("#raham", {
-            strings: ["raham"],
+          brahamTyped.current = new Typed("#braham", {
+            strings: ["braham"],
             typeSpeed: 50,
             backSpeed: 30,
             showCursor: false,
@@ -100,7 +100,7 @@ const Header = () => {
           </span>
           A
           <span className={`typed-expanded ${animationState >= 7 ? 'expand' : ''}`}>
-            <span id="raham" className={`part part3 ${animationState >= 7 ? 'show' : ''}`}></span>
+            <span id="braham" className={`part part3 ${animationState >= 7 ? 'show' : ''}`}></span>
           </span>
         </span>
       </h2>
