@@ -1,0 +1,397 @@
+#about h2 {
+    font-size: 98px;
+    padding: 10px;
+    margin: 0px;
+    transition-duration: 0.4s;
+    transition-delay: 0.4s;
+    text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.507);
+}
+
+#about h2:hover {
+    font-size: 98px;
+    padding: 10px;
+    margin: 0px;
+    color: aliceblue;
+    text-shadow: -7px -2px 9px rgba(0, 255, 255, 0.5);
+    transition: 0.9s;
+}
+
+.h2-touched {
+    font-size: 100px;
+    padding: 10px;
+    margin: 0px;
+    color: aliceblue;
+    text-shadow: -7px -2px 9px rgba(0, 255, 255, 0.5) !important;
+    transition: 0.9s;
+    z-index: 12;
+    animation: push 1s;
+    animation-direction: normal;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+    -webkit-animation: push 1s;
+    transform: translateX(40px) scale(1.075);
+    -webkit-transform: translateX(40px) scale(1.075);
+    -moz-transform: translateX(40px) scale(1.075);
+    -ms-transform: translateX(40px) scale(1.075);
+    -o-transform: translateX(40px) scale(1.075);
+}
+
+@keyframes push {
+    0% {
+        transform: translateX(0px);
+    }
+
+    50% {
+        transform: translateX(60px) scale(0.95);
+        -webkit-transform: translateX(60px) scale(0.95);
+        -moz-transform: translateX(60px) scale(0.95);
+        -ms-transform: translateX(60px) scale(0.95);
+        -o-transform: translateX(60px) scale(0.95);
+    }
+
+    100% {
+        transform: translateX(40px) scale(1.075);
+        -webkit-transform: translateX(40px) scale(1.075);
+        -moz-transform: translateX(40px) scale(1.075);
+        -ms-transform: translateX(40px) scale(1.075);
+        -o-transform: translateX(40px) scale(1.075);
+    }
+}
+
+#about .bja {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    padding: 30px;
+    align-content: space-around;
+}
+
+#about img {
+    height: 400px;
+    width: auto;
+    border-radius: 250px;
+    border-color: rgba(0, 0, 0, 0.274);
+    border-style: solid;
+    border-width: 10px;
+    box-shadow: 0px 0px 20px 3px rgba(2, 2, 2, 0.507);
+    transition: 0.25s cubic-bezier(1, -0.36, 0.38, 1.8);
+    ;
+}
+
+#about img:hover {
+    box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5), 0px 2px 4px rgba(0, 255, 255, 0.5), 0px 4px 8px rgba(0, 255, 255, 0.5), 0px 8px 16px rgba(0, 255, 255, 0.5);
+    animation: bounce 1s, rotate 1s;
+    transition-duration: 0.8s;
+    animation-direction: alternate;
+    animation-timing-function: cubic-bezier(1, -0.36, 0.38, 1.8);
+    animation-iteration-count: 1;
+    -webkit-animation: bounce 1s, rotate 1s;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(1);
+        transform: translate3d(0, 0, 0);
+    }
+
+    25% {
+        transform: translate3d(50px, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#about p {
+    max-width: 1000px;
+}
+
+.social-links {
+    padding-top: 2em;
+    display: flex;
+}
+
+.social-links a {
+    display: flex;
+    font-size: 25px;
+    align-items: center;
+    /* display: inline-block; */
+    background: #212431;
+    color: #fff;
+    padding: 8px;
+    margin-right: 10px;
+    border-radius: 50%;
+    text-align: center;
+    /* width: 25px;
+    height: 25px; */
+    align-content: center;
+    transition: 0.3s;
+    overflow: hidden;
+}
+
+.social-links a:hover {
+    background: #ffffff;
+    color: rgb(39, 39, 39);
+    text-decoration: none;
+    box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5),
+        0px 2px 4px rgba(0, 255, 255, 0.5),
+        0px 4px 8px rgba(0, 255, 255, 0.5),
+        0px 8px 16px rgba(0, 255, 255, 0.5);
+    animation: scale-up 0.3s ease-in-out;
+}
+
+@keyframes scale-up {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+.twitter {
+    animation-delay: 0.5s;
+}
+
+.facebook {
+    animation-delay: 1s;
+}
+
+.social-links .facebook:hover {
+    background: #3b5998;
+    color: #fff;
+}
+
+.instagram {
+    animation-delay: 1.5s;
+}
+.social-links .instagram:hover  {
+    background: #c13584;
+    background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+    color: #fff;
+}
+
+.github {
+    animation-delay: 2s;
+}
+
+.social-links .github:hover {
+    background: #333;
+    color: #fff;
+}
+
+.linkedin {
+    animation-delay: 2.5s;
+}
+
+.social-links .linkedin:hover {
+    background: #0077b5;
+    color: #fff;
+}
+
+/* Apply blur to non-hovered items */
+.social-links:hover a:not(:hover){
+    filter: blur(4px);
+    --webkit-filter: blur(4px);
+}
+
+/* For screens up to 1024px */
+@media screen and (max-width: 1024px) {
+    /* Scale down h2 size */
+    #about h2 {
+        font-size: 60px; /* Smaller font size for headings */
+    }
+
+    /* Scale down images */
+    #about img {
+        height: 250px; /* Smaller image size */
+        width: auto;   /* Maintain aspect ratio */
+    }
+
+    /* Adjust paragraph width */
+    #about p {
+        max-width: 100%; /* Allow paragraphs to take up the full width */
+    }
+
+    /* Adjust the social links to be inline for smaller screens */
+    .social-links {
+        justify-content: center;
+        padding-top: 1em; /* Less padding for smaller screens */
+        flex-wrap: wrap; /* Allow items to wrap onto new lines */
+    }
+
+    .social-links a {
+        font-size: 20px; /* Smaller icons for better layout */
+        margin-right: 8px; /* Adjust spacing between social links */
+        padding: 10px; /* Adjust padding */
+    }
+
+    /* Optionally, make the .h2-touched animation more subtle for smaller screens */
+    .h2-touched {
+        font-size: 80px; /* Slightly smaller size */
+        transform: translateX(20px) scale(1.05); /* Slightly smaller movement and scale */
+    }
+}
+
+/* For screens up to 768px */
+@media screen and (max-width: 768px) {
+    /* Further scale down h2 size */
+    #about h2 {
+        font-size: 50px; /* Reduce font size even further */
+    }
+
+    /* Reduce image size more for smaller screens */
+    #about img {
+        height: 200px; /* Smaller image size */
+    }
+
+    /* Adjust social links for mobile */
+    .social-links a {
+        font-size: 18px; /* Smaller icons for mobile */
+        margin-right: 6px; /* Reduced spacing */
+        padding: 8px; /* Smaller padding */
+    }
+
+    .social-links {
+        justify-content: space-evenly; /* Evenly space the icons */
+        padding-top: 0.5em; /* Reduced padding */
+    }
+
+    /* Make the .h2-touched animation even more subtle */
+    .h2-touched {
+        font-size: 70px; /* Smaller size */
+        transform: translateX(10px) scale(1.03); /* Smaller movement and scale */
+    }
+}
+
+/* For screens up to 600PX (very small devices like phones in portrait) */
+@media screen and (max-width: 600px) {
+    /* Scale down h2 size even further for very small screens */
+    #about h2 {
+        font-size: 40px; /* Much smaller font size */
+    }
+
+    /* Make images even smaller */
+    #about img {
+        height: 150px; /* Smaller image size */
+    }
+
+    /* Adjust paragraph text size */
+    #about p {
+        font-size: 14px; /* Reduce text size for small screens */
+        padding: 0 10px; /* Add some padding for readability */
+    }
+
+    /* Social links become very compact */
+    .social-links a {
+        font-size: 16px; /* Very small icons */
+        padding: 6px; /* Even smaller padding */
+        margin-right: 5px; /* Tighter spacing */
+    }
+
+    /* Adjust the layout of social links */
+    .social-links {
+        justify-content: space-between; /* Space out the icons more on small screens */
+        padding-top: 0.3em; /* Reduce padding further */
+    }
+
+    /* Make .h2-touched more subtle for very small screens */
+    .h2-touched {
+        font-size: 60px; /* Small size */
+        transform: translateX(5px) scale(1.02); /* Very subtle movement and scale */
+    }
+}
+
+/* For screens up to 480px (very small devices like phones in landscape) */
+@media screen and (max-width: 480px) {
+    #about{
+        flex-direction: column;
+        margin-top: 200px;
+    }
+
+    #about img {
+        height: 200px;
+    }
+
+    #about h2 {
+        font-size: 40px;
+    }
+
+    #about h2:hover {
+        font-size: 50PX;
+    }
+    
+    .h2-touched {
+        font-size: 50px; /* Very small size */
+        transform: translateX(3px) scale(1.01); /* Very subtle movement and scale */
+    }
+
+    #about p {
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .social-links{
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        width: 100%;
+    }
+
+    .social-links a {
+        font-size: 18px;
+    }
+
+    @keyframes push {
+        0% {
+            transform: translateY(0px);
+        }
+    
+        50% {
+            transform: translateY(60px) scale(0.95);
+            -webkit-transform: translateY(60px) scale(0.95);
+            -moz-transform: translateY(60px) scale(0.95);
+            -ms-transform: translateY(60px) scale(0.95);
+            -o-transform: translateY(60px) scale(0.95);
+        }
+    
+        100% {
+            transform: translateY(40px) scale(1.075);
+            -webkit-transform: translateY(40px) scale(1.075);
+            -moz-transform: translateY(40px) scale(1.075);
+            -ms-transform: translateY(40px) scale(1.075);
+            -o-transform: translateY(40px) scale(1.075);
+        }
+    }
+
+    @keyframes bounce {
+        0% {
+            transform: scale(1);
+            transform: translate3d(0, 0, 0);
+        }
+    
+        25% {
+            transform: translate3d(0, 50px, 0);
+        }
+    
+        100% {
+            transform: scale(1);
+            transform: translate3d(0, 0, 0);
+        }
+    }
+}
+
+/* For screens up to 320px (very small devices like older phones) */
+@media screen and (max-width: 320px) {
+    
+}
