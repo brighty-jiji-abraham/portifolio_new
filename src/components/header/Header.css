@@ -65,6 +65,65 @@ nav a:hover {
         0px 8px 16px rgba(0, 255, 255, 0.5);
 }
 
+/* smooth transition for sliding out to the left and fading out */
+.welcome_message {
+    animation: zoomOutLeft 1s ease;
+    animation-fill-mode: forwards;
+    animation-delay: 2s;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Animate.css ZoomOutLeft Animation */
+@keyframes zoomOutLeft {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(0.475) translateX(42px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.1) translateX(-2000px);
+    }
+}
+
+
+/* Slide and fade-out effect for welcome text */
+.typed-fade-out {
+    animation: slideOutLeft 1s forwards, fadeOut 1s forwards;
+}
+
+@keyframes slideOutLeft {
+    0% {
+        transform: translateX(0);
+        width: 100%;
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-100%);
+        width: 0%;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        
+    }
+
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
 /* Hamburger Menu Styles */
 .hamburger {
     display: none;
@@ -83,7 +142,7 @@ nav a:hover {
     border-radius: 10px;
 }
 
-header h2{
+header h2 {
     text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.5);
     color: #ffffff;
     font-weight: bold;
@@ -98,7 +157,7 @@ header h2{
 
 .typed-content.show {
     transition-duration: 200ms;
-    -o-transition-duration: 200ms ;
+    -o-transition-duration: 200ms;
     opacity: 1;
 }
 
@@ -114,15 +173,15 @@ header h2{
     visibility: hidden;
     display: inline-block;
     transition: opacity 0.3s ease, visibility 0s ease 0.3s;
-  }
-  
-  .typed-part.show {
+}
+
+.typed-part.show {
     opacity: 1;
     visibility: visible;
-  }
-  
+}
 
-.expand{
+
+.expand {
     width: fit-content;
     padding-right: 5px;
 }

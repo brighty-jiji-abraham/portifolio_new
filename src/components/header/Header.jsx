@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Typed from "typed.js";
-import './Header.css';
+import './Header.css'; // Ensure the CSS file is linked correctly
 
 const Header = () => {
   const typedElement = useRef(null);
@@ -13,49 +13,51 @@ const Header = () => {
   };
 
   useEffect(() => {
-    // First, type "Welcome 👋" without cursor
+    // First, type "Welcome 👋 to " without cursor
     const welcomeOptions = {
-      strings: ["Welcome 👋 to "], // Texts to be typed
+      strings: ["Welcome 👋 to "," "], // Texts to be typed (separated into two words)
       typeSpeed: 50, // Faster typing speed
-      backSpeed: 30, // Faster backspacing
-      backDelay: 700, // Faster delay before backspacing
+      backSpeed: 50, // Faster backspacing
+      backDelay: 700, // Delay before backspacing starts
       startDelay: 300, // Shorter start delay
       loop: false, // We don't want this part to loop
       showCursor: false, // Hide cursor for the welcome text
-      onComplete: () => setAnimationState(1), // Set state to trigger next part after Welcome
+      onStringTyped: () => {
+        setAnimationState(1); // Set state to trigger next part after Welcome
+      },
+      onLastStringBackspaced: () => {
+        if (animationState === 1) {
+          deleteWelcome(); // Delete the welcome
+        }
+      },
     };
 
     const typedWelcome = new Typed(typedElement.current, welcomeOptions);
 
+    function deleteWelcome() {
+      typedWelcome.deleteAll(); // Delete all the texts
+    }
+
     return () => {
-      typedWelcome.destroy();
+      typedWelcome.destroy(); // Destroy the Typed instance
+      setTimeout(() => {
+        setAnimationState(2); // Proceed to the next stage of typing
+      }, 500);
     };
   }, []);
 
   useEffect(() => {
-    if (animationState === 1) {
-      // Type B J A after a short pause
+    if (animationState === 2) {
+      // After the backspace, type B J A with the same pattern
       setTimeout(() => {
-        setAnimationState(2);
-      }, 200); // Delay before starting B J A
+        setAnimationState(3); // Proceed to the next stage of typing
+      }, 500);
     }
 
-    if (animationState === 2) {
+    if (animationState === 3) {
       // Type B J A (Step 1)
       setTimeout(() => {
-        setAnimationState(3); // Delay before showing the parts after typing B J A
-        // Erase everything with backspace animation
-        const eraseOptions = {
-          strings: [""], // Empty string to backspace to
-          typeSpeed: 50, // Typing speed for backspacing
-          backSpeed: 10, // Backspacing speed
-          fadeOut: true, // Enable fade out effect
-          fadeOutClass: 'typed-fade-out', // CSS class for fade out effect
-          fadeOutDelay: 300, // Delay before fade out starts
-          showCursor: false, // Hide cursor during backspacing
-        };
-
-        const typedErase = new Typed(typedElement.current, eraseOptions);
+        setAnimationState(4); // Delay before showing the parts after typing B J A
       }, 500);
 
       // Type "righty"
@@ -66,8 +68,8 @@ const Header = () => {
           backSpeed: 30,
           showCursor: false,
         });
-        setAnimationState(4); // Set state to show "righty" after typing
-      }, 800);
+        setAnimationState(5); // Set state to show "righty" after typing
+      }, 1800);
 
       // Type "iji"
       setTimeout(() => {
@@ -77,8 +79,8 @@ const Header = () => {
           backSpeed: 30,
           showCursor: false,
         });
-        setAnimationState(5); // Set state to show "iji" after typing
-      }, 900);
+        setAnimationState(6); // Set state to show "iji" after typing
+      }, 1900);
 
       // Type "raham"
       setTimeout(() => {
@@ -87,9 +89,9 @@ const Header = () => {
           typeSpeed: 50,
           backSpeed: 30,
           showCursor: false,
-          onComplete: () => setAnimationState(6), // Erase everything after "BJA" is typed
+          onComplete: () => setAnimationState(7), // Erase everything after "BJA" is typed
         });
-      }, 1000);
+      }, 2000);
     }
   }, [animationState]);
 
@@ -97,18 +99,18 @@ const Header = () => {
     <header>
       <h2 className="focus-in-contract-bck">
         <span ref={typedElement}></span> {/* Welcome text */}
-        <span className={`typed-content ${animationState >= 2 ? 'show' : ''}`}>
+        <span className={`typed-content ${animationState >= 3 ? 'show' : ''}`}>
           B
-          <span className={`typed-expanded ${(animationState >= 3 && animationState >= 4) ? 'expand' : ''}`}>
-            <span id="righty" className={`part part1 ${animationState >= 4 ? 'show' : ''}`}></span>
+          <span className={`typed-expanded ${(animationState >= 4 && animationState >= 5) ? 'expand' : ''}`}>
+            <span id="righty" className={`part part1 ${animationState >= 5 ? 'show' : ''}`}></span>
           </span>
           J
-          <span className={`typed-expanded ${(animationState >= 3 && animationState >= 5) ? 'expand' : ''}`}>
-            <span id="iji" className={`part part2 ${animationState >= 5 ? 'show' : ''}`}></span>
+          <span className={`typed-expanded ${(animationState >= 4 && animationState >= 6) ? 'expand' : ''}`}>
+            <span id="iji" className={`part part2 ${animationState >= 6 ? 'show' : ''}`}></span>
           </span>
           A
-          <span className={`typed-expanded ${(animationState >= 3 && animationState >= 6) ? 'expand' : ''}`}>
-            <span id="raham" className={`part part3 ${animationState >= 6 ? 'show' : ''}`}></span>
+          <span className={`typed-expanded ${(animationState >= 4 && animationState >= 7) ? 'expand' : ''}`}>
+            <span id="raham" className={`part part3 ${animationState >= 7 ? 'show' : ''}`}></span>
           </span>
         </span>
       </h2>
