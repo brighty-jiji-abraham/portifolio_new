@@ -331,7 +331,11 @@ header h2 {
         margin: 10px;
         border-radius: 60px;
     }
-
+    
+    header h2{
+        font-size: 20px;
+    }
+    
     .nav-links {
         display: none;
         width: 200px;
