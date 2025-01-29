@@ -10,8 +10,24 @@ import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 
 function App() {
+
+  const getDynamicBasename = () => {
+    // Get the full path where your app is hosted
+    const pathname = window.location.pathname;
+  
+    // If using HashRouter, split at the hash
+    const hashIndex = pathname.indexOf('#');
+    const cleanPath = hashIndex > -1 ? pathname.substring(0, hashIndex) : pathname;
+  
+    // Remove trailing slashes and split
+    const segments = cleanPath.replace(/\/+$/, '').split('/');
+  
+    // Rebuild the base path
+    return segments.slice(0, segments.length - 1).join('/') || '';
+  };
+  
   return (
-    <Router>
+    <Router basename={getDynamicBasename()}>
       <Header />
       <section className="main">
         <div className="container">
