@@ -1,121 +1,110 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Typed from "typed.js";
-import './Header.css'; // Ensure the CSS file is linked correctly
+import './Header.css';
 
 const Header = () => {
   const typedElement = useRef(null);
+  const rightyTyped = useRef(null);
+  const ijiTyped = useRef(null);
+  const rahamTyped = useRef(null);
   const [animationState, setAnimationState] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen); // Toggles the menu state
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
   useEffect(() => {
-    // First, type "Welcome 👋 to " without cursor
     const welcomeOptions = {
-      strings: ["Welcome 👋 to "," "], // Texts to be typed (separated into two words)
-      typeSpeed: 50, // Faster typing speed
-      backSpeed: 50, // Faster backspacing
-      backDelay: 700, // Delay before backspacing starts
-      startDelay: 300, // Shorter start delay
-      loop: false, // We don't want this part to loop
-      showCursor: false, // Hide cursor for the welcome text
-      onStringTyped: () => {
-        setAnimationState(1); // Set state to trigger next part after Welcome
-      },
-      onLastStringBackspaced: () => {
-        if (animationState === 1) {
-          deleteWelcome(); // Delete the welcome
-        }
+      strings: ["Welcome 👋 to ", ""], // Changed to empty string for proper backspacing
+      typeSpeed: 50,
+      backSpeed: 50,
+      backDelay: 700,
+      startDelay: 300,
+      loop: false,
+      showCursor: false,
+      onStringTyped: () => { // Changed to onComplete for reliable triggering
+        setTimeout(() => setAnimationState(2), 10);
       },
     };
 
     const typedWelcome = new Typed(typedElement.current, welcomeOptions);
 
-    function deleteWelcome() {
-      typedWelcome.deleteAll(); // Delete all the texts
-    }
-
     return () => {
-      typedWelcome.destroy(); // Destroy the Typed instance
-      setTimeout(() => {
-        setAnimationState(2); // Proceed to the next stage of typing
-      }, 500);
+      typedWelcome.destroy();
     };
   }, []);
 
   useEffect(() => {
-    if (animationState === 2) {
-      // After the backspace, type B J A with the same pattern
-      setTimeout(() => {
-        setAnimationState(3); // Proceed to the next stage of typing
-      }, 500);
-    }
+    const handleAnimations = async () => {
+      switch (animationState) {
+        case 2:
+          await new Promise(resolve => setTimeout(resolve, 100));
+          setAnimationState(3);
+          break;
+        
+        case 3:
+          await new Promise(resolve => setTimeout(resolve, 800));
+          setAnimationState(4);
+          
+          // Type "righty"
+          await new Promise(resolve => setTimeout(resolve, 1800));
+          rightyTyped.current = new Typed("#righty", {
+            strings: ["righty"],
+            typeSpeed: 40,
+            backSpeed: 30,
+            showCursor: false,
+          });
+          setAnimationState(5);
 
-    if (animationState === 3) {
-      // Type B J A (Step 1)
-      setTimeout(() => {
-        setAnimationState(4); // Delay before showing the parts after typing B J A
-      }, 500);
+          // Type "iji"
+          await new Promise(resolve => setTimeout(resolve, 100));
+          ijiTyped.current = new Typed("#iji", {
+            strings: ["iji"],
+            typeSpeed: 50,
+            backSpeed: 30,
+            showCursor: false,
+          });
+          setAnimationState(6);
 
-      // Type "righty"
-      setTimeout(() => {
-        const typedRighty = new Typed("#righty", {
-          strings: ["righty"],
-          typeSpeed: 40,
-          backSpeed: 30,
-          showCursor: false,
-        });
-        setAnimationState(5); // Set state to show "righty" after typing
-      }, 1800);
+          // Type "raham"
+          await new Promise(resolve => setTimeout(resolve, 100));
+          rahamTyped.current = new Typed("#raham", {
+            strings: ["raham"],
+            typeSpeed: 50,
+            backSpeed: 30,
+            showCursor: false,
+          });
+          setAnimationState(7);
+          break;
 
-      // Type "iji"
-      setTimeout(() => {
-        const typedIji = new Typed("#iji", {
-          strings: ["iji"],
-          typeSpeed: 50,
-          backSpeed: 30,
-          showCursor: false,
-        });
-        setAnimationState(6); // Set state to show "iji" after typing
-      }, 1900);
+        default:
+          break;
+      }
+    };
 
-      // Type "raham"
-      setTimeout(() => {
-        const typedRaham = new Typed("#raham", {
-          strings: ["raham"],
-          typeSpeed: 50,
-          backSpeed: 30,
-          showCursor: false,
-          onComplete: () => setAnimationState(7), // Erase everything after "BJA" is typed
-        });
-      }, 2000);
-    }
+    handleAnimations();
   }, [animationState]);
 
   return (
     <header>
       <h2 className="focus-in-contract-bck">
-        <span ref={typedElement}></span> {/* Welcome text */}
+        <span ref={typedElement}></span>
         <span className={`typed-content ${animationState >= 3 ? 'show' : ''}`}>
           B
-          <span className={`typed-expanded ${(animationState >= 4 && animationState >= 5) ? 'expand' : ''}`}>
+          <span className={`typed-expanded ${animationState >= 5 ? 'expand' : ''}`}>
             <span id="righty" className={`part part1 ${animationState >= 5 ? 'show' : ''}`}></span>
           </span>
           J
-          <span className={`typed-expanded ${(animationState >= 4 && animationState >= 6) ? 'expand' : ''}`}>
+          <span className={`typed-expanded ${animationState >= 6 ? 'expand' : ''}`}>
             <span id="iji" className={`part part2 ${animationState >= 6 ? 'show' : ''}`}></span>
           </span>
           A
-          <span className={`typed-expanded ${(animationState >= 4 && animationState >= 7) ? 'expand' : ''}`}>
+          <span className={`typed-expanded ${animationState >= 7 ? 'expand' : ''}`}>
             <span id="raham" className={`part part3 ${animationState >= 7 ? 'show' : ''}`}></span>
           </span>
         </span>
       </h2>
 
-      {/* Navigation Menu */}
       <nav className={`nav ${menuOpen ? 'open' : ''}`}>
         <div className="hamburger" onClick={toggleMenu}>
           <div className="line"></div>
