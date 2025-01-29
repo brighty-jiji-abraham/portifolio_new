@@ -312,6 +312,10 @@ header h2 {
         min-width: 50px;
     }
 
+    header h2{
+        font-size: 22;
+    }
+
     .hamburger {
         display: flex;
     }
