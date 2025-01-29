@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d build"
   },
   "dependencies": {
+    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.0",
     "react": "^18.3.1",
