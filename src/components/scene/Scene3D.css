@@ -11,6 +11,35 @@
     height: 100% !important;
 }
 
+/* Floating tech icons (rendered via drei <Html>) */
+.tech-icon-3d {
+    font-size: 32px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 12px currentColor);
+    opacity: 0.78;
+    pointer-events: none;
+    -webkit-user-select: none;
+            user-select: none;
+    will-change: transform, opacity;
+    transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease;
+}
+
+/* When the icon's orbital position is behind the core mesh, drei fires
+   onOcclude(true) and we add this class fades the icon out smoothly so it
+   "vanishes behind the sun" instead of popping. */
+.tech-icon-3d.is-occluded {
+    opacity: 0;
+    filter: drop-shadow(0 0 4px currentColor) blur(2px);
+    transform: scale(0.9);
+}
+
+@media screen and (max-width: 768px) {
+    .tech-icon-3d { font-size: 26px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .scene-3d { display: none; }
 }

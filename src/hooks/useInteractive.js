@@ -1,4 +1,4 @@
-/* Lightweight pointer-driven micro-interactions — no library deps. */
+/* Lightweight pointer-driven micro-interactions no library deps. */
 
 import { useCallback } from 'react';
 

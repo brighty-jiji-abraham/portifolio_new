@@ -18,7 +18,7 @@ const Contact = () => {
         const fd = new FormData(form);
         const data = Object.fromEntries(fd.entries());
 
-        // Honeypot check — if a bot filled the hidden _honey field, silently ignore
+        // Honeypot check if a bot filled the hidden _honey field, silently ignore
         if (data._honey) {
             setStatus('sent');
             form.reset();
@@ -142,7 +142,7 @@ const Contact = () => {
                         <textarea id="message" name="message" rows={4} />
                     </div>
 
-                    {/* Honeypot — bots fill this; humans never see it */}
+                    {/* Honeypot bots fill this; humans never see it */}
                     <input
                         type="text"
                         name="_honey"
@@ -172,7 +172,7 @@ const Contact = () => {
 
                     {status === 'sent' && (
                         <p className="contact-status is-success" role="status">
-                            <FiCheckCircle /> Thanks — your message is on its way. I&apos;ll get back to you at the email you provided.
+                            <FiCheckCircle /> Thanks your message is on its way. I&apos;ll get back to you at the email you provided.
                         </p>
                     )}
 

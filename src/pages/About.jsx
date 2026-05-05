@@ -18,7 +18,7 @@ const socials = [
     { href: 'https://www.facebook.com/brighty.jiji.abraham/', label: 'Facebook', cls: 'facebook', Icon: FaFacebookF },
 ];
 
-/* 3D-tilting hero name — single layer, gradient text, rotates with global mouse */
+/* 3D-tilting hero name single layer, gradient text, rotates with global mouse */
 const Name3D = () => (
     <h1 className="name-3d" aria-label={`${NAME_LINE_1} ${NAME_LINE_2}`}>
         <span className="name-3d-stage">
@@ -32,7 +32,7 @@ const Name3D = () => (
     </h1>
 );
 
-/* 3D image card — back glow → image plate → accent ring orbiting in front, all in
+/* 3D image card back glow → image plate → accent ring orbiting in front, all in
    a perspective stage that tilts to follow the cursor.  */
 const Image3D = () => {
     const tilt = useTilt(14);
@@ -91,7 +91,7 @@ const About = () => {
                 <p className="about-bio">
                     Building systems that understand humans better than we understand ourselves.
                     I synthesise AI research, full-stack engineering, and creative design
-                    into scalable, secure, human-centered solutions — turning &ldquo;impossible&rdquo; into &ldquo;inevitable&rdquo;.
+                    into scalable, secure, human-centered solutions turning &ldquo;impossible&rdquo; into &ldquo;inevitable&rdquo;.
                 </p>
 
                 <ul className="about-stats" aria-label="At a glance">

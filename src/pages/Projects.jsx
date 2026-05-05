@@ -7,7 +7,7 @@ const projects = [
         tag: 'Production · SaaS',
         featured: true,
         summary:
-            'An end-to-end chatbot SaaS that lets any business plug in their own knowledge base, tools, and channels — and have one AI speak to customers across WhatsApp, Telegram, Messenger, Instagram, and the web. Bots reason over per-tenant docs, can call into the tenant\'s own systems, and quietly hand off to a human agent when needed.',
+            'An end-to-end chatbot SaaS that lets any business plug in their own knowledge base, tools, and channels and have one AI speak to customers across WhatsApp, Telegram, Messenger, Instagram, and the web. Bots reason over per-tenant docs, can call into the tenant\'s own systems, and quietly hand off to a human agent when needed.',
         stack: ['Flask', 'gevent', 'Socket.IO', 'Celery', 'Redis', 'MongoDB', 'FAISS', 'MCP', 'LangChain', 'OpenAI', 'Together', 'Ollama', 'Docker'],
     },
     {
@@ -15,7 +15,7 @@ const projects = [
         tag: 'Production · SaaS',
         featured: true,
         summary:
-            'A SaaS that turns documents or rough notes into ready-to-publish WordPress blog posts — titles, HTML body, even custom CSS — using fine-tuned OpenAI models. Each account has its own credit balance with token-precise billing through Stripe and Razorpay.',
+            'A SaaS that turns documents or rough notes into ready-to-publish WordPress blog posts titles, HTML body, even custom CSS using fine-tuned OpenAI models. Each account has its own credit balance with token-precise billing through Stripe and Razorpay.',
         stack: ['Flask', 'OpenAI', 'MySQL', 'SQLAlchemy', 'Celery', 'Stripe', 'Razorpay', 'spaCy', 'JWT', 'Docker', 'NGINX'],
     },
     {
@@ -47,7 +47,7 @@ const projects = [
         tag: 'AI Dev Tooling · Automation',
         featured: true,
         summary:
-            'Custom Claude Code workflows that automate the everyday parts of building software — code generation across full project scaffolds, repository-wide refactors, doc + README authoring, test-suite scaffolding, and integration into existing repos. Slash commands, sub-agents, and MCP tools wired together so a single prompt can ship work that used to take a day.',
+            'Custom Claude Code workflows that automate the everyday parts of building software code generation across full project scaffolds, repository-wide refactors, doc + README authoring, test-suite scaffolding, and integration into existing repos. Slash commands, sub-agents, and MCP tools wired together so a single prompt can ship work that used to take a day.',
         stack: ['Claude Code', 'Anthropic API', 'MCP', 'Sub-agents', 'Slash Commands', 'Hooks', 'Bash', 'Git'],
     },
     {
@@ -55,7 +55,7 @@ const projects = [
         tag: 'Medical AI · Real-time',
         featured: true,
         summary:
-            'A dermatology AI trained on four major skin-image datasets — over half a million images combined. Recognises conditions in real time from a webcam and ships with the full training pipeline plus a deployment-ready model.',
+            'A dermatology AI trained on four major skin-image datasets over half a million images combined. Recognises conditions in real time from a webcam and ships with the full training pipeline plus a deployment-ready model.',
         stack: ['PyTorch', 'EfficientNet-B4', 'ResNet-50', 'DenseNet-121', 'OpenCV', 'Albumentations', 'scikit-learn', 'Weights & Biases'],
     },
     {
@@ -63,7 +63,7 @@ const projects = [
         tag: 'Multimodal AI · B.Tech major',
         featured: true,
         summary:
-            'A multimodal assistant that helps visually impaired users navigate the web — it sees, listens, describes, and speaks back. Combines image recognition, image captioning, speech, and natural-language understanding into one experience.',
+            'A multimodal assistant that helps visually impaired users navigate the web it sees, listens, describes, and speaks back. Combines image recognition, image captioning, speech, and natural-language understanding into one experience.',
         stack: ['PyTorch', 'CNN', 'LSTM', 'Transformers', 'Speech Recognition', 'TTS'],
     },
     {
@@ -71,7 +71,7 @@ const projects = [
         tag: 'Voice AI',
         featured: true,
         summary:
-            'Picks up how someone is feeling from the way they speak — not what they say. Useful for call-centre quality monitoring, mental-health apps, and assistive tech that can sense frustration before it\'s voiced.',
+            'Picks up how someone is feeling from the way they speak not what they say. Useful for call-centre quality monitoring, mental-health apps, and assistive tech that can sense frustration before it\'s voiced.',
         stack: ['TensorFlow', 'LSTM', 'librosa', 'Audio Features'],
     },
     {
@@ -79,7 +79,7 @@ const projects = [
         tag: 'Civic',
         featured: true,
         summary:
-            'A web voting system modelled on real Electronic Voting Machines — anonymous casting, auditable tallying, and proper authentication. Built to hold up to the seriousness of a real election.',
+            'A web voting system modelled on real Electronic Voting Machines anonymous casting, auditable tallying, and proper authentication. Built to hold up to the seriousness of a real election.',
         stack: ['PHP', 'MySQL', 'JavaScript'],
     },
     {
@@ -107,7 +107,7 @@ const projects = [
         title: 'Online Web Stores',
         tag: 'E-commerce',
         summary:
-            'A complete e-commerce platform with browsing, cart, payments, order tracking, and admin tooling — built end-to-end in PHP.',
+            'A complete e-commerce platform with browsing, cart, payments, order tracking, and admin tooling built end-to-end in PHP.',
         stack: ['PHP', 'MySQL', 'JavaScript'],
     },
     {
@@ -134,7 +134,7 @@ const Projects = () => {
                 <span className="section-eyebrow">Projects</span>
                 <h2 className="section-title">Things I&apos;ve built</h2>
                 <p className="section-lead">
-                    Production SaaS platforms, AI/ML systems, and infrastructure — selected work across machine learning, web, and cloud.
+                    Production SaaS platforms, AI/ML systems, and infrastructure selected work across machine learning, web, and cloud.
                 </p>
             </div>
             <ul className="project-list">

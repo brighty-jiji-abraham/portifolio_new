@@ -21,6 +21,8 @@ import {
     SiFlutter,
     SiSocketdotio,
     SiCelery,
+    SiTailwindcss,
+    SiVite,
     SiTensorflow,
     SiPytorch,
     SiLangchain,
@@ -69,6 +71,8 @@ const groups = [
         items: [
             { Icon: SiReact, label: 'React', color: '#61dafb' },
             { Icon: SiNextdotjs, label: 'Next.js', color: '#cbd5e1' },
+            { Icon: SiVite, label: 'Vite', color: '#646cff' },
+            { Icon: SiTailwindcss, label: 'Tailwind CSS', color: '#38bdf8' },
             { Icon: SiExpress, label: 'Express', color: '#cbd5e1' },
             { Icon: SiLaravel, label: 'Laravel', color: '#ff2d20' },
             { Icon: SiFlask, label: 'Flask', color: '#cbd5e1' },

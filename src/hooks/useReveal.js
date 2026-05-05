@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
  * Returns a ref + boolean. Add `is-visible` class via the boolean.
  * Defaults stagger gracefully across the page.
  */
-export const useReveal = ({ threshold = 0.18, once = true } = {}) => {
+export const useReveal = ({ threshold = 0.05, once = true } = {}) => {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
 

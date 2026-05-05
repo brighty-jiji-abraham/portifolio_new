@@ -6,7 +6,7 @@ const experiences = [
     {
         role: 'Software Engineer · R&D',
         company: 'Infinite Open Source Solutions LLP',
-        period: 'Jan 2026 — Present',
+        period: 'Jan 2026 Present',
         location: 'Kozhikode',
         current: true,
         works: [
@@ -20,7 +20,7 @@ const experiences = [
     {
         role: 'Associate Software Engineer · R&D',
         company: 'Infinite Open Source Solutions LLP',
-        period: 'Jan 2025 — Jan 2026',
+        period: 'Jan 2025 Jan 2026',
         location: 'Kozhikode',
         works: [
             'Built the AI WhatsApp chatbot platform end-to-end',
@@ -31,7 +31,7 @@ const experiences = [
     {
         role: 'Software Developer',
         company: 'Xyvin Technologies Pvt Ltd',
-        period: 'Jul 2024 — Dec 2024',
+        period: 'Jul 2024 Dec 2024',
         location: 'Kochi, Kerala',
         works: [
             'API development',
@@ -43,20 +43,20 @@ const experiences = [
     {
         role: 'Machine Learning Intern',
         company: 'Prodigy InfoTech',
-        period: 'Oct 2023 — Feb 2024',
+        period: 'Oct 2023 Feb 2024',
         location: 'Remote · India',
     },
     {
         role: 'Vice Tech Lead',
         company: 'TinkerHub SBCE',
-        period: 'Jan 2022 — Apr 2023',
+        period: 'Jan 2022 Apr 2023',
         location: 'Alappuzha',
         note: 'Mentored 100+ developers',
     },
     {
         role: 'Technology Lead',
         company: 'IEDC SBCE',
-        period: 'Jan 2021 — Jul 2022',
+        period: 'Jan 2021 Jul 2022',
         location: 'Alappuzha',
     },
 ];
@@ -65,22 +65,22 @@ const education = [
     {
         degree: 'B.Tech, Computer Science (AI / ML)',
         school: 'Sree Buddha College of Engineering',
-        period: '2020 — 2024',
+        period: '2020 2024',
     },
     {
         degree: 'Higher Secondary · Math & CS',
         school: 'Bethany Central School',
-        period: '2018 — 2020',
+        period: '2018 2020',
     },
     {
         degree: 'General Studies (CBSE)',
         school: 'Indian School Wadi Kabir',
-        period: '2008 — 2018',
+        period: '2008 2018',
     },
 ];
 
 const certifications = [
-    'Tech Labs Initiative — Generative AI with Google Cloud',
+    'Tech Labs Initiative Generative AI with Google Cloud',
     'Introduction to Generative AI Studio',
     'Build a Face Recognition Application using Python',
     'C++ Tutorial',
@@ -89,7 +89,7 @@ const certifications = [
 
 const activities = [
     'Editor of school magazine',
-    'Video editor in chief — inter-school mathematics quiz',
+    'Video editor in chief inter-school mathematics quiz',
     'Developed electronic school election software',
     'Hackathons',
     'Events technical team',
@@ -126,7 +126,7 @@ const Experience = () => {
                 <span className="section-eyebrow">Experience</span>
                 <h2 className="section-title">My journey so far</h2>
                 <p className="section-lead">
-                    Engineering and mentorship across product, R&amp;D, and ML — from intern to engineer
+                    Engineering and mentorship across product, R&amp;D, and ML from intern to engineer
                     on production systems.
                 </p>
             </div>
