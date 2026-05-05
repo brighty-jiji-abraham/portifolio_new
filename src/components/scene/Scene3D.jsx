@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sparkles, Stars, Environment, Html } from '@react-three/drei';
-import { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { FaReact, FaPython, FaAws, FaNodeJs } from 'react-icons/fa';
 import {
@@ -266,34 +266,97 @@ function CameraRig({ scrollRef, mouseRef }) {
     return null;
 }
 
+/* ---------- Error boundary for WebGL failures ---------- */
+
+class WebGLErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    }
+    componentDidCatch(err) {
+        console.warn('[Scene3D] WebGL error caught by boundary:', err.message);
+    }
+    render() {
+        if (this.state.hasError) {
+            return <div className="scene-3d" aria-hidden="true" style={{ background: '#070b16' }} />;
+        }
+        return this.props.children;
+    }
+}
+
 /* ---------- Scene root ---------- */
 
 const Scene3D = ({ mouseRef }) => {
     const scrollRef = useScrollProgressRef();
+    const [canvasKey, setCanvasKey] = useState(0);
+    const [contextLost, setContextLost] = useState(false);
+
+    const handleCreated = useCallback((state) => {
+        const canvas = state.gl.domElement;
+
+        const onLost = (e) => {
+            e.preventDefault();
+            console.warn('[Scene3D] WebGL context lost – will attempt restore');
+            setContextLost(true);
+        };
+        const onRestored = () => {
+            console.info('[Scene3D] WebGL context restored');
+            setContextLost(false);
+        };
+
+        canvas.addEventListener('webglcontextlost', onLost);
+        canvas.addEventListener('webglcontextrestored', onRestored);
+
+        // Store cleanup refs on the gl object so we can remove them later
+        state.gl.__ctxLost = onLost;
+        state.gl.__ctxRestored = onRestored;
+    }, []);
+
+    // If context was lost, remount the Canvas after a short delay
+    useEffect(() => {
+        if (!contextLost) return;
+        const timer = setTimeout(() => {
+            setCanvasKey((k) => k + 1);
+            setContextLost(false);
+        }, 1500);
+        return () => clearTimeout(timer);
+    }, [contextLost]);
 
     return (
-        <div className="scene-3d" aria-hidden="true">
-            <Canvas
-                dpr={[1, 1.75]}
-                gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-                camera={{ position: [0, 0, 9], fov: 50 }}
-            >
-                <color attach="background" args={['#070b16']} />
+        <WebGLErrorBoundary>
+            <div className="scene-3d" aria-hidden="true">
+                <Canvas
+                    key={canvasKey}
+                    dpr={[1, 1.5]}
+                    gl={{
+                        antialias: true,
+                        alpha: true,
+                        powerPreference: 'high-performance',
+                        failIfMajorPerformanceCaveat: false,
+                    }}
+                    camera={{ position: [0, 0, 9], fov: 50 }}
+                    onCreated={handleCreated}
+                >
+                    <color attach="background" args={['#070b16']} />
 
-                <ambientLight intensity={0.35} />
-                <pointLight position={[6, 6, 6]} intensity={0.9} color="#22d3ee" />
-                <pointLight position={[-6, -4, -3]} intensity={0.7} color="#a78bfa" />
-                <pointLight position={[0, 5, -5]} intensity={0.4} color="#f472b6" />
+                    <ambientLight intensity={0.35} />
+                    <pointLight position={[6, 6, 6]} intensity={0.9} color="#22d3ee" />
+                    <pointLight position={[-6, -4, -3]} intensity={0.7} color="#a78bfa" />
+                    <pointLight position={[0, 5, -5]} intensity={0.4} color="#f472b6" />
 
-                <CameraRig scrollRef={scrollRef} mouseRef={mouseRef} />
-                <CoreSystem scrollRef={scrollRef} mouseRef={mouseRef} />
+                    <CameraRig scrollRef={scrollRef} mouseRef={mouseRef} />
+                    <CoreSystem scrollRef={scrollRef} mouseRef={mouseRef} />
 
-                <Sparkles count={140} scale={[16, 16, 10]} size={2.4} speed={0.35} color="#22d3ee" opacity={0.6} />
-                <Stars radius={50} depth={40} count={1200} factor={3} saturation={0} fade speed={0.4} />
+                    <Sparkles count={140} scale={[16, 16, 10]} size={2.4} speed={0.35} color="#22d3ee" opacity={0.6} />
+                    <Stars radius={50} depth={40} count={1200} factor={3} saturation={0} fade speed={0.4} />
 
-                <Environment preset="night" />
-            </Canvas>
-        </div>
+                    <Environment preset="night" />
+                </Canvas>
+            </div>
+        </WebGLErrorBoundary>
     );
 };
 

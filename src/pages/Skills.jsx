@@ -41,8 +41,12 @@ import {
     SiSparkar,
     SiGithub,
     SiUnity,
+    SiWeightsandbiases,
 } from 'react-icons/si';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useSpotlight } from '../hooks/useInteractive';
+import { projects } from './Projects';
 import './Skills.css';
 
 const groups = [
@@ -98,6 +102,7 @@ const groups = [
             { Icon: SiSpacy, label: 'spaCy', color: '#09a3d5' },
             { Icon: GiMeshNetwork, label: 'Neural Networks', color: '#a78bfa' },
             { Icon: FaMagic, label: 'Generative AI', color: '#f472b6' },
+            { Icon: SiWeightsandbiases, label: 'Weights & Biases', color: '#FFBE00' },
         ],
     },
     {
@@ -140,6 +145,28 @@ const groups = [
 
 const Skills = () => {
     const spotlight = useSpotlight();
+    const [hoveredSkill, setHoveredSkill] = useState(null);
+    const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+
+    const handleMouseEnter = (e, label) => {
+        setHoveredSkill(label);
+        setTooltipPos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseMove = (e) => {
+        setTooltipPos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredSkill(null);
+    };
+
+    const relevantProjects = hoveredSkill
+        ? projects.filter((p) =>
+              p.stack.some((s) => s.toLowerCase() === hoveredSkill.toLowerCase())
+          )
+        : [];
+
     return (
         <div className="skills">
             <div className="skills-head">
@@ -176,22 +203,44 @@ const Skills = () => {
                                 </span>
                             </header>
 
-                            <ul className="skill-chips">
-                                {group.items.map(({ Icon, label, color }) => (
-                                    <li
-                                        key={label}
-                                        className="skill-chip"
-                                        style={{ '--chip-color': color }}
-                                    >
-                                        <Icon className="chip-icon" />
-                                        <span>{label}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                                <ul className="skill-chips">
+                                    {group.items.map(({ Icon, label, color }) => (
+                                        <li
+                                            key={label}
+                                            className="skill-chip"
+                                            style={{ '--chip-color': color }}
+                                            onMouseEnter={(e) => handleMouseEnter(e, label)}
+                                            onMouseMove={handleMouseMove}
+                                            onMouseLeave={handleMouseLeave}
+                                        >
+                                            <Icon className="chip-icon" />
+                                            <span>{label}</span>
+                                        </li>
+                                    ))}
+                                </ul>
                         </article>
                     );
                 })}
             </div>
+
+            {hoveredSkill && relevantProjects.length > 0 &&
+                createPortal(
+                    <div
+                        className="skill-tooltip"
+                        style={{
+                            left: tooltipPos.x + 16,
+                            top: tooltipPos.y + 16,
+                        }}
+                    >
+                        <div className="skill-tooltip-header">Featured in:</div>
+                        <ul className="skill-tooltip-list">
+                            {relevantProjects.map((p) => (
+                                <li key={p.title}>{p.title}</li>
+                            ))}
+                        </ul>
+                    </div>,
+                    document.body
+                )}
         </div>
     );
 };

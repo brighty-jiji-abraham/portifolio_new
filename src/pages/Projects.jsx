@@ -1,7 +1,8 @@
 import { useSpotlight } from '../hooks/useInteractive';
+import { FaStar } from 'react-icons/fa';
 import './Projects.css';
 
-const projects = [
+export const projects = [
     {
         title: 'Multi-Tenant AI Chatbot Platform',
         tag: 'Production · SaaS',
@@ -145,7 +146,11 @@ const Projects = () => {
                         style={{ animationDelay: `${i * 60}ms` }}
                         onMouseMove={spotlight.onMouseMove}
                     >
-                        {p.featured && <span className="project-star" aria-label="Featured">★</span>}
+                        {p.featured && (
+                            <div className="project-star" aria-label="Featured">
+                                <FaStar />
+                            </div>
+                        )}
                         <div className="project-tag">{p.tag}</div>
                         <h3>{p.title}</h3>
                         <p className="project-summary">{p.summary}</p>
