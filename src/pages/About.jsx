@@ -1,105 +1,148 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './About.css';
-import profileImg from '../assets/profile-img.jpg'; 
+import profileImg from '../assets/profile-img.jpg';
 import { FaXTwitter, FaFacebookF, FaInstagram, FaGithub, FaLinkedinIn } from 'react-icons/fa6';
+import { FiArrowDown } from 'react-icons/fi';
+import { useTilt, useMagnetic } from '../hooks/useInteractive';
+import { useScramble } from '../hooks/useScramble';
+
+const ROLE_TEXT = 'AI-Native Software Engineer · R&D Specialist';
+const NAME_LINE_1 = 'Brighty Jiji';
+const NAME_LINE_2 = 'Abraham';
+
+const socials = [
+    { href: 'https://github.com/brighty-jiji-abraham', label: 'GitHub', cls: 'github', Icon: FaGithub },
+    { href: 'https://www.linkedin.com/in/brightyjijiabraham/', label: 'LinkedIn', cls: 'linkedin', Icon: FaLinkedinIn },
+    { href: 'https://twitter.com/B_J_A_008', label: 'Twitter / X', cls: 'twitter', Icon: FaXTwitter },
+    { href: 'https://www.instagram.com/brighty.jiji.abraham/', label: 'Instagram', cls: 'instagram', Icon: FaInstagram },
+    { href: 'https://www.facebook.com/brighty.jiji.abraham/', label: 'Facebook', cls: 'facebook', Icon: FaFacebookF },
+];
+
+/* 3D-tilting hero name — single layer, gradient text, rotates with global mouse */
+const Name3D = () => (
+    <h1 className="name-3d" aria-label={`${NAME_LINE_1} ${NAME_LINE_2}`}>
+        <span className="name-3d-stage">
+            <span className="name-3d-layer front">
+                {NAME_LINE_1}
+                <br />
+                {NAME_LINE_2}
+                <span className="ghost">👻</span>
+            </span>
+        </span>
+    </h1>
+);
+
+/* 3D image card — back glow → image plate → accent ring orbiting in front, all in
+   a perspective stage that tilts to follow the cursor.  */
+const Image3D = () => {
+    const tilt = useTilt(14);
+    return (
+        <div
+            className="image-3d"
+            onMouseMove={tilt.onMouseMove}
+            onMouseLeave={tilt.onMouseLeave}
+        >
+            <div className="image-3d-stage">
+                <div className="image-3d-shadow" aria-hidden="true"></div>
+                <div className="image-3d-halo" aria-hidden="true"></div>
+                <div className="image-3d-frame">
+                    <img src={profileImg} alt="Brighty Jiji Abraham" />
+                    <div className="image-3d-shine" aria-hidden="true"></div>
+                </div>
+                <div className="image-3d-orbit" aria-hidden="true">
+                    <span className="orbit-dot dot-1"></span>
+                    <span className="orbit-dot dot-2"></span>
+                    <span className="orbit-dot dot-3"></span>
+                    <span className="orbit-ring"></span>
+                </div>
+                <div className="image-3d-tag" aria-hidden="true">{'// AI · ML · WEB'}</div>
+            </div>
+        </div>
+    );
+};
 
 const About = () => {
+    const magnetic = useMagnetic(0.2);
+    const [roleRef, scrambleRole] = useScramble(ROLE_TEXT, { duration: 700 });
+
+    const [hideHint, setHideHint] = useState(false);
     useEffect(() => {
-        const image = document.querySelector('#about img');
-        const h2 = document.querySelector('#about h2');
-        let isHovering = false; // Flag to track hover state
-
-        // Function to check overlap
-        function checkOverlap() {
-            const h2Rect = h2.getBoundingClientRect();
-            const imageRect = image.getBoundingClientRect();
-
-            // Check for overlap
-            const isOverlapping =
-                imageRect.bottom > h2Rect.top &&
-                imageRect.top < h2Rect.bottom &&
-                imageRect.right > h2Rect.left &&
-                imageRect.left < h2Rect.right;
-
-            // Update the h2 class based on overlap
-            if (isOverlapping) {
-                h2.classList.add('h2-touched');
-            }
-
-            // Continue the loop if still hovering
-            if (isHovering) {
-                requestAnimationFrame(checkOverlap);
-            }
-            if (!isHovering) {
-                h2.classList.remove('h2-touched');
-            }
-        }
-
-        // Start checking on image hover
-        image.addEventListener('mouseenter', function () {
-            isHovering = true; // Set flag
-            checkOverlap(); // Start continuous checking
-        });
-
-        // Stop checking when mouse leaves the image
-        image.addEventListener('mouseleave', function () {
-            isHovering = false; // Clear flag
-            h2.classList.remove('h2-touched'); // Remove class
-        });
-
-        // Cleanup event listeners on component unmount
-        return () => {
-            image.removeEventListener('mouseenter', checkOverlap);
-            image.removeEventListener('mouseleave', checkOverlap);
-        };
-    }, []);
-
-    useEffect(() => {
-        const elements = document.querySelectorAll('.fade-in');
-        const timeout = setTimeout(() => {
-            elements.forEach(element => {
-                element.classList.remove('fade-in');
-            });
-        }, 2000); // Adjust the timeout duration as needed
-
-        const socials = document.querySelectorAll('.focus-in-contract-bck');
-        const timeout2 = setTimeout(() => {
-            socials.forEach(social => {
-                social.classList.remove('focus-in-contract-bck');
-            });
-        }, 4000); // Adjust the timeout duration as needed
-
-        return () => clearTimeout(timeout);
+        const onScroll = () => setHideHint(window.scrollY > 80);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
     return (
-        <>
-            <img src={profileImg} alt="me" className='fade-in'/>
-            <div className="bja">
-                <h2 className='fade-in'>Brighty Jiji Abraham 👻</h2>
-                <p style={{ color: 'rgb(35, 35, 35)' }} className='fade-in'>
-                    Passionate AI engineering student seeking impactful opportunities to develop cutting-edge solutions,
-                    embrace continuous learning, and drive innovation with ethical AI implementation.
+        <div className="about">
+            <div className="about-text">
+                <span className="section-eyebrow">Hello, I&apos;m</span>
+                <Name3D />
+                <p
+                    className="about-role"
+                    ref={roleRef}
+                    onMouseEnter={scrambleRole}
+                    onFocus={scrambleRole}
+                    tabIndex={0}
+                    data-cursor
+                >
+                    {ROLE_TEXT}
                 </p>
-                <div className="social-links mt-3 text-center">
-                    <a href="https://twitter.com/B_J_A_008" className="twitter focus-in-contract-bck">
-                        <FaXTwitter />
+                <p className="about-bio">
+                    Building systems that understand humans better than we understand ourselves.
+                    I synthesise AI research, full-stack engineering, and creative design
+                    into scalable, secure, human-centered solutions — turning &ldquo;impossible&rdquo; into &ldquo;inevitable&rdquo;.
+                </p>
+
+                <ul className="about-stats" aria-label="At a glance">
+                    <li><strong>5+</strong><span>years engineering</span></li>
+                    <li><strong>100+</strong><span>devs mentored</span></li>
+                    <li><strong>10+</strong><span>shipped projects</span></li>
+                </ul>
+
+                <div className="about-actions">
+                    <a
+                        className="btn btn-primary btn-magnetic"
+                        href="#projects"
+                        onMouseMove={magnetic.onMouseMove}
+                        onMouseLeave={magnetic.onMouseLeave}
+                    >
+                        View projects
                     </a>
-                    <a href="https://www.facebook.com/brighty.jiji.abraham/" className="facebook focus-in-contract-bck">
-                        <FaFacebookF />
-                    </a>
-                    <a href="https://www.instagram.com/brighty.jiji.abraham/" className="instagram focus-in-contract-bck">
-                        <FaInstagram />
-                    </a>
-                    <a href="https://github.com/BrightyJijiAbraham" className="github focus-in-contract-bck">
-                        <FaGithub />
-                    </a>
-                    <a href="https://www.linkedin.com/in/brightyjijiabraham/" className="linkedin focus-in-contract-bck">
-                        <FaLinkedinIn />
+                    <a
+                        className="btn btn-ghost btn-magnetic"
+                        href="#contact"
+                        onMouseMove={magnetic.onMouseMove}
+                        onMouseLeave={magnetic.onMouseLeave}
+                    >
+                        Get in touch
                     </a>
                 </div>
+
+                <div className="social-links" aria-label="Social profiles">
+                    {socials.map(({ href, label, cls, Icon }, i) => (
+                        <a
+                            key={cls}
+                            href={href}
+                            className={`social-icon ${cls}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={label}
+                            style={{ animationDelay: `${0.4 + i * 0.08}s` }}
+                        >
+                            <Icon />
+                        </a>
+                    ))}
+                </div>
             </div>
-        </>
+
+            <Image3D />
+
+            <div className={`scroll-hint ${hideHint ? 'is-hidden' : ''}`} aria-hidden="true">
+                <span className="scroll-hint-label">Scroll</span>
+                <FiArrowDown className="scroll-hint-icon" />
+            </div>
+        </div>
     );
 };
 

@@ -1,362 +1,310 @@
-header {
-    z-index: 99;
-    overflow: hidden;
-    left: 50;
-    right: 50;
+/* ===========================================================
+   Top scroll-progress bar
+   =========================================================== */
+
+.scroll-progress {
+    position: fixed;
     top: 0;
-    letter-spacing: 0.15cap;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 100;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.08s linear;
+    pointer-events: none;
+    box-shadow: 0 2px 12px rgba(34, 211, 238, 0.45);
+}
+
+/* ===========================================================
+   Header pill
+   =========================================================== */
+
+.app-header {
     position: fixed;
-    min-width: calc(100vw - 80px - 20px);
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    width: min(1160px, calc(100% - 24px));
     display: flex;
-    padding: 20px 50px;
-    margin: 40px;
-    border-radius: 100px;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    background-color: rgba(255, 255, 255, 0.533);
     align-items: center;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-sizing: border-box;
-    box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5),
-        0px 2px 4px rgba(0, 255, 255, 0.5),
-        0px 4px 8px rgba(0, 255, 255, 0.5),
-        0px 8px 16px rgba(0, 255, 255, 0.5);
-    /* Include padding in width */
-}
-
-.fixed {
-    position: fixed;
-    border-radius: 100px;
-    box-shadow: inset 6px 18px 20px 0px rgba(2, 2, 2, 0.507);
-}
-
-header nav {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 20px;
+    padding: 8px 8px 8px 14px;
+    border-radius: var(--radius-pill);
+    background: rgba(11, 18, 32, 0.55);
+    border: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    transition: padding 0.3s var(--ease), background-color 0.3s ease,
+                box-shadow 0.3s ease, top 0.3s var(--ease),
+                border-color 0.3s ease;
 }
 
-nav a {
-    letter-spacing: 0.15cap;
-    padding: 10px;
-    min-width: 60px;
+.app-header.is-scrolled {
+    top: 10px;
+    padding: 6px 6px 6px 12px;
+    background: rgba(8, 13, 25, 0.85);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+/* ===========================================================
+   Brand
+   =========================================================== */
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     text-decoration: none;
-    color: #000;
-    text-align: center;
-    text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.507);
-    transition-duration: 0.4s;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    padding: 4px 10px 4px 6px;
+    border-radius: var(--radius-pill);
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-nav a:hover {
-    color: rgb(255, 255, 255);
-    background-color: rgba(0, 0, 0, 0.222);
-    border-radius: 100px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    -ms-border-radius: 100px;
-    -o-border-radius: 100px;
-    text-shadow: -7px -2px 9px rgba(255, 255, 255, 0.507);
-    transition-duration: 0.4s;
-    box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5),
-        0px 2px 4px rgba(0, 255, 255, 0.5),
-        0px 4px 8px rgba(0, 255, 255, 0.5),
-        0px 8px 16px rgba(0, 255, 255, 0.5);
+.brand:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
 }
 
-/* smooth transition for sliding out to the left and fading out */
-.welcome_message {
-    animation: zoomOutLeft 1s ease;
-    animation-fill-mode: forwards;
-    animation-delay: 2s;
+/* Mark — gradient ring with a pulsing dot inside */
+.brand-mark {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: conic-gradient(from 180deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+    padding: 1.5px;
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+    animation: markSpin 8s linear infinite;
+}
+
+.brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    border-radius: 50%;
+    background: var(--bg-0);
+}
+
+.brand-dot {
+    position: relative;
+    z-index: 1;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: brandPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes markSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes brandPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.6; transform: scale(0.85); }
+}
+
+.brand-name {
+    display: inline-flex;
+    white-space: nowrap;
+    color: var(--text);
+}
+
+.brand .letter {
+    display: inline-block;
+    color: var(--text);
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transform: translateY(8px);
+    animation: letterIn 0.45s var(--ease) both;
+    white-space: pre;
 }
 
-/* Animate.css ZoomOutLeft Animation */
-@keyframes zoomOutLeft {
-    0% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    40% {
-        opacity: 1;
-        transform: scale(0.475) translateX(42px);
-    }
-
-    100% {
-        opacity: 0;
-        transform: scale(0.1) translateX(-2000px);
-    }
+@keyframes letterIn {
+    to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===========================================================
+   Nav
+   =========================================================== */
 
-/* Slide and fade-out effect for welcome text */
-.typed-fade-out {
-    animation: slideOutLeft 1s forwards, fadeOut 1s forwards;
+.app-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-@keyframes slideOutLeft {
-    0% {
-        transform: translateX(0);
-        width: 100%;
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateX(-100%);
-        width: 0%;
-        opacity: 0;
-    }
+.nav-links {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
 }
 
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-        
-    }
-
-    100% {
-        opacity: 0;
-        display: none;
-    }
+/* Sliding indicator that follows the active link */
+.nav-indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    width: 0;
+    background: var(--accent);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 4px 14px var(--accent-glow);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    will-change: transform, width;
 }
 
-/* Hamburger Menu Styles */
+.nav-indicator.is-ready {
+    opacity: 1;
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1),
+                width 0.4s cubic-bezier(0.65, 0, 0.35, 1),
+                opacity 0.25s ease;
+}
+
+.nav-link {
+    position: relative;
+    z-index: 1;
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    color: var(--text-soft);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    color: var(--text);
+    outline: none;
+}
+
+.nav-link.active {
+    color: var(--bg-0);
+    font-weight: 600;
+}
+
+/* ===========================================================
+   Hamburger
+   =========================================================== */
+
 .hamburger {
     display: none;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    width: 30px;
-    height: 25px;
-    cursor: pointer;
+    position: relative;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.hamburger:hover { background-color: rgba(255, 255, 255, 0.08); }
+
+.hamburger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .hamburger .line {
-    width: 100%;
-    height: 4px;
-    background-color: #000;
-    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20px;
+    height: 2px;
+    background-color: var(--text);
+    border-radius: 999px;
+    transform-origin: center;
+    transition: transform 0.3s var(--ease-snappy), opacity 0.2s ease;
 }
 
-header h2 {
-    text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.5);
-    color: #ffffff;
-    font-weight: bold;
-    transition: 1s cubic-bezier(0.250, 0.460, 0.450, 0.940);
-}
+.hamburger .line:nth-child(1) { transform: translate(-50%, -7px); }
+.hamburger .line:nth-child(2) { transform: translate(-50%, -50%); }
+.hamburger .line:nth-child(3) { transform: translate(-50%, 5px); }
 
-/* Styling for the typed content and expanded parts */
-.typed-content {
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
+.hamburger.is-open .line:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
+.hamburger.is-open .line:nth-child(2) { opacity: 0; }
+.hamburger.is-open .line:nth-child(3) { transform: translate(-50%, -50%) rotate(-45deg); }
 
-.typed-content.show {
-    transition-duration: 200ms;
-    -o-transition-duration: 200ms;
-    opacity: 1;
-}
+/* ===========================================================
+   Mobile
+   =========================================================== */
 
-.typed-expanded {
-    display: inline-block;
-    width: 0px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
-
-.typed-part {
-    opacity: 0;
-    visibility: hidden;
-    display: inline-block;
-    transition: opacity 0.3s ease, visibility 0s ease 0.3s;
-}
-
-.typed-part.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-
-.expand {
-    width: fit-content;
-    padding-right: 5px;
-}
-
-.typed-expanded.expand {
-    opacity: 1;
-}
-
-.part {
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
-
-.part1.show {
-    opacity: 1;
-}
-
-.part2.show {
-    opacity: 1;
-}
-
-.part3.show {
-    opacity: 1;
-}
-
-.part1 {
-    transition-delay: 0s;
-}
-
-.part2 {
-    transition-delay: 0s;
-}
-
-.part3 {
-    transition-delay: 0s;
-}
-
-
-/* Mobile and Tablet Responsiveness */
-
-/* For Tablets (Max-width 1024px) */
-@media screen and (max-width: 1024px) {
-    header {
-        overflow: visible;
-        min-width: calc(100vw - 80px);
-        max-width: calc(100vw - 10px);
-    }
-
-    nav {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    nav a {
-        font-size: 16px;
-        padding: 8px;
-        min-width: 50px;
-    }
-
-    /* Make hamburger visible */
-    .hamburger {
-        display: flex;
-    }
-
-    .nav-links {
-        display: none;
-        width: 200px;
-        flex-direction: column;
-        align-items: center;
-        background-color: rgba(0, 247, 255, 0.293);
-        text-shadow: -7px -2px 9px rgba(255, 255, 255, 0.507);
-        transition-duration: 0.4s;
-        box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5),
-            0px 2px 4px rgba(0, 255, 255, 0.5),
-            0px 4px 8px rgba(0, 255, 255, 0.5),
-            0px 8px 16px rgba(0, 255, 255, 0.5);
-        position: absolute;
-        top: 10px;
-        margin-right: 250px;
-        border-radius: 20px;
-        padding: 20px 0;
-        z-index: 20;
-        overflow: hidden;
-        backdrop-filter: blur(20px);
-
-    }
-
-    .nav-links::before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-bottom: 10px solid rgba(0, 247, 255, 0.379);
-        filter: blur(20px);
-        background-image: url(../../assets/v904-nunny-012-b.webp);
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        /* background-image: linear-gradient(180deg, rgba(0, 247, 255, 0), rgba(0, 247, 255, 0.816), rgb(0, 247, 255));; */
-        z-index: -1;
-    }
-
-    .nav-links.show {
-        display: flex;
-        position: absolute;
-    }
-
-    .nav-links a {
-        padding: 12px;
-        width: 50%;
-        text-align: center;
-        min-width: 50px;
-    }
-}
-
-/* For Mobile (Max-width 768px) */
 @media screen and (max-width: 768px) {
-    nav {
-        flex-direction: column;
-        align-items: center;
+    .app-header {
+        top: 12px;
+        padding: 8px 8px 8px 12px;
     }
 
-    nav a {
-        font-size: 14px;
-        padding: 6px 12px;
-        min-width: 50px;
+    .app-header.is-scrolled {
+        padding: 6px 6px 6px 10px;
     }
 
-    header h2{
-        font-size: 22px;
-    }
+    .hamburger { display: block; }
 
-    .hamburger {
-        display: flex;
-    }
-}
+    .nav-indicator { display: none; }
 
-/* For Small Mobile (Max-width 480px) */
-@media screen and (max-width: 480px) {
-    header {
-        top: 20px;
-        min-width: calc(100vw - 20px);
-        max-width: calc(100vw - 20px);
-        padding: 10px 15px;
-        margin: 10px;
-        border-radius: 60px;
-    }
-    
-    header h2{
-        font-size: 20px;
-    }
-    
     .nav-links {
-        display: none;
-        width: 200px;
-        top: 100px;
-        margin-right: 250px;
-        border-radius: 20px;
-        padding: 20px 0;
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        min-width: 220px;
+        padding: 8px;
+        background: rgba(11, 18, 32, 0.95);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+        transform-origin: top right;
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s ease;
     }
 
     .nav-links.show {
-        display: grid;
-        justify-items: center;
-        /* Centers the items horizontally */
-        left: 0;
-        position: absolute;
-        width: 100%;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
     }
 
-    nav a {
-        font-size: 12px;
-        padding: 4px 8px;
-        min-width: 40px;
+    .nav-link {
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        border-radius: var(--radius-sm);
     }
+
+    .nav-link.active {
+        color: var(--bg-0);
+        background: var(--accent);
+        box-shadow: 0 4px 14px var(--accent-glow);
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .brand-name { font-size: 0.85rem; }
 }

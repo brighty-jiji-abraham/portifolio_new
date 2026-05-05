@@ -1,299 +1,230 @@
-#skills {
+.skills {
+    width: 100%;
+    display: flex;
     flex-direction: column;
-    margin-top: 175px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 15px;
 }
 
-#skills .container {
-    padding: 50px;
-    display: flex;
-    min-height: 100vh;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-}
-
-#skills h2 {
-    font-size: 3rem;
-    padding: 10px;
-    margin: 0px;
-    transition-duration: 0.4s;
-    text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.5);
-    color: #ffffff;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.skill-list {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: nowrap;
-    margin-top: 20px;
-    padding: 20px 0px;
-    width: 100%;
-    justify-items: center;
-    align-items: start; /* Aligns items at the top */
-}
-
-.skill-list ul {
-    background: linear-gradient(45deg, #4c6ef5, #0d6efd);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    width: 100%;
-    max-width: 300px;
-    list-style: none;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    backdrop-filter: blur(8px);
-}
-
-.skill-list ul:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-.skill-list strong {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.skills-head {
+    margin-bottom: var(--space-7);
     text-align: center;
 }
 
-.skill-list li {
-    font-size: 1.2rem;
-    color: #ffffff;
-    margin: 8px 0;
-    transition: color 0.3s ease;
-    width: 100%;
-    padding: 10px 10px 10px 10px  ;
+.skills-head .section-eyebrow,
+.skills-head .section-title,
+.skills-head .section-lead {
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.skill-list li:hover {
-    /* transform: translateX(5px); */
+/* ===========================================================
+   Grid
+   =========================================================== */
+
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-5);
 }
 
-.skill-list .icon {
-    font-size: 2rem;
-    margin-right: 10px;
-    color: #fff;
-}
+/* ===========================================================
+   Card
+   =========================================================== */
 
-.skill-list ul:nth-child(1) {
-    background: linear-gradient(to right, #3b83f63c, #2564eb36);
-}
-
-.skill-list ul:nth-child(2) {
-    background: linear-gradient(to right, #10b9812e, #34d3992a);
-}
-
-.skill-list ul:nth-child(3) {
-    background: linear-gradient(to right, #8a5cf629, #6c28d92d);
-}
-
-.skill-list .icon {
-    font-size: 2rem;
-    margin-right: 10px;
-    color: #fff;
-}
-
-.skill-list li {
-    font-size: 1.2rem;
-    color: #ffffff;
-    margin: 8px 0;
-}
-
-.skill-list ul {
+.skill-card {
+    --card-accent: var(--accent);
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(to top right, #3b82f6, #9333ea);
-    transition: transform 0.4s ease, box-shadow 0.3s ease;
-    align-items: flex-start;
-    justify-content: center;
-    align-content: center;
-    flex-wrap: wrap;
-    transition: color 0.3s ease;
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.35s var(--ease), border-color 0.3s ease,
+                background-color 0.3s ease;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardIn 0.55s var(--ease) forwards;
 }
 
-.skill-list ul:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
-    transition: color 0.3s ease;
+@keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.skill-list li {
-    font-size: 1.1rem;
-    color: white;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.mb-6 {
-    margin-bottom: 6rem;
-}
-
-/* Apply blur to non-hovered items */
-.skill-list ul:hover li:not(:hover) {
-    filter: blur(4px);
-    --webkit-filter: blur(4px);
-}
-
-/* Hover effect for individual list items */
-.skill-list li:hover::before {
-    content: "";
+/* Top accent line — color-coded per category */
+.skill-card::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
-    filter: blur(5px);
-    -webkit-filter: blur(5px);
+    height: 2px;
+    background: linear-gradient(90deg, var(--card-accent), transparent 75%);
+    opacity: 0.7;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Cursor spotlight — colour follows the card accent */
+.skill-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 50%),
+        color-mix(in srgb, var(--card-accent) 14%, transparent),
+        transparent 50%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
     z-index: -1;
 }
 
-/* languages */
-.clang:hover .icon , .clang:hover{
-    color: #ffffff;
-    background: #5c6bc0;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--card-accent) 35%, var(--border));
+    background: var(--surface-strong);
 }
 
-.csharplang:hover .icon , .csharplang:hover{
-    color: #ffffff;
-    background: linear-gradient(340deg, #522cd4, #927be5);
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card:hover::before {
+    opacity: 1;
+    height: 3px;
 }
 
-.swiftlang:hover .icon , .swiftlang:hover{
-    color: #ffffff;
-    background: #f05138;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card:hover::after { opacity: 1; }
+
+/* ===========================================================
+   Card head: icon tile + title + count badge
+   =========================================================== */
+
+.skill-card-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
 }
 
-.phplang:hover .icon , .phplang:hover{
-    color: #ffffff;
-    background: #777bb3;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    color: var(--card-accent);
+    background: color-mix(in srgb, var(--card-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--card-accent) 28%, transparent);
+    font-size: 1.15rem;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s ease;
 }
 
-.javalang:hover .icon , .javalang:hover{
-    color: #e76f00;
-    background: #ffffff;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card:hover .skill-card-icon {
+    transform: scale(1.05) rotate(-3deg);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--card-accent) 30%, transparent);
 }
 
-.jslang:hover .icon , .jslang:hover{
-    color: #f0db4f;
-    background: #ffffff;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card-headtext {
+    flex: 1;
+    min-width: 0;
 }
 
-.nodejslang:hover .icon , .nodejslang:hover{
-    color: #5FA04E;
-    background: #ffffff;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    line-height: 1.2;
 }
 
-.pythonlang:hover .icon , .pythonlang:hover{
-    color: #306998;
-    /* background: -webkit-linear-gradient(45deg, #ffce3e, #376e9d); */
-    background-color: #ffce3e;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card-subtitle {
+    margin: 2px 0 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.3;
 }
 
-/* photography and video-editing */
-.ae:hover .icon , .ae:hover{
-    color: #01005e;
-    background: #9a98fc;  
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-card-count {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--card-accent);
+    background: color-mix(in srgb, var(--card-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--card-accent) 22%, transparent);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
 }
 
-.pr:hover .icon , .pr:hover{
-    color: #01015b;
-    background: #9c9bfb;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+/* ===========================================================
+   Chips
+   =========================================================== */
+
+.skill-chips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
-.ps:hover .icon , .ps:hover{
-    color: #021e36;
-    background: #2da8fa;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px 6px 9px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    color: var(--text-soft);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: transform 0.2s var(--ease), background-color 0.2s ease,
+                border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
 }
 
-.lr:hover .icon , .lr:hover{
-    color: #021e36;
-    background: #00a5f3;
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-chip:hover {
+    transform: translateY(-2px);
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--chip-color, var(--card-accent));
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--chip-color, var(--card-accent)) 30%, transparent);
 }
 
-.afp:hover .icon , .afp:hover{
-    color: #4e3289;
-    background: linear-gradient(45deg, #e874fd, #f398fe);
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.chip-icon {
+    font-size: 1rem;
+    color: var(--chip-color, var(--text-soft));
+    transition: transform 0.2s var(--ease);
+    flex-shrink: 0;
 }
 
-.afd:hover .icon , .afd:hover{
-    color: #164880;
-    background: linear-gradient(45deg, #50baea, #76ceee);
-    border-radius: 5px;
-    transition: color 0.3s ease;
+.skill-chip:hover .chip-icon {
+    transform: scale(1.18);
 }
+
+/* ===========================================================
+   Responsive
+   =========================================================== */
 
 @media screen and (max-width: 768px) {
-    
-    #skills h2 {
-        font-size: 2.5rem;
-    }
-
-    .skill-list{
-        flex-wrap: wrap;
-    }
-
-    .skill-list strong {
-        font-size: 1.2rem;
-    }
-
-    .skill-list li {
-        font-size: 1rem;
-    }
-
-    .skill-list .icon {
-        font-size: 1.5rem;
-    }
-    
+    .skill-grid { grid-template-columns: 1fr; }
+    .skill-card { padding: var(--space-5); }
 }
 
+@media screen and (max-width: 380px) {
+    .skill-card-icon { width: 36px; height: 36px; font-size: 1rem; }
+    .skill-card-title { font-size: 0.95rem; }
+}
+
+/* Compatibility — Section.jsx uses #projects id elsewhere */
 #projects {
     flex-direction: column;
-    margin-top: 175px;
-  }
+}

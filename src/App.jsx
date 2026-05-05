@@ -1,47 +1,57 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
 import Header from './components/header/Header';
-import Section from './components/section/Section';
 import Footer from './components/footer/Footer';
+import Scene3D from './components/scene/Scene3D';
+import CustomCursor from './components/cursor/CustomCursor';
 import About from './pages/About';
 import Skills from './pages/Skills';
 import Projects from './pages/Projects';
+import Experience from './pages/Experience';
 import Contact from './pages/Contact';
+import { useReveal } from './hooks/useReveal';
+import { useMouse } from './hooks/useMouse';
+
+const Chapter = ({ id, kicker, children }) => {
+    const [ref, visible] = useReveal();
+    return (
+        <section
+            ref={ref}
+            id={id}
+            className={`chapter chapter-${id} ${visible ? 'is-visible' : ''}`}
+            data-kicker={kicker}
+        >
+            <div className="chapter-inner">{children}</div>
+        </section>
+    );
+};
 
 function App() {
+    const mouseRef = useMouse();
 
-  const getDynamicBasename = () => {
-    // Get the full path where your app is hosted
-    const pathname = window.location.pathname;
-  
-    // If using HashRouter, split at the hash
-    const hashIndex = pathname.indexOf('#');
-    const cleanPath = hashIndex > -1 ? pathname.substring(0, hashIndex) : pathname;
-  
-    // Remove trailing slashes and split
-    const segments = cleanPath.replace(/\/+$/, '').split('/');
-  
-    // Rebuild the base path
-    return segments.slice(0, segments.length - 1).join('/') || '';
-  };
-  
-  return (
-    <Router basename={getDynamicBasename()}>
-      <Header />
-      <section className="main">
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Section children={<About />} id="about" />} />
-            <Route path="/skills" element={<Section children={<Skills />} id="skills" />} />
-            <Route path="/projects" element={<Section children={<Projects />} id="projects" />} />
-            <Route path="/contact" element={<Section children={<Contact />} id="contact" />} />
-          </Routes>
-        </div>
-      </section>
-      <Footer />
-    </Router>
-  );
+    return (
+        <>
+            <CustomCursor />
+            <Scene3D mouseRef={mouseRef} />
+            <Header />
+            <main className="story">
+                <Chapter id="about" kicker="01 / Hello">
+                    <About />
+                </Chapter>
+                <Chapter id="skills" kicker="02 / Toolkit">
+                    <Skills />
+                </Chapter>
+                <Chapter id="projects" kicker="03 / Work">
+                    <Projects />
+                </Chapter>
+                <Chapter id="experience" kicker="04 / Journey">
+                    <Experience />
+                </Chapter>
+                <Chapter id="contact" kicker="05 / Contact">
+                    <Contact />
+                </Chapter>
+            </main>
+            <Footer />
+        </>
+    );
 }
 
 export default App;

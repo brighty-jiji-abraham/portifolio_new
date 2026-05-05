@@ -1,13 +1,9 @@
-import React from 'react';
-
 const Footer = () => {
     return (
         <footer>
-            <center>
-                <p>&copy; 2024 Brighty Jiji Abraham. All rights reserved.</p>
-            </center>
+            <p>&copy; {new Date().getFullYear()} Brighty Jiji Abraham. All rights reserved.</p>
         </footer>
     );
-}
+};
 
 export default Footer;

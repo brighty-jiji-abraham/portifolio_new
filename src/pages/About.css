@@ -1,397 +1,486 @@
-#about h2 {
-    font-size: 98px;
-    padding: 10px;
-    margin: 0px;
-    transition-duration: 0.4s;
-    transition-delay: 0.4s;
-    text-shadow: -7px -2px 9px rgba(2, 2, 2, 0.507);
+.about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: center;
+    width: 100%;
 }
 
-#about h2:hover {
-    font-size: 98px;
-    padding: 10px;
-    margin: 0px;
-    color: aliceblue;
-    text-shadow: -7px -2px 9px rgba(0, 255, 255, 0.5);
-    transition: 0.9s;
-}
-
-.h2-touched {
-    font-size: 100px;
-    padding: 10px;
-    margin: 0px;
-    color: aliceblue;
-    text-shadow: -7px -2px 9px rgba(0, 255, 255, 0.5) !important;
-    transition: 0.9s;
-    z-index: 12;
-    animation: push 1s;
-    animation-direction: normal;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: 1;
-    -webkit-animation: push 1s;
-    transform: translateX(40px) scale(1.075);
-    -webkit-transform: translateX(40px) scale(1.075);
-    -moz-transform: translateX(40px) scale(1.075);
-    -ms-transform: translateX(40px) scale(1.075);
-    -o-transform: translateX(40px) scale(1.075);
-}
-
-@keyframes push {
-    0% {
-        transform: translateX(0px);
-    }
-
-    50% {
-        transform: translateX(60px) scale(0.95);
-        -webkit-transform: translateX(60px) scale(0.95);
-        -moz-transform: translateX(60px) scale(0.95);
-        -ms-transform: translateX(60px) scale(0.95);
-        -o-transform: translateX(60px) scale(0.95);
-    }
-
-    100% {
-        transform: translateX(40px) scale(1.075);
-        -webkit-transform: translateX(40px) scale(1.075);
-        -moz-transform: translateX(40px) scale(1.075);
-        -ms-transform: translateX(40px) scale(1.075);
-        -o-transform: translateX(40px) scale(1.075);
-    }
-}
-
-#about .bja {
+.about-text {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     align-items: flex-start;
-    justify-content: space-evenly;
-    padding: 30px;
-    align-content: space-around;
 }
 
-#about img {
-    height: 400px;
-    width: auto;
-    border-radius: 250px;
-    border-color: rgba(0, 0, 0, 0.274);
-    border-style: solid;
-    border-width: 10px;
-    box-shadow: 0px 0px 20px 3px rgba(2, 2, 2, 0.507);
-    transition: 0.25s cubic-bezier(1, -0.36, 0.38, 1.8);
-    ;
+/* ===========================================================
+   3D extruded name
+   =========================================================== */
+
+.name-3d {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
 }
 
-#about img:hover {
-    box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5), 0px 2px 4px rgba(0, 255, 255, 0.5), 0px 4px 8px rgba(0, 255, 255, 0.5), 0px 8px 16px rgba(0, 255, 255, 0.5);
-    animation: bounce 1s, rotate 1s;
-    transition-duration: 0.8s;
-    animation-direction: alternate;
-    animation-timing-function: cubic-bezier(1, -0.36, 0.38, 1.8);
-    animation-iteration-count: 1;
-    -webkit-animation: bounce 1s, rotate 1s;
+.name-3d-stage {
+    display: inline-block;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--my-tilt, 0deg)) rotateY(var(--mx-tilt, 0deg));
+    transition: transform 0.25s var(--ease);
+    will-change: transform;
 }
 
-@keyframes bounce {
-    0% {
-        transform: scale(1);
-        transform: translate3d(0, 0, 0);
+.name-3d-layer.front {
+    display: block;
+    background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ghost {
+    display: inline-block;
+    margin-left: 8px;
+    -webkit-text-fill-color: initial;
+    transform-origin: center;
+    animation: ghostFloat 3.5s ease-in-out infinite;
+}
+
+@keyframes ghostFloat {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50%      { transform: translateY(-6px) rotate(4deg); }
+}
+
+/* ===========================================================
+   Role / bio / actions
+   =========================================================== */
+
+.about-role {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin: 0 0 var(--space-4);
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    transition: text-shadow 0.3s ease;
+    outline: none;
+}
+
+.about-role:hover,
+.about-role:focus-visible {
+    text-shadow: 0 0 24px rgba(34, 211, 238, 0.6);
+}
+
+.about-bio {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--text-soft);
+    margin: 0 0 var(--space-5);
+    max-width: 56ch;
+}
+
+.about-stats {
+    list-style: none;
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+}
+
+.about-stats li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: var(--space-5);
+    border-right: 1px solid var(--border);
+    line-height: 1.2;
+}
+
+.about-stats li:last-child {
+    border-right: 0;
+    padding-right: 0;
+}
+
+.about-stats strong {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+}
+
+.about-stats span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+@media screen and (max-width: 900px) {
+    .about-stats {
+        justify-content: center;
     }
-
-    25% {
-        transform: translate3d(50px, 0, 0);
-    }
-
-    100% {
-        transform: scale(1);
-        transform: translate3d(0, 0, 0);
+    .about-stats li {
+        align-items: center;
     }
 }
 
-@keyframes rotate {
-    100% {
-        transform: rotate(360deg);
-    }
+.about-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
 }
 
-#about p {
-    max-width: 1000px;
+.btn {
+    --tx: 0px;
+    --ty: 0px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 22px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transform: translate(var(--tx), var(--ty));
+    transition: transform 0.18s var(--ease), background-color 0.2s ease,
+                border-color 0.2s ease, box-shadow 0.25s ease, color 0.2s ease;
+    cursor: pointer;
+    will-change: transform;
 }
+
+.btn-magnetic { transition: transform 0.12s ease-out, background-color 0.2s ease,
+                            border-color 0.2s ease, box-shadow 0.25s ease, color 0.2s ease; }
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--bg-0);
+    box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.btn-primary:hover { box-shadow: 0 14px 36px var(--accent-glow); }
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border-strong);
+}
+
+.btn-ghost:hover {
+    background: var(--surface-strong);
+    border-color: var(--text-soft);
+}
+
+/* ===========================================================
+   Social links
+   =========================================================== */
 
 .social-links {
-    padding-top: 2em;
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
 }
 
-.social-links a {
-    display: flex;
-    font-size: 25px;
+.social-icon {
+    display: inline-flex;
     align-items: center;
-    /* display: inline-block; */
-    background: #212431;
-    color: #fff;
-    padding: 8px;
-    margin-right: 10px;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    color: var(--text-soft);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 50%;
-    text-align: center;
-    /* width: 25px;
-    height: 25px; */
-    align-content: center;
-    transition: 0.3s;
-    overflow: hidden;
-}
-
-.social-links a:hover {
-    background: #ffffff;
-    color: rgb(39, 39, 39);
     text-decoration: none;
-    box-shadow: 0px 1px 2px rgba(0, 255, 255, 0.5),
-        0px 2px 4px rgba(0, 255, 255, 0.5),
-        0px 4px 8px rgba(0, 255, 255, 0.5),
-        0px 8px 16px rgba(0, 255, 255, 0.5);
-    animation: scale-up 0.3s ease-in-out;
+    transition: transform 0.25s var(--ease), background-color 0.25s ease,
+                color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    opacity: 0;
+    animation: socialIn 0.5s var(--ease) forwards;
 }
 
-@keyframes scale-up {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.1);
-    }
+@keyframes socialIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.8); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.twitter {
-    animation-delay: 0.5s;
-}
-
-.facebook {
-    animation-delay: 1s;
-}
-
-.social-links .facebook:hover {
-    background: #3b5998;
+.social-icon:hover {
+    transform: translateY(-3px);
     color: #fff;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.instagram {
-    animation-delay: 1.5s;
-}
-.social-links .instagram:hover  {
-    background: #c13584;
-    background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
-    color: #fff;
-}
+.social-icon.github:hover    { background: #24292e; }
+.social-icon.linkedin:hover  { background: #0a66c2; }
+.social-icon.twitter:hover   { background: #000; }
+.social-icon.instagram:hover { background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7); }
+.social-icon.facebook:hover  { background: #1877f2; }
 
-.github {
-    animation-delay: 2s;
-}
+/* ===========================================================
+   3D image card
+   =========================================================== */
 
-.social-links .github:hover {
-    background: #333;
-    color: #fff;
-}
-
-.linkedin {
-    animation-delay: 2.5s;
+.image-3d {
+    position: relative;
+    justify-self: center;
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1;
+    perspective: 1300px;
+    perspective-origin: 50% 50%;
 }
 
-.social-links .linkedin:hover {
-    background: #0077b5;
-    color: #fff;
+.image-3d-stage {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.4s var(--ease);
+    will-change: transform;
+    animation: heroFloat 6s ease-in-out infinite;
 }
 
-/* Apply blur to non-hovered items */
-.social-links:hover a:not(:hover){
-    filter: blur(4px);
-    --webkit-filter: blur(4px);
+@keyframes heroFloat {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -10px; }
 }
 
-/* For screens up to 1024px */
-@media screen and (max-width: 1024px) {
-    /* Scale down h2 size */
-    #about h2 {
-        font-size: 60px; /* Smaller font size for headings */
-    }
-
-    /* Scale down images */
-    #about img {
-        height: 250px; /* Smaller image size */
-        width: auto;   /* Maintain aspect ratio */
-    }
-
-    /* Adjust paragraph width */
-    #about p {
-        max-width: 100%; /* Allow paragraphs to take up the full width */
-    }
-
-    /* Adjust the social links to be inline for smaller screens */
-    .social-links {
-        justify-content: center;
-        padding-top: 1em; /* Less padding for smaller screens */
-        flex-wrap: wrap; /* Allow items to wrap onto new lines */
-    }
-
-    .social-links a {
-        font-size: 20px; /* Smaller icons for better layout */
-        margin-right: 8px; /* Adjust spacing between social links */
-        padding: 10px; /* Adjust padding */
-    }
-
-    /* Optionally, make the .h2-touched animation more subtle for smaller screens */
-    .h2-touched {
-        font-size: 80px; /* Slightly smaller size */
-        transform: translateX(20px) scale(1.05); /* Slightly smaller movement and scale */
-    }
+/* Layer: deep ground shadow far behind */
+.image-3d-shadow {
+    position: absolute;
+    inset: -8% 8% -16% 8%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 65%);
+    transform: translateZ(-160px) rotateX(70deg);
+    filter: blur(20px);
+    opacity: 0.6;
 }
 
-/* For screens up to 768px */
-@media screen and (max-width: 768px) {
-    /* Further scale down h2 size */
-    #about h2 {
-        font-size: 50px; /* Reduce font size even further */
-    }
-
-    /* Reduce image size more for smaller screens */
-    #about img {
-        height: 200px; /* Smaller image size */
-    }
-
-    /* Adjust social links for mobile */
-    .social-links a {
-        font-size: 18px; /* Smaller icons for mobile */
-        margin-right: 6px; /* Reduced spacing */
-        padding: 8px; /* Smaller padding */
-    }
-
-    .social-links {
-        justify-content: space-evenly; /* Evenly space the icons */
-        padding-top: 0.5em; /* Reduced padding */
-    }
-
-    /* Make the .h2-touched animation even more subtle */
-    .h2-touched {
-        font-size: 70px; /* Smaller size */
-        transform: translateX(10px) scale(1.03); /* Smaller movement and scale */
-    }
+/* Layer: tight coloured halo just behind the photo */
+.image-3d-halo {
+    position: absolute;
+    inset: -2%;
+    border-radius: 50%;
+    background:
+        conic-gradient(from var(--halo-angle, 0deg),
+            var(--accent),
+            var(--accent-2),
+            var(--accent-3),
+            var(--accent));
+    filter: blur(22px);
+    transform: translateZ(-60px) scale(0.95);
+    opacity: 0.35;
+    animation: haloSpin 18s linear infinite;
 }
 
-/* For screens up to 600PX (very small devices like phones in portrait) */
-@media screen and (max-width: 600px) {
-    /* Scale down h2 size even further for very small screens */
-    #about h2 {
-        font-size: 40px; /* Much smaller font size */
-    }
-
-    /* Make images even smaller */
-    #about img {
-        height: 150px; /* Smaller image size */
-    }
-
-    /* Adjust paragraph text size */
-    #about p {
-        font-size: 14px; /* Reduce text size for small screens */
-        padding: 0 10px; /* Add some padding for readability */
-    }
-
-    /* Social links become very compact */
-    .social-links a {
-        font-size: 16px; /* Very small icons */
-        padding: 6px; /* Even smaller padding */
-        margin-right: 5px; /* Tighter spacing */
-    }
-
-    /* Adjust the layout of social links */
-    .social-links {
-        justify-content: space-between; /* Space out the icons more on small screens */
-        padding-top: 0.3em; /* Reduce padding further */
-    }
-
-    /* Make .h2-touched more subtle for very small screens */
-    .h2-touched {
-        font-size: 60px; /* Small size */
-        transform: translateX(5px) scale(1.02); /* Very subtle movement and scale */
-    }
+@keyframes haloSpin {
+    to { transform: translateZ(-60px) scale(0.95) rotate(360deg); }
 }
 
-/* For screens up to 480px (very small devices like phones in landscape) */
+/* Layer: the actual photo, on a rounded "card" plate */
+.image-3d-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    transform: translateZ(0);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.image-3d-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--bg-0);
+    display: block;
+}
+
+/* Subtle moving sheen on the photo */
+.image-3d-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.18) 50%,
+        transparent 65%
+    );
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    animation: shineSweep 6s ease-in-out infinite;
+}
+
+@keyframes shineSweep {
+    0%, 100% { transform: translateX(-30%); opacity: 0; }
+    50%      { transform: translateX(30%);  opacity: 1; }
+}
+
+/* Layer: orbiting dots + ring in front of the photo */
+.image-3d-orbit {
+    position: absolute;
+    inset: 0;
+    transform: translateZ(60px);
+    animation: orbitSpin 14s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes orbitSpin {
+    to { transform: translateZ(60px) rotate(360deg); }
+}
+
+.orbit-ring {
+    position: absolute;
+    inset: -3%;
+    border-radius: 50%;
+    border: 1px dashed rgba(34, 211, 238, 0.35);
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.12) inset;
+}
+
+.orbit-dot {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.orbit-dot.dot-1 {
+    top: -4px;
+    left: 50%;
+    margin-left: -4px;
+    color: var(--accent);
+    background: var(--accent);
+}
+
+.orbit-dot.dot-2 {
+    top: 50%;
+    right: -4px;
+    margin-top: -4px;
+    color: var(--accent-2);
+    background: var(--accent-2);
+}
+
+.orbit-dot.dot-3 {
+    bottom: -4px;
+    left: 30%;
+    width: 7px;
+    height: 7px;
+    color: var(--accent-3);
+    background: var(--accent-3);
+}
+
+/* Floating mono-tag in front, slightly off to the side */
+.image-3d-tag {
+    position: absolute;
+    bottom: 8%;
+    right: -12%;
+    padding: 6px 12px;
+    background: rgba(11, 18, 32, 0.7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    transform: translateZ(80px);
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ===========================================================
+   Responsive
+   =========================================================== */
+
+@media screen and (max-width: 900px) {
+    .about {
+        grid-template-columns: 1fr;
+        gap: var(--space-7);
+        text-align: center;
+    }
+
+    .about-text { align-items: center; order: 2; }
+    .about-bio { margin-left: auto; margin-right: auto; }
+    .about-actions, .social-links { justify-content: center; }
+
+    .image-3d { order: 1; max-width: 280px; }
+    .image-3d-tag { right: 50%; transform: translate(50%) translateZ(80px); bottom: -28px; }
+}
+
 @media screen and (max-width: 480px) {
-    #about{
-        flex-direction: column;
-        margin-top: 200px;
-    }
-
-    #about img {
-        height: 200px;
-    }
-
-    #about h2 {
-        font-size: 40px;
-    }
-
-    #about h2:hover {
-        font-size: 50PX;
-    }
-    
-    .h2-touched {
-        font-size: 50px; /* Very small size */
-        transform: translateX(3px) scale(1.01); /* Very subtle movement and scale */
-    }
-
-    #about p {
-        font-size: 16px;
-        font-weight: 400;
-    }
-
-    .social-links{
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        width: 100%;
-    }
-
-    .social-links a {
-        font-size: 18px;
-    }
-
-    @keyframes push {
-        0% {
-            transform: translateY(0px);
-        }
-    
-        50% {
-            transform: translateY(60px) scale(0.95);
-            -webkit-transform: translateY(60px) scale(0.95);
-            -moz-transform: translateY(60px) scale(0.95);
-            -ms-transform: translateY(60px) scale(0.95);
-            -o-transform: translateY(60px) scale(0.95);
-        }
-    
-        100% {
-            transform: translateY(40px) scale(1.075);
-            -webkit-transform: translateY(40px) scale(1.075);
-            -moz-transform: translateY(40px) scale(1.075);
-            -ms-transform: translateY(40px) scale(1.075);
-            -o-transform: translateY(40px) scale(1.075);
-        }
-    }
-
-    @keyframes bounce {
-        0% {
-            transform: scale(1);
-            transform: translate3d(0, 0, 0);
-        }
-    
-        25% {
-            transform: translate3d(0, 50px, 0);
-        }
-    
-        100% {
-            transform: scale(1);
-            transform: translate3d(0, 0, 0);
-        }
-    }
+    .image-3d { max-width: 220px; }
+    .about-bio { font-size: 0.9875rem; }
 }
 
-/* For screens up to 320px (very small devices like older phones) */
-@media screen and (max-width: 320px) {
-    
+/* ===========================================================
+   Scroll hint
+   =========================================================== */
+
+.scroll-hint {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 5;
+}
+
+.scroll-hint.is-hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+}
+
+.scroll-hint-icon {
+    font-size: 1.2rem;
+    color: var(--accent);
+    animation: scrollBounce 1.8s var(--ease) infinite;
+}
+
+@keyframes scrollBounce {
+    0%, 100% { transform: translateY(0);   opacity: 0.5; }
+    50%      { transform: translateY(8px); opacity: 1;   }
+}
+
+@media screen and (max-width: 768px) {
+    .scroll-hint { bottom: -20px; }
+}
+
+/* ===========================================================
+   Reduced motion
+   =========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .image-3d-stage, .image-3d-orbit, .image-3d-halo, .image-3d-shine,
+    .ghost, .scroll-hint-icon, .name-3d-stage {
+        animation: none !important;
+    }
+    .name-3d-stage { transform: none !important; }
 }

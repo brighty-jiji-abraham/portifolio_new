@@ -1,0 +1,74 @@
+.cursor-dot,
+.cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99999;
+    border-radius: 50%;
+    will-change: transform;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cursor-dot.is-visible,
+.cursor-ring.is-visible { opacity: 1; }
+
+.cursor-dot {
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
+    transition: opacity 0.2s ease, transform 0.05s linear, width 0.2s ease, height 0.2s ease, margin 0.2s ease;
+}
+
+.cursor-ring {
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    border: 1.5px solid var(--accent);
+    background-color: transparent;
+    transition: opacity 0.2s ease, width 0.25s var(--ease), height 0.25s var(--ease),
+                margin 0.25s var(--ease), background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.cursor-ring.is-hover {
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    background-color: rgba(34, 211, 238, 0.12);
+    border-color: rgba(34, 211, 238, 0.55);
+}
+
+.cursor-ring.is-active {
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    background-color: rgba(34, 211, 238, 0.25);
+}
+
+.cursor-dot.is-active {
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+}
+
+/* Hide native cursor only when our custom one is active */
+@media (hover: hover) and (pointer: fine) {
+    body.has-custom-cursor,
+    body.has-custom-cursor a,
+    body.has-custom-cursor button,
+    body.has-custom-cursor [data-cursor] {
+        cursor: none;
+    }
+    body.has-custom-cursor input,
+    body.has-custom-cursor textarea {
+        cursor: text;
+    }
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .cursor-dot,
+    .cursor-ring { display: none !important; }
+}

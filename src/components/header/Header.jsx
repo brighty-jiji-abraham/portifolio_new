@@ -1,125 +1,143 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import Typed from "typed.js";
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useActiveSection } from '../../hooks/useReveal';
 import './Header.css';
 
+const FULL_NAME = 'Brighty Jiji Abraham';
+const SECTIONS = [
+    { id: 'about', label: 'About' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'projects', label: 'Work' },
+    { id: 'experience', label: 'Journey' },
+    { id: 'contact', label: 'Contact' },
+];
+const SECTION_IDS = SECTIONS.map((s) => s.id);
+
 const Header = () => {
-  const typedElement = useRef(null);
-  const rightyTyped = useRef(null);
-  const ijiTyped = useRef(null);
-  const brahamTyped = useRef(null);
-  const [animationState, setAnimationState] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const active = useActiveSection(SECTION_IDS);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+    const navRef = useRef(null);
+    const linkRefs = useRef([]);
+    const [indicator, setIndicator] = useState({ left: 0, width: 0, ready: false });
 
-  useEffect(() => {
-    const welcomeOptions = {
-      strings: ["Welcome 👋 to ", ""], // Changed to empty string for proper backspacing
-      typeSpeed: 50,
-      backSpeed: 50,
-      backDelay: 700,
-      startDelay: 300,
-      loop: false,
-      showCursor: false,
-      onStringTyped: () => { // Changed to onComplete for reliable triggering
-        setTimeout(() => setAnimationState(2), 10);
-      },
+    const toggleMenu = () => setMenuOpen((open) => !open);
+    const closeMenu = () => setMenuOpen(false);
+
+    useEffect(() => {
+        const onScroll = () => {
+            setScrolled(window.scrollY > 8);
+            const max =
+                document.documentElement.scrollHeight - window.innerHeight;
+            setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
+    /* Position the sliding indicator behind the active nav link */
+    const activeIndex = SECTIONS.findIndex((s) => s.id === active);
+    useLayoutEffect(() => {
+        const update = () => {
+            const navEl = navRef.current;
+            const linkEl = linkRefs.current[activeIndex];
+            if (!navEl || !linkEl) return;
+            const navRect = navEl.getBoundingClientRect();
+            const linkRect = linkEl.getBoundingClientRect();
+            setIndicator({
+                left: linkRect.left - navRect.left,
+                width: linkRect.width,
+                ready: true,
+            });
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, [activeIndex]);
+
+    const handleNavClick = (e, id) => {
+        e.preventDefault();
+        closeMenu();
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', `#${id}`);
     };
 
-    const typedWelcome = new Typed(typedElement.current, welcomeOptions);
+    return (
+        <>
+            <div
+                className="scroll-progress"
+                style={{ transform: `scaleX(${progress})` }}
+                aria-hidden="true"
+            />
 
-    return () => {
-      typedWelcome.destroy();
-    };
-  }, []);
+            <header className={`app-header ${scrolled ? 'is-scrolled' : ''}`}>
+                <a
+                    href="#about"
+                    className="brand"
+                    aria-label="Home"
+                    onClick={(e) => handleNavClick(e, 'about')}
+                >
+                    <span className="brand-mark" aria-hidden="true">
+                        <span className="brand-dot"></span>
+                    </span>
+                    <span className="brand-name">
+                        {FULL_NAME.split('').map((ch, i) => (
+                            <span
+                                key={i}
+                                className="letter"
+                                style={{ animationDelay: `${i * 35}ms` }}
+                            >
+                                {ch === ' ' ? ' ' : ch}
+                            </span>
+                        ))}
+                    </span>
+                </a>
 
-  useEffect(() => {
-    const handleAnimations = async () => {
-      switch (animationState) {
-        case 2:
-          await new Promise(resolve => setTimeout(resolve, 100));
-          setAnimationState(3);
-          break;
-        
-        case 3:
-          await new Promise(resolve => setTimeout(resolve, 800));
-          setAnimationState(4);
-          
-          // Type "righty"
-          await new Promise(resolve => setTimeout(resolve, 1800));
-          rightyTyped.current = new Typed("#righty", {
-            strings: ["righty"],
-            typeSpeed: 40,
-            backSpeed: 30,
-            showCursor: false,
-          });
-          setAnimationState(5);
-
-          // Type "iji"
-          await new Promise(resolve => setTimeout(resolve, 100));
-          ijiTyped.current = new Typed("#iji", {
-            strings: ["iji"],
-            typeSpeed: 50,
-            backSpeed: 30,
-            showCursor: false,
-          });
-          setAnimationState(6);
-
-          // Type "braham"
-          await new Promise(resolve => setTimeout(resolve, 100));
-          brahamTyped.current = new Typed("#braham", {
-            strings: ["braham"],
-            typeSpeed: 50,
-            backSpeed: 30,
-            showCursor: false,
-          });
-          setAnimationState(7);
-          break;
-
-        default:
-          break;
-      }
-    };
-
-    handleAnimations();
-  }, [animationState]);
-
-  return (
-    <header>
-      <h2 className="focus-in-contract-bck">
-        <span ref={typedElement}></span>
-        <span className={`typed-content ${animationState >= 3 ? 'show' : ''}`}>
-          B
-          <span className={`typed-expanded ${animationState >= 5 ? 'expand' : ''}`}>
-            <span id="righty" className={`part part1 ${animationState >= 5 ? 'show' : ''}`}></span>
-          </span>
-          J
-          <span className={`typed-expanded ${animationState >= 6 ? 'expand' : ''}`}>
-            <span id="iji" className={`part part2 ${animationState >= 6 ? 'show' : ''}`}></span>
-          </span>
-          A
-          <span className={`typed-expanded ${animationState >= 7 ? 'expand' : ''}`}>
-            <span id="braham" className={`part part3 ${animationState >= 7 ? 'show' : ''}`}></span>
-          </span>
-        </span>
-      </h2>
-
-      <nav className={`nav ${menuOpen ? 'open' : ''}`}>
-        <div className="hamburger" onClick={toggleMenu}>
-          <div className="line"></div>
-          <div className="line"></div>
-          <div className="line"></div>
-        </div>
-        <div className={`nav-links focus-in-contract-bck ${menuOpen ? 'show' : ''}`}>
-          <Link to="/" className="nav-link">About Me</Link>
-          <Link to="/skills" className="nav-link">Skills</Link>
-          <Link to="/projects" className="nav-link">Projects</Link>
-          <Link to="/contact" className="nav-link">Contact</Link>
-        </div>
-      </nav>
-    </header>
-  );
+                <nav className="app-nav">
+                    <button
+                        type="button"
+                        className={`hamburger ${menuOpen ? 'is-open' : ''}`}
+                        aria-label="Toggle navigation menu"
+                        aria-expanded={menuOpen}
+                        aria-controls="primary-nav"
+                        onClick={toggleMenu}
+                    >
+                        <span className="line"></span>
+                        <span className="line"></span>
+                        <span className="line"></span>
+                    </button>
+                    <div
+                        id="primary-nav"
+                        className={`nav-links ${menuOpen ? 'show' : ''}`}
+                        ref={navRef}
+                    >
+                        <span
+                            className={`nav-indicator ${indicator.ready ? 'is-ready' : ''}`}
+                            style={{
+                                transform: `translateX(${indicator.left}px)`,
+                                width: `${indicator.width}px`,
+                            }}
+                            aria-hidden="true"
+                        />
+                        {SECTIONS.map(({ id, label }, i) => (
+                            <a
+                                key={id}
+                                ref={(el) => (linkRefs.current[i] = el)}
+                                href={`#${id}`}
+                                className={`nav-link ${active === id ? 'active' : ''}`}
+                                onClick={(e) => handleNavClick(e, id)}
+                            >
+                                {label}
+                            </a>
+                        ))}
+                    </div>
+                </nav>
+            </header>
+        </>
+    );
 };
 
 export default Header;
