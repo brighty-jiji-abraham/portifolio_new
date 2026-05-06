@@ -18,19 +18,26 @@ const socials = [
     { href: 'https://www.facebook.com/brighty.jiji.abraham/', label: 'Facebook', cls: 'facebook', Icon: FaFacebookF },
 ];
 
-/* 3D-tilting hero name single layer, gradient text, rotates with global mouse */
-const Name3D = () => (
-    <h1 className="name-3d" aria-label={`${NAME_LINE_1} ${NAME_LINE_2}`}>
-        <span className="name-3d-stage">
-            <span className="name-3d-layer front">
-                {NAME_LINE_1}
-                <br />
-                {NAME_LINE_2}
-                <span className="ghost">👻</span>
+/* 3D-tilting hero name extruded with text-shadow, rotates with cursor */
+const Name3D = () => {
+    const tilt = useTilt(12);
+    return (
+        <h1 className="name-3d" aria-label={`${NAME_LINE_1} ${NAME_LINE_2}`}>
+            <span
+                className="name-3d-stage"
+                onMouseMove={tilt.onMouseMove}
+                onMouseLeave={tilt.onMouseLeave}
+            >
+                <span className="name-3d-layer front">
+                    {NAME_LINE_1}
+                    <br />
+                    {NAME_LINE_2}
+                    <span className="ghost">👻</span>
+                </span>
             </span>
-        </span>
-    </h1>
-);
+        </h1>
+    );
+};
 
 /* 3D image card back glow → image plate → accent ring orbiting in front, all in
    a perspective stage that tilts to follow the cursor.  */

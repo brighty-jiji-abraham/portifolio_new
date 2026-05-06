@@ -9,7 +9,7 @@ export const projects = [
         featured: true,
         summary:
             'An end-to-end chatbot SaaS that lets any business plug in their own knowledge base, tools, and channels and have one AI speak to customers across WhatsApp, Telegram, Messenger, Instagram, and the web. Bots reason over per-tenant docs, can call into the tenant\'s own systems, and quietly hand off to a human agent when needed.',
-        stack: ['Flask', 'gevent', 'Socket.IO', 'Celery', 'Redis', 'MongoDB', 'FAISS', 'MCP', 'LangChain', 'OpenAI', 'Together', 'Ollama', 'Docker'],
+        stack: ['Python', 'Flask', 'gevent', 'Socket.IO', 'Celery', 'Redis', 'MongoDB', 'FAISS', 'MCP', 'LangChain', 'OpenAI', 'Together', 'Ollama', 'Docker'],
     },
     {
         title: 'AI WordPress Content Generator',
@@ -17,7 +17,7 @@ export const projects = [
         featured: true,
         summary:
             'A SaaS that turns documents or rough notes into ready-to-publish WordPress blog posts titles, HTML body, even custom CSS using fine-tuned OpenAI models. Each account has its own credit balance with token-precise billing through Stripe and Razorpay.',
-        stack: ['Flask', 'OpenAI', 'MySQL', 'SQLAlchemy', 'Celery', 'Stripe', 'Razorpay', 'spaCy', 'JWT', 'Docker', 'NGINX'],
+        stack: ['Python', 'Flask', 'OpenAI', 'MySQL', 'SQLAlchemy', 'Celery', 'Stripe', 'Razorpay', 'spaCy', 'JWT', 'Docker', 'NGINX'],
     },
     {
         title: 'Hybrid RAG Retriever',
@@ -25,7 +25,7 @@ export const projects = [
         featured: true,
         summary:
             'The retrieval brain inside the chatbot platform. Mixes classic keyword search with modern semantic search so the AI gets the right context every time, and falls back to the open web when nothing internal fits the question.',
-        stack: ['LangChain', 'FAISS', 'ChromaDB', 'BM25', 'rapidfuzz', 'tiktoken', 'BeautifulSoup', 'Ollama'],
+        stack: ['Python', 'LangChain', 'FAISS', 'ChromaDB', 'BM25', 'rapidfuzz', 'tiktoken', 'BeautifulSoup', 'Ollama'],
     },
     {
         title: 'MLM Product Chatbot (NL → SQL via MCP)',
@@ -41,7 +41,7 @@ export const projects = [
         featured: true,
         summary:
             'The single front door to a fleet of internal services (app1, app2, app3, …). Routes traffic, balances load, tunnels Socket.IO connections cleanly through a custom WebSocket proxy, and ships with an admin UI to manage backends in real time.',
-        stack: ['Flask', 'gevent', 'Socket.IO', 'Engine.IO', 'Redis', 'JWT', 'Vite', 'Node.js'],
+        stack: ['Python', 'Flask', 'gevent', 'Socket.IO', 'Engine.IO', 'Redis', 'JWT', 'Vite', 'Node.js', 'JavaScript'],
     },
     {
         title: 'Claude Code Automation',
@@ -57,7 +57,7 @@ export const projects = [
         featured: true,
         summary:
             'A dermatology AI trained on four major skin-image datasets over half a million images combined. Recognises conditions in real time from a webcam and ships with the full training pipeline plus a deployment-ready model.',
-        stack: ['PyTorch', 'EfficientNet-B4', 'ResNet-50', 'DenseNet-121', 'OpenCV', 'Albumentations', 'scikit-learn', 'Weights & Biases'],
+        stack: ['Python', 'PyTorch', 'EfficientNet-B4', 'ResNet-50', 'DenseNet-121', 'OpenCV', 'Albumentations', 'scikit-learn', 'Weights & Biases'],
     },
     {
         title: 'Visual Assistant for the Visually Impaired',
@@ -65,7 +65,7 @@ export const projects = [
         featured: true,
         summary:
             'A multimodal assistant that helps visually impaired users navigate the web it sees, listens, describes, and speaks back. Combines image recognition, image captioning, speech, and natural-language understanding into one experience.',
-        stack: ['PyTorch', 'CNN', 'LSTM', 'Transformers', 'Speech Recognition', 'TTS'],
+        stack: ['Python', 'PyTorch', 'CNN', 'LSTM', 'Transformers', 'Speech Recognition', 'TTS'],
     },
     {
         title: 'Speech Emotion Recognition',
@@ -73,7 +73,7 @@ export const projects = [
         featured: true,
         summary:
             'Picks up how someone is feeling from the way they speak not what they say. Useful for call-centre quality monitoring, mental-health apps, and assistive tech that can sense frustration before it\'s voiced.',
-        stack: ['TensorFlow', 'LSTM', 'librosa', 'Audio Features'],
+        stack: ['Python', 'TensorFlow', 'LSTM', 'librosa', 'Audio Features'],
     },
     {
         title: 'Online Voting System (EVM)',
@@ -102,7 +102,7 @@ export const projects = [
         tag: 'Computer Vision',
         summary:
             'A general-purpose image classifier built from the ground up. Used as the foundation for medical imaging, face detection, and object recognition experiments.',
-        stack: ['TensorFlow', 'CNN', 'NumPy'],
+        stack: ['Python', 'TensorFlow', 'CNN', 'NumPy'],
     },
     {
         title: 'Online Web Stores',
@@ -123,7 +123,21 @@ export const projects = [
         tag: 'NLP',
         summary:
             'Reads movie reviews and tells you whether the audience liked the film. Trained on real reviews to capture sarcasm, context, and tone.',
-        stack: ['TensorFlow', 'LSTM', 'NLP'],
+        stack: ['Python', 'TensorFlow', 'LSTM', 'NLP'],
+    },
+    {
+        title: 'Personal Portfolio (this site)',
+        tag: 'Web · 3D',
+        summary:
+            'A 3D-driven portfolio with a live three.js scene, custom cursor, and animated sections. CI-built and shipped to GitHub Pages on every push to main.',
+        stack: ['React', 'Vite', 'JavaScript', 'Three.js', 'react-three-fiber', 'GitHub Actions', 'GitHub Pages', 'GitHub'],
+    },
+    {
+        title: 'Client Websites',
+        tag: 'Web · Freelance',
+        summary:
+            'Production websites built for clients across landing pages, marketing sites, and full-stack apps. Server-rendered with Next.js, REST/Node APIs on Express, styled with Tailwind, and shipped end-to-end from design to deploy.',
+        stack: ['Next.js', 'React', 'Tailwind CSS', 'Node.js', 'Express', 'JavaScript', 'MongoDB', 'GitHub'],
     },
 ];
 

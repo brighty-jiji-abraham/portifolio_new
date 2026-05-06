@@ -25,17 +25,35 @@ const Contact = () => {
             return;
         }
 
-        const firstName = (data.first_name || '').trim() || 'someone';
+        const firstNameRaw = (data.first_name || '').trim();
+        const lastNameRaw = (data.last_name || '').trim();
+        const emailRaw = (data.email || '').trim();
+
+        // Block empty submissions: first name, last name, and a valid email are required
+        if (!firstNameRaw || !lastNameRaw || !emailRaw) {
+            setStatus('error');
+            setErrorMsg('Please fill in your name and email before sending.');
+            return;
+        }
+
+        const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw);
+        if (!emailLooksValid) {
+            setStatus('error');
+            setErrorMsg('That email address doesn’t look right. Please double-check it.');
+            return;
+        }
+
+        const firstName = firstNameRaw || 'someone';
 
         const payload = {
-            name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
-            email: data.email,
-            phone: data.phnumber,
-            message: data.message,
+            name: `${firstNameRaw} ${lastNameRaw}`.trim(),
+            email: emailRaw,
+            phone: (data.phnumber || '').trim(),
+            message: (data.message || '').trim(),
             _subject: `Portfolio contact from ${firstName}`,
             _template: 'table',
             _captcha: 'false',
-            _replyto: data.email,
+            _replyto: emailRaw,
         };
 
         setStatus('sending');

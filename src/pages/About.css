@@ -30,17 +30,28 @@
     display: inline-block;
     position: relative;
     transform-style: preserve-3d;
-    transform: rotateX(var(--my-tilt, 0deg)) rotateY(var(--mx-tilt, 0deg));
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
     transition: transform 0.25s var(--ease);
     will-change: transform;
 }
 
 .name-3d-layer.front {
     display: block;
-    background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-    -webkit-background-clip: text;
-            background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* Solid white face; no gradient, no clip-text, no transparency, so the
+       fill cannot be blue under any rendering path. */
+    color: #ffffff;
+    /* Neutral dark extrusion: progressively darker slate offsets give a
+       chunky letterpress depth, then a soft white halo lifts it off the bg. */
+    text-shadow:
+        1px 1px 0 #475569,
+        2px 2px 0 #334155,
+        3px 3px 0 #1e293b,
+        4px 4px 0 #0f172a,
+        5px 5px 0 #0b1120,
+        6px 6px 0 #070b16,
+        7px 7px 0 #04060c,
+        10px 10px 24px rgba(0, 0, 0, 0.55),
+        0 0 28px rgba(255, 255, 255, 0.08);
 }
 
 .ghost {

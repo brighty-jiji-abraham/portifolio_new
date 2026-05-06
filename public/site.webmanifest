@@ -1,0 +1,21 @@
+{
+  "name": "Brighty Jiji Abraham Portfolio",
+  "short_name": "BJA Portfolio",
+  "description": "Portfolio of Brighty Jiji Abraham — AI/ML engineer building machine-learning, web, and creative-tech projects.",
+  "id": "/portifolio_new/",
+  "start_url": "/portifolio_new/",
+  "scope": "/portifolio_new/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "en",
+  "theme_color": "#00f7ff",
+  "background_color": "#000000",
+  "icons": [
+    { "src": "/portifolio_new/favicon-16x16.png", "sizes": "16x16", "type": "image/png", "purpose": "any" },
+    { "src": "/portifolio_new/favicon-32x32.png", "sizes": "32x32", "type": "image/png", "purpose": "any" },
+    { "src": "/portifolio_new/favicon-48x48.png", "sizes": "48x48", "type": "image/png", "purpose": "any" },
+    { "src": "/portifolio_new/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/portifolio_new/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/portifolio_new/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

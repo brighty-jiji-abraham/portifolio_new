@@ -58,7 +58,7 @@ const groups = [
         items: [
             { Icon: FaPython, label: 'Python', color: '#ffce3e' },
             { Icon: FaJsSquare, label: 'JavaScript', color: '#f0db4f' },
-            { Icon: SiCplusplus, label: 'C/C++', color: '#5c6bc0' },
+            { Icon: SiCplusplus, label: 'C/C++', color: '#5c6bc0', matches: ['c/c++', 'c++', 'cpp'] },
             { Icon: FaJava, label: 'Java', color: '#e76f00' },
             { Icon: GrSwift, label: 'Swift', color: '#f05138' },
             { Icon: BiLogoPhp, label: 'PHP', color: '#777bb3' },
@@ -78,10 +78,10 @@ const groups = [
             { Icon: SiVite, label: 'Vite', color: '#646cff' },
             { Icon: SiTailwindcss, label: 'Tailwind CSS', color: '#38bdf8' },
             { Icon: SiExpress, label: 'Express', color: '#cbd5e1' },
-            { Icon: SiLaravel, label: 'Laravel', color: '#ff2d20' },
-            { Icon: SiFlask, label: 'Flask', color: '#cbd5e1' },
+            { Icon: SiLaravel, label: 'Laravel', color: '#ff2d20', matches: ['laravel', 'laravel api'] },
+            { Icon: SiFlask, label: 'Flask', color: '#cbd5e1', matches: ['flask', 'gevent'] },
             { Icon: SiFlutter, label: 'Flutter', color: '#02569b' },
-            { Icon: SiSocketdotio, label: 'Socket.IO', color: '#cbd5e1' },
+            { Icon: SiSocketdotio, label: 'Socket.IO', color: '#cbd5e1', matches: ['socket.io', 'engine.io'] },
             { Icon: SiCelery, label: 'Celery', color: '#a9cc54' },
         ],
     },
@@ -91,17 +91,17 @@ const groups = [
         Icon: FiCpu,
         accent: '#f472b6',
         items: [
-            { Icon: SiOpenai, label: 'OpenAI', color: '#10a37f' },
-            { Icon: SiClaude, label: 'Claude', color: '#cc785c' },
-            { Icon: SiAnthropic, label: 'Claude Code', color: '#cc785c' },
+            { Icon: SiOpenai, label: 'OpenAI', color: '#10a37f', matches: ['openai', 'openai gpt-4', 'gpt-4', 'gpt-3.5'] },
+            { Icon: SiClaude, label: 'Claude', color: '#cc785c', matches: ['claude', 'anthropic', 'anthropic api'] },
+            { Icon: SiAnthropic, label: 'Claude Code', color: '#cc785c', matches: ['claude code', 'sub-agents', 'slash commands'] },
             { Icon: SiTensorflow, label: 'TensorFlow', color: '#ff6f00' },
             { Icon: SiPytorch, label: 'PyTorch', color: '#ee4c2c' },
             { Icon: SiLangchain, label: 'LangChain', color: '#22d3ee' },
             { Icon: SiOpencv, label: 'OpenCV', color: '#5fa04e' },
             { Icon: SiScikitlearn, label: 'scikit-learn', color: '#f7931e' },
             { Icon: SiSpacy, label: 'spaCy', color: '#09a3d5' },
-            { Icon: GiMeshNetwork, label: 'Neural Networks', color: '#a78bfa' },
-            { Icon: FaMagic, label: 'Generative AI', color: '#f472b6' },
+            { Icon: GiMeshNetwork, label: 'Neural Networks', color: '#a78bfa', matches: ['neural networks', 'cnn', 'lstm', 'rnn', 'transformers'] },
+            { Icon: FaMagic, label: 'Generative AI', color: '#f472b6', matches: ['generative ai', 'genai', 'llm', 'rag', 'mcp', 'ollama', 'together', 'faiss', 'chromadb'] },
             { Icon: SiWeightsandbiases, label: 'Weights & Biases', color: '#FFBE00' },
         ],
     },
@@ -113,11 +113,11 @@ const groups = [
         items: [
             { Icon: SiMongodb, label: 'MongoDB', color: '#4faa41' },
             { Icon: SiMysql, label: 'MySQL', color: '#00758f' },
-            { Icon: FaDatabase, label: 'SQL', color: '#94a3b8' },
+            { Icon: FaDatabase, label: 'SQL', color: '#94a3b8', matches: ['sql', 'sqlalchemy'] },
             { Icon: SiRedis, label: 'Redis', color: '#dc382d' },
             { Icon: SiDocker, label: 'Docker', color: '#2496ed' },
             { Icon: SiNginx, label: 'NGINX', color: '#009639' },
-            { Icon: FaAws, label: 'AWS', color: '#ff9900' },
+            { Icon: FaAws, label: 'AWS', color: '#ff9900', matches: ['aws', 'aws bedrock', 's3', 'lambda', 'iam', 'ec2', 'rds'] },
             { Icon: SiGooglecloud, label: 'Google Cloud', color: '#4285f4' },
             { Icon: SiGit, label: 'Git', color: '#f05033' },
             { Icon: SiGithub, label: 'GitHub', color: '#cbd5e1' },
@@ -148,8 +148,8 @@ const Skills = () => {
     const [hoveredSkill, setHoveredSkill] = useState(null);
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
-    const handleMouseEnter = (e, label) => {
-        setHoveredSkill(label);
+    const handleMouseEnter = (e, skill) => {
+        setHoveredSkill(skill);
         setTooltipPos({ x: e.clientX, y: e.clientY });
     };
 
@@ -163,7 +163,9 @@ const Skills = () => {
 
     const relevantProjects = hoveredSkill
         ? projects.filter((p) =>
-              p.stack.some((s) => s.toLowerCase() === hoveredSkill.toLowerCase())
+              p.stack.some((s) =>
+                  hoveredSkill.matches.some((m) => s.toLowerCase() === m.toLowerCase())
+              )
           )
         : [];
 
@@ -204,19 +206,22 @@ const Skills = () => {
                             </header>
 
                                 <ul className="skill-chips">
-                                    {group.items.map(({ Icon, label, color }) => (
-                                        <li
-                                            key={label}
-                                            className="skill-chip"
-                                            style={{ '--chip-color': color }}
-                                            onMouseEnter={(e) => handleMouseEnter(e, label)}
-                                            onMouseMove={handleMouseMove}
-                                            onMouseLeave={handleMouseLeave}
-                                        >
-                                            <Icon className="chip-icon" />
-                                            <span>{label}</span>
-                                        </li>
-                                    ))}
+                                    {group.items.map(({ Icon, label, color, matches }) => {
+                                        const skill = { label, matches: matches || [label] };
+                                        return (
+                                            <li
+                                                key={label}
+                                                className="skill-chip"
+                                                style={{ '--chip-color': color }}
+                                                onMouseEnter={(e) => handleMouseEnter(e, skill)}
+                                                onMouseMove={handleMouseMove}
+                                                onMouseLeave={handleMouseLeave}
+                                            >
+                                                <Icon className="chip-icon" />
+                                                <span>{label}</span>
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                         </article>
                     );
