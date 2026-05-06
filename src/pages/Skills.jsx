@@ -42,6 +42,12 @@ import {
     SiGithub,
     SiUnity,
     SiWeightsandbiases,
+    SiCloudflare,
+    SiPrisma,
+    SiFigma,
+    SiWordpress,
+    SiSwagger,
+    SiPostman,
 } from 'react-icons/si';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -79,10 +85,13 @@ const groups = [
             { Icon: SiTailwindcss, label: 'Tailwind CSS', color: '#38bdf8' },
             { Icon: SiExpress, label: 'Express', color: '#cbd5e1' },
             { Icon: SiLaravel, label: 'Laravel', color: '#ff2d20', matches: ['laravel', 'laravel api'] },
+            { Icon: SiWordpress, label: 'WordPress', color: '#21759b', matches: ['wordpress', 'wp'] },
             { Icon: SiFlask, label: 'Flask', color: '#cbd5e1', matches: ['flask', 'gevent'] },
             { Icon: SiFlutter, label: 'Flutter', color: '#02569b' },
             { Icon: SiSocketdotio, label: 'Socket.IO', color: '#cbd5e1', matches: ['socket.io', 'engine.io'] },
             { Icon: SiCelery, label: 'Celery', color: '#a9cc54' },
+            { Icon: SiSwagger, label: 'Swagger', color: '#85ea2d', matches: ['swagger', 'openapi'] },
+            { Icon: SiPostman, label: 'Postman', color: '#ff6c37' },
         ],
     },
     {
@@ -113,12 +122,14 @@ const groups = [
         items: [
             { Icon: SiMongodb, label: 'MongoDB', color: '#4faa41' },
             { Icon: SiMysql, label: 'MySQL', color: '#00758f' },
+            { Icon: SiPrisma, label: 'Prisma', color: '#cbd5e1', matches: ['prisma', 'prisma db', 'prisma orm'] },
             { Icon: FaDatabase, label: 'SQL', color: '#94a3b8', matches: ['sql', 'sqlalchemy'] },
             { Icon: SiRedis, label: 'Redis', color: '#dc382d' },
             { Icon: SiDocker, label: 'Docker', color: '#2496ed' },
             { Icon: SiNginx, label: 'NGINX', color: '#009639' },
             { Icon: FaAws, label: 'AWS', color: '#ff9900', matches: ['aws', 'aws bedrock', 's3', 'lambda', 'iam', 'ec2', 'rds'] },
             { Icon: SiGooglecloud, label: 'Google Cloud', color: '#4285f4' },
+            { Icon: SiCloudflare, label: 'Cloudflare', color: '#f38020', matches: ['cloudflare', 'cloudflare workers', 'r2', 'kv'] },
             { Icon: SiGit, label: 'Git', color: '#f05033' },
             { Icon: SiGithub, label: 'GitHub', color: '#cbd5e1' },
         ],
@@ -129,6 +140,7 @@ const groups = [
         Icon: FiAperture,
         accent: '#f59e0b',
         items: [
+            { Icon: SiFigma, label: 'Figma', color: '#f24e1e' },
             { Icon: DiPhotoshop, label: 'Photoshop', color: '#2da8fa' },
             { Icon: FaMagic, label: 'After Effects', color: '#9a98fc' },
             { Icon: FaFilm, label: 'Premiere Pro', color: '#9c9bfb' },
