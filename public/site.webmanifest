@@ -8,8 +8,8 @@
   "display": "standalone",
   "orientation": "portrait",
   "lang": "en",
-  "theme_color": "#00f7ff",
-  "background_color": "#000000",
+  "theme_color": "#C08552",
+  "background_color": "#04060c",
   "icons": [
     { "src": "/portifolio_new/favicon-16x16.png", "sizes": "16x16", "type": "image/png", "purpose": "any" },
     { "src": "/portifolio_new/favicon-32x32.png", "sizes": "32x32", "type": "image/png", "purpose": "any" },

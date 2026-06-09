@@ -367,12 +367,42 @@
 
 @media screen and (max-width: 768px) {
     .app-header {
-        top: 12px;
-        padding: 8px 12px 8px 14px;
+        top: 14px;
+        padding: 8px 16px;
+        width: calc(100vw - 24px);
     }
 
     .app-header.is-scrolled {
-        padding: 6px 10px 6px 12px;
+        padding: 8px 16px;
+    }
+
+    .brand {
+        gap: 10px;
+        padding: 4px;
+    }
+
+    .brand-mark {
+        width: 24px;
+        height: 24px;
+    }
+
+    .brand-name {
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    .theme-toggle, .hamburger {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .hamburger .line {
+        width: 20px;
+    }
+
+    .app-nav {
+        gap: 10px;
     }
 
     .hamburger { display: block; }
@@ -387,7 +417,7 @@
         align-items: stretch;
         gap: 0;
         min-width: 240px;
-        padding: 10px;
+        padding: 12px;
         background: transparent;
         border: none;
         box-shadow: none;
@@ -428,9 +458,9 @@
     }
 
     .nav-link {
-        padding: 14px 18px;
-        font-size: 0.9rem;
-        min-height: 44px;
+        padding: 16px 20px;
+        font-size: 1rem;
+        min-height: 48px;
         display: flex;
         align-items: center;
         border-bottom: 1px solid rgba(192, 133, 82, 0.1);
@@ -445,27 +475,33 @@
         background: rgba(192, 133, 82, 0.1);
         text-shadow: 0 0 10px rgba(192, 133, 82, 0.8);
         border-left: 3px solid var(--accent);
-        padding-left: 11px; /* Adjust for border */
+        padding-left: 17px; /* Adjust for border */
     }
 }
 
 @media screen and (max-width: 480px) {
-    .brand-name { 
-        font-size: 0.75rem;
-        white-space: normal;
-        line-height: 1.2;
+    .app-header {
+        padding: 8px 12px;
+        width: calc(100vw - 16px);
     }
     .brand {
         gap: 8px;
     }
+    .brand-mark {
+        width: 20px;
+        height: 20px;
+    }
+    .brand-name { 
+        font-size: 0.9rem;
+    }
     .theme-toggle, .hamburger {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
-    .app-nav {
-        gap: 6px;
+    .hamburger .line {
+        width: 18px;
     }
-    .app-header {
-        padding: 6px 8px;
-    }
+    .hamburger .line:nth-child(1) { transform: translate(-50%, -5px); }
+    .hamburger .line:nth-child(3) { transform: translate(-50%, 5px); }
 }
