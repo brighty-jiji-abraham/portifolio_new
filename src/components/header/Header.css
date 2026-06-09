@@ -361,11 +361,56 @@
 .hamburger.is-open .line:nth-child(2) { opacity: 0; }
 .hamburger.is-open .line:nth-child(3) { transform: translate(-50%, -50%) rotate(-45deg); }
 
+.desktop-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobile-menu-footer {
+    display: none;
+}
+
 /* ===========================================================
    Mobile
    =========================================================== */
 
 @media screen and (max-width: 768px) {
+    .desktop-controls {
+        display: none;
+    }
+
+    .mobile-menu-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+        margin-top: 12px;
+        border-top: 1px solid rgba(192, 133, 82, 0.2);
+    }
+
+    .mobile-controls {
+        display: flex;
+        gap: 12px;
+    }
+
+    .music-copyright {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .music-copyright strong {
+        color: var(--accent);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 2px;
+    }
+
     .app-header {
         top: 14px;
         padding: 8px 16px;
@@ -416,7 +461,7 @@
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        min-width: 240px;
+        min-width: 260px;
         padding: 12px;
         background: transparent;
         border: none;

@@ -216,12 +216,12 @@ input, textarea, select { font: inherit; }
 /* ---------- Reveal on scroll & Cinematic Animations ---------- */
 
 .chapter {
-  perspective: 1000px;
+  /* removed perspective to prevent backdrop-filter failure */
 }
 
 .chapter > .chapter-inner {
   opacity: 0;
-  transform: translateY(60px) rotateX(4deg) scale(0.97);
+  transform: translateY(60px) scale(0.97);
   transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
               transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
               filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -231,8 +231,9 @@ input, textarea, select { font: inherit; }
 
 .chapter.is-visible > .chapter-inner {
   opacity: 1;
-  transform: translateY(0) rotateX(0deg) scale(1);
-  filter: blur(0px);
+  transform: none;
+  filter: none;
+  will-change: auto;
 }
 
 /* Cinematic element staggers within chapters */
@@ -270,15 +271,15 @@ input, textarea, select { font: inherit; }
   display: inline-block;
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--bg-0);
   padding: 4px 10px;
-  background: rgba(192, 133, 82, 0.10);
-  border: 1px solid rgba(192, 133, 82, 0.30);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   margin-bottom: var(--space-3);
-  text-shadow: 0 0 8px rgba(192, 133, 82, 0.5);
+  box-shadow: 0 0 12px var(--accent-glow);
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 

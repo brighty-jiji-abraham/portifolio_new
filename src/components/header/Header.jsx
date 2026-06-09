@@ -120,23 +120,25 @@ const Header = () => {
                 </a>
 
                 <nav className="app-nav">
-                    <button
-                        type="button"
-                        className="theme-toggle"
-                        onClick={toggleMute}
-                        aria-label={muted ? "Unmute soundscape" : "Mute soundscape"}
-                    >
-                        {muted ? <FaVolumeMute /> : <FaVolumeUp />}
-                    </button>
+                    <div className="desktop-controls">
+                        <button
+                            type="button"
+                            className="theme-toggle"
+                            onClick={toggleMute}
+                            aria-label={muted ? "Unmute soundscape" : "Mute soundscape"}
+                        >
+                            {muted ? <FaVolumeMute /> : <FaVolumeUp />}
+                        </button>
 
-                    <button
-                        type="button"
-                        className="theme-toggle"
-                        onClick={toggleTheme}
-                        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-                    >
-                        {theme === 'light' ? <FaMoon /> : <FaSun />}
-                    </button>
+                        <button
+                            type="button"
+                            className="theme-toggle"
+                            onClick={toggleTheme}
+                            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                        >
+                            {theme === 'light' ? <FaMoon /> : <FaSun />}
+                        </button>
+                    </div>
                     
                     <button
                         type="button"
@@ -150,6 +152,7 @@ const Header = () => {
                         <span className="line"></span>
                         <span className="line"></span>
                     </button>
+                    
                     <div
                         id="primary-nav"
                         className={`nav-links ${menuOpen ? 'show' : ''}`}
@@ -174,6 +177,32 @@ const Header = () => {
                                 {label}
                             </a>
                         ))}
+
+                        <div className="mobile-menu-footer">
+                            <div className="mobile-controls">
+                                <button
+                                    type="button"
+                                    className="theme-toggle"
+                                    onClick={toggleMute}
+                                    aria-label={muted ? "Unmute soundscape" : "Mute soundscape"}
+                                >
+                                    {muted ? <FaVolumeMute /> : <FaVolumeUp />}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="theme-toggle"
+                                    onClick={toggleTheme}
+                                    aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                                >
+                                    {theme === 'light' ? <FaMoon /> : <FaSun />}
+                                </button>
+                            </div>
+                            <div className="music-copyright">
+                                <strong>Now Playing</strong>
+                                <span>Deep Space Cinematic Soundscape</span>
+                                <span>© 2026 Cosmic Audio / CC-BY</span>
+                            </div>
+                        </div>
                     </div>
                 </nav>
             </header>
