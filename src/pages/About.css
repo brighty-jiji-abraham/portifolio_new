@@ -94,6 +94,7 @@
     color: var(--text-soft);
     margin: 0 0 var(--space-5);
     max-width: 56ch;
+    text-shadow: 0 2px 8px var(--bg-0), 0 0 16px var(--bg-0);
 }
 
 .about-stats {
@@ -124,6 +125,7 @@
     font-weight: 800;
     color: var(--accent);
     letter-spacing: -0.01em;
+    text-shadow: 0 2px 8px var(--bg-0), 0 0 16px var(--bg-0);
 }
 
 .about-stats span {
@@ -132,6 +134,7 @@
     letter-spacing: 0.12em;
     color: var(--text-muted);
     margin-top: 2px;
+    text-shadow: 0 2px 8px var(--bg-0), 0 0 16px var(--bg-0);
 }
 
 @media screen and (max-width: 900px) {
@@ -280,7 +283,7 @@
 /* Layer: tight coloured halo just behind the photo */
 .image-3d-halo {
     position: absolute;
-    inset: -2%;
+    inset: -4%;
     border-radius: 50%;
     background:
         conic-gradient(from var(--halo-angle, 0deg),
@@ -288,14 +291,14 @@
             var(--accent-2),
             var(--accent-3),
             var(--accent));
-    filter: blur(22px);
-    transform: translateZ(-60px) scale(0.95);
-    opacity: 0.35;
+    filter: blur(24px);
+    transform: translateZ(-40px) scale(1.05);
+    opacity: 0.55;
     animation: haloSpin 18s linear infinite;
 }
 
 @keyframes haloSpin {
-    to { transform: translateZ(-60px) scale(0.95) rotate(360deg); }
+    to { transform: translateZ(-40px) scale(1.05) rotate(360deg); }
 }
 
 /* Layer: the actual photo, on a rounded "card" plate */
@@ -303,12 +306,13 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    padding: 6px;
+    padding: 7px;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     box-shadow:
-        0 30px 60px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-    transform: translateZ(0);
+        0 35px 70px rgba(0, 0, 0, 0.4),
+        0 0 30px var(--accent-glow),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    transform: translateZ(15px);
     overflow: hidden;
     isolation: isolate;
 }
@@ -318,7 +322,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    border: 4px solid var(--bg-0);
+    border: 5px solid var(--bg-0);
     display: block;
 }
 

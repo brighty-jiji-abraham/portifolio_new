@@ -17,6 +17,12 @@ import {
     SiRedis,
     SiNextdotjs,
     SiTypescript,
+    SiKubernetes,
+    SiPostgresql,
+    SiGraphql,
+    SiVuedotjs,
+    SiTailwindcss,
+    SiLinux,
 } from 'react-icons/si';
 import './Scene3D.css';
 
@@ -54,22 +60,16 @@ const useScrollProgressRef = () => {
     return ref;
 };
 
-/* ---------- Digital Dot Earth ---------- */
-
-/* ---------- Procedural Cracked Magma Planet ---------- */
-
-const MagmaPlanet = ({ isLight, meshRef }) => {
+/* ---------- Procedural Lava Layer ---------- */
+const LavaLayer = () => {
     const materialRef = useRef();
 
-    // Procedural 3D Simplex noise for cracks
     const vertexShader = `
         varying vec2 vUv;
         varying float vNoise;
-        varying vec3 vNormal;
         uniform float uTime;
 
         // Simplex 3D Noise 
-        // by Ian McEwan, Ashima Arts
         vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
         vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
 
@@ -121,65 +121,48 @@ const MagmaPlanet = ({ isLight, meshRef }) => {
 
         void main() {
             vUv = uv;
-            vNormal = normal;
 
-            // Generate cracks using absolute noise (ridges)
             float n1 = abs(snoise(position * 2.0 + uTime * 0.05));
             float n2 = abs(snoise(position * 4.0 - uTime * 0.03));
             
-            // The noise value (close to 0 = deep crack, large value = crust)
             vNoise = smoothstep(0.0, 0.4, n1 * 0.6 + n2 * 0.4);
             
-            // Displace vertices inwards for cracks
-            float displacement = mix(-0.08, 0.0, vNoise);
-            vec3 newPosition = position + normal * displacement;
+            // Push lava outwards based on crack depth to make it 3D
+            float burst = smoothstep(0.12, 0.0, vNoise);
+            float displacement = mix(0.005, 0.035, burst);
+            
+            vec3 newPosition = position + normal * displacement; 
             
             gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
         }
     `;
 
     const fragmentShader = `
-        uniform vec3 uCrustColor;
         uniform vec3 uMagmaCore;
         uniform vec3 uMagmaEdge;
         uniform float uTime;
         
         varying vec2 vUv;
         varying float vNoise;
-        varying vec3 vNormal;
 
         void main() {
-            // Light vector for basic shading on the crust
-            vec3 lightDir = normalize(vec3(1.0, 1.0, 0.5));
-            float diff = max(dot(vNormal, lightDir), 0.0);
-            
-            // The magma color (hotter in the deep center of the crack)
             vec3 magmaColor = mix(uMagmaCore, uMagmaEdge, vNoise * 4.0);
             
-            // The crust color
-            vec3 shadedCrust = uCrustColor * (0.4 + 0.6 * diff);
-            
-            // Mix between magma and crust based on the noise threshold
-            // Add some pulsing glow to the magma
             float pulse = sin(uTime * 2.0) * 0.5 + 0.5;
             float magmaIntensity = smoothstep(0.3, 0.0, vNoise) * (0.8 + 0.2 * pulse);
             
-            vec3 finalColor = mix(magmaColor * magmaIntensity, shadedCrust, smoothstep(0.1, 0.2, vNoise));
-
-            gl_FragColor = vec4(finalColor, 1.0);
+            // Crust is transparent (alpha=0), Cracks are glowing (alpha=1)
+            float alpha = smoothstep(0.12, 0.0, vNoise);
+            
+            gl_FragColor = vec4(magmaColor * magmaIntensity, alpha * 0.95);
         }
     `;
 
-    const uniforms = useMemo(() => {
-        // Base crust color depends on light mode (pale blue/gray vs dark)
-        const crustColor = isLight ? new THREE.Color('#d0d8e0') : new THREE.Color('#1a2636');
-        return {
-            uCrustColor: { value: crustColor },
-            uMagmaCore: { value: new THREE.Color('#ffdd44') }, // Yellow hot core
-            uMagmaEdge: { value: new THREE.Color('#ff2200') }, // Fiery orange edge
-            uTime: { value: 0 }
-        };
-    }, [isLight]);
+    const uniforms = useMemo(() => ({
+        uMagmaCore: { value: new THREE.Color('#ffdd44') },
+        uMagmaEdge: { value: new THREE.Color('#ff2200') },
+        uTime: { value: 0 }
+    }), []);
 
     useFrame((state) => {
         if (materialRef.current) {
@@ -188,16 +171,82 @@ const MagmaPlanet = ({ isLight, meshRef }) => {
     });
 
     return (
-        <mesh ref={meshRef}>
-            {/* High poly count needed for vertex displacement */}
+        <mesh>
             <sphereGeometry args={[1.56, 128, 128]} />
             <shaderMaterial
                 ref={materialRef}
                 vertexShader={vertexShader}
                 fragmentShader={fragmentShader}
                 uniforms={uniforms}
+                transparent={true}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
             />
         </mesh>
+    );
+};
+
+/* ---------- Photorealistic Earth ---------- */
+
+const EarthGlobe = ({ isLight, meshRef }) => {
+    const basePath = import.meta.env.BASE_URL;
+    const [colorMap, normalMap, specularMap, cloudsMap] = useTexture([
+        `${basePath}textures/earth_color.jpg`,
+        `${basePath}textures/earth_normal.jpg`,
+        `${basePath}textures/earth_specular.jpg`,
+        `${basePath}textures/earth_clouds.png`
+    ]);
+
+    useEffect(() => {
+        if (colorMap) {
+            [colorMap, normalMap, specularMap, cloudsMap].forEach(t => {
+                t.colorSpace = THREE.SRGBColorSpace;
+                t.anisotropy = 16;
+            });
+            // Fix normal map intensity if needed
+            normalMap.colorSpace = THREE.LinearSRGBColorSpace;
+        }
+    }, [colorMap, normalMap, specularMap, cloudsMap]);
+
+    const cloudsRef = useRef();
+    useFrame((state, delta) => {
+        if (cloudsRef.current) {
+            cloudsRef.current.rotation.y += delta * 0.04;
+        }
+    });
+
+    return (
+        <group>
+            {/* The Solid Earth */}
+            <mesh ref={meshRef}>
+                <sphereGeometry args={[1.56, 64, 64]} />
+                <meshPhongMaterial
+                    map={colorMap}
+                    normalMap={normalMap}
+                    specularMap={specularMap}
+                    specular={new THREE.Color('white')}
+                    shininess={isLight ? 25 : 15}
+                />
+            </mesh>
+
+            {/* Glowing Lava Cracks Overlaid on Earth */}
+            <LavaLayer />
+
+            {/* The Cloud Layer with 3D Displacement */}
+            <mesh ref={cloudsRef}>
+                <sphereGeometry args={[1.57, 128, 128]} />
+                <meshPhongMaterial
+                    map={cloudsMap}
+                    transparent={true}
+                    opacity={isLight ? 0.4 : 0.25}
+                    blending={THREE.AdditiveBlending}
+                    side={THREE.DoubleSide}
+                    depthWrite={false}
+                    displacementMap={cloudsMap}
+                    displacementScale={0.03}
+                />
+            </mesh>
+        </group>
     );
 };
 
@@ -222,8 +271,9 @@ function DigitalEarth({ scrollRef, mouseRef, meshRef, isLight }) {
 
     return (
         <group ref={groupRef}>
-            {/* The animated Cracked Magma Planet */}
-            <MagmaPlanet isLight={isLight} meshRef={meshRef} />
+            <Suspense fallback={null}>
+                <EarthGlobe isLight={isLight} meshRef={meshRef} />
+            </Suspense>
         </group>
     );
 }
@@ -231,20 +281,26 @@ function DigitalEarth({ scrollRef, mouseRef, meshRef, isLight }) {
 /* ---------- Orbiting Tech Satellites ---------- */
 
 const TECH_ICONS = [
-    { Icon: FaPython,     color: '#ffce3e' },
-    { Icon: SiTensorflow, color: '#ff6f00' },
-    { Icon: SiPytorch,    color: '#ee4c2c' },
-    { Icon: FaReact,      color: '#61dafb', lightColor: '#00d8ff' },
-    { Icon: SiDocker,     color: '#2496ed' },
-    { Icon: SiOpenai,     color: '#10a37f' },
-    { Icon: SiAnthropic,  color: '#cc785c' },
-    { Icon: SiLangchain,  color: '#00f7ff', lightColor: '#0099aa' },
-    { Icon: SiMongodb,    color: '#4faa41' },
-    { Icon: SiRedis,      color: '#dc382d' },
-    { Icon: FaNodeJs,     color: '#5fa04e' },
-    { Icon: SiNextdotjs,  color: '#ffffff', lightColor: '#000000' },
-    { Icon: FaAws,        color: '#ff9900' },
-    { Icon: SiTypescript, color: '#3178c6' },
+    { Icon: FaPython,       color: '#ffce3e' },
+    { Icon: SiTensorflow,   color: '#ff6f00' },
+    { Icon: SiPytorch,      color: '#ee4c2c' },
+    { Icon: FaReact,        color: '#61dafb', lightColor: '#00d8ff' },
+    { Icon: SiDocker,       color: '#2496ed' },
+    { Icon: SiKubernetes,   color: '#326ce5' },
+    { Icon: SiOpenai,       color: '#10a37f' },
+    { Icon: SiAnthropic,    color: '#cc785c' },
+    { Icon: SiLangchain,    color: '#00f7ff', lightColor: '#0099aa' },
+    { Icon: SiMongodb,      color: '#4faa41' },
+    { Icon: SiPostgresql,   color: '#336791' },
+    { Icon: SiRedis,        color: '#dc382d' },
+    { Icon: SiGraphql,      color: '#e10098' },
+    { Icon: FaNodeJs,       color: '#5fa04e' },
+    { Icon: SiNextdotjs,    color: '#ffffff', lightColor: '#000000' },
+    { Icon: SiVuedotjs,     color: '#4fc08d' },
+    { Icon: SiTailwindcss,  color: '#38bdf8' },
+    { Icon: FaAws,          color: '#ff9900' },
+    { Icon: SiLinux,        color: '#fcc624' },
+    { Icon: SiTypescript,   color: '#3178c6' },
 ];
 
 const useSvgTexture = (Icon, color) => {
@@ -495,9 +551,14 @@ const Scene3D = ({ mouseRef }) => {
                     camera={{ position: [0, 0, 9.5], fov: 50 }}
                     onCreated={handleCreated}
                 >
-                    <ambientLight intensity={isLight ? 0.6 : 0.2} />
-                    <pointLight position={[6, 6, 6]} intensity={isLight ? 0.8 : 1.5} color={isLight ? '#C08552' : '#22d3ee'} />
-                    <pointLight position={[-6, -4, -3]} intensity={0.5} color={isLight ? '#8C5A3C' : '#87CEFA'} />
+                    <ambientLight intensity={isLight ? 0.3 : 0.15} />
+                    {/* The Sun! Strong directional light to show off terrain */}
+                    <directionalLight 
+                        position={[10, 8, 8]} 
+                        intensity={isLight ? 2.5 : 1.8} 
+                        color={isLight ? '#ffffff' : '#e0f7fa'} 
+                    />
+                    <pointLight position={[-6, -4, -3]} intensity={isLight ? 0.4 : 0.8} color={isLight ? '#8C5A3C' : '#87CEFA'} />
 
                     <CameraRig scrollRef={scrollRef} mouseRef={mouseRef} />
                     <CoreSystem scrollRef={scrollRef} mouseRef={mouseRef} isLight={isLight} />
