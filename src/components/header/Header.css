@@ -449,6 +449,23 @@
     }
 }
 
-@media screen and (max-width: 380px) {
-    .brand-name { font-size: 0.85rem; }
+@media screen and (max-width: 480px) {
+    .brand-name { 
+        font-size: 0.75rem;
+        white-space: normal;
+        line-height: 1.2;
+    }
+    .brand {
+        gap: 8px;
+    }
+    .theme-toggle, .hamburger {
+        width: 32px;
+        height: 32px;
+    }
+    .app-nav {
+        gap: 6px;
+    }
+    .app-header {
+        padding: 6px 8px;
+    }
 }
