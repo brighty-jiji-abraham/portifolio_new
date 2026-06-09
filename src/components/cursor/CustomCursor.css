@@ -37,15 +37,15 @@
     width: 56px;
     height: 56px;
     margin: -28px 0 0 -28px;
-    background-color: rgba(34, 211, 238, 0.12);
-    border-color: rgba(34, 211, 238, 0.55);
+    background-color: rgba(192, 133, 82, 0.12);
+    border-color: rgba(192, 133, 82, 0.55);
 }
 
 .cursor-ring.is-active {
     width: 24px;
     height: 24px;
     margin: -12px 0 0 -12px;
-    background-color: rgba(34, 211, 238, 0.25);
+    background-color: rgba(192, 133, 82, 0.25);
 }
 
 .cursor-dot.is-active {

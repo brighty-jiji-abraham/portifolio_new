@@ -1,4 +1,5 @@
 import { useSpotlight } from '../hooks/useInteractive';
+import { playTick } from '../hooks/useSoundscape';
 import { FaStar } from 'react-icons/fa';
 import './Projects.css';
 
@@ -145,7 +146,7 @@ const Projects = () => {
     const spotlight = useSpotlight();
     return (
         <div className="projects">
-            <div className="projects-head">
+            <div className="projects-head cinematic-reveal delay-1">
                 <span className="section-eyebrow">Projects</span>
                 <h2 className="section-title">Things I&apos;ve built</h2>
                 <p className="section-lead">
@@ -156,8 +157,9 @@ const Projects = () => {
                 {projects.map((p, i) => (
                     <li
                         key={p.title}
-                        className={`project-card ${p.featured ? 'is-featured' : ''}`}
-                        style={{ animationDelay: `${i * 60}ms` }}
+                        className={`project-card cinematic-reveal ${p.featured ? 'is-featured' : ''}`}
+                        style={{ animationDelay: `${i * 60 + 300}ms` }}
+                        onMouseEnter={playTick}
                         onMouseMove={spotlight.onMouseMove}
                     >
                         {p.featured && (

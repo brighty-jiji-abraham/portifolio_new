@@ -1,5 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useActiveSection } from '../../hooks/useReveal';
+import { FaMoon, FaSun, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
+import { useSoundscape } from '../../hooks/useSoundscape';
 import './Header.css';
 
 const FULL_NAME = 'Brighty Jiji Abraham';
@@ -16,6 +18,8 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [theme, setTheme] = useState('dark');
+    const { muted, toggleMute } = useSoundscape();
     const active = useActiveSection(SECTION_IDS);
 
     const navRef = useRef(null);
@@ -24,6 +28,25 @@ const Header = () => {
 
     const toggleMenu = () => setMenuOpen((open) => !open);
     const closeMenu = () => setMenuOpen(false);
+
+    // Initialize theme from local storage or OS preference
+    useEffect(() => {
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme) {
+            setTheme(storedTheme);
+            document.documentElement.setAttribute('data-theme', storedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            setTheme('light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    }, []);
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    };
 
     useEffect(() => {
         const onScroll = () => {
@@ -97,6 +120,24 @@ const Header = () => {
                 </a>
 
                 <nav className="app-nav">
+                    <button
+                        type="button"
+                        className="theme-toggle"
+                        onClick={toggleMute}
+                        aria-label={muted ? "Unmute soundscape" : "Mute soundscape"}
+                    >
+                        {muted ? <FaVolumeMute /> : <FaVolumeUp />}
+                    </button>
+
+                    <button
+                        type="button"
+                        className="theme-toggle"
+                        onClick={toggleTheme}
+                        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                    >
+                        {theme === 'light' ? <FaMoon /> : <FaSun />}
+                    </button>
+                    
                     <button
                         type="button"
                         className={`hamburger ${menuOpen ? 'is-open' : ''}`}

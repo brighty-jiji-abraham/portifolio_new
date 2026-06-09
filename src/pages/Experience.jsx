@@ -1,5 +1,6 @@
 import { FiMapPin, FiBriefcase, FiBookOpen, FiAward, FiZap } from 'react-icons/fi';
 import { useSpotlight } from '../hooks/useInteractive';
+import { playTick } from '../hooks/useSoundscape';
 import './Experience.css';
 
 const experiences = [
@@ -97,10 +98,11 @@ const activities = [
     'Webinars and mentoring',
 ];
 
-const SideBlock = ({ Icon, title, subtitle, count, accent, children, onMouseMove }) => (
+const SideBlock = ({ Icon, title, subtitle, count, accent, children, onMouseMove, delayClass = 'delay-1' }) => (
     <section
-        className="side-block"
+        className={`side-block cinematic-reveal ${delayClass}`}
         style={{ '--card-accent': accent }}
+        onMouseEnter={playTick}
         onMouseMove={onMouseMove}
     >
         <header className="side-block-head">
@@ -122,7 +124,7 @@ const Experience = () => {
 
     return (
         <div className="experience">
-            <div className="experience-head">
+            <div className="experience-head cinematic-reveal delay-1">
                 <span className="section-eyebrow">Experience</span>
                 <h2 className="section-title">My journey so far</h2>
                 <p className="section-lead">
@@ -133,7 +135,7 @@ const Experience = () => {
 
             <div className="experience-grid">
                 <section className="experience-main" aria-label="Work experience">
-                    <header className="main-head">
+                    <header className="main-head cinematic-reveal delay-2">
                         <span className="side-block-icon" aria-hidden="true">
                             <FiBriefcase />
                         </span>
@@ -148,7 +150,8 @@ const Experience = () => {
                         {experiences.map((exp, i) => (
                             <li
                                 key={`${exp.company}-${i}`}
-                                className={`exp-item ${exp.current ? 'is-current' : ''}`}
+                                className={`exp-item cinematic-reveal delay-${(i % 8) + 1} ${exp.current ? 'is-current' : ''}`}
+                                onMouseEnter={playTick}
                                 onMouseMove={spotlight.onMouseMove}
                             >
                                 <span className="exp-marker" aria-hidden="true"></span>
@@ -182,7 +185,8 @@ const Experience = () => {
                         title="Education"
                         subtitle="Where I studied"
                         count={education.length}
-                        accent="#a78bfa"
+                        accent="#8C5A3C"
+                        delayClass="delay-3"
                         onMouseMove={spotlight.onMouseMove}
                     >
                         <ul className="edu-list">
@@ -201,7 +205,8 @@ const Experience = () => {
                         title="Certifications"
                         subtitle="Courses I completed"
                         count={certifications.length}
-                        accent="#f472b6"
+                        accent="#4B2E2B"
+                        delayClass="delay-5"
                         onMouseMove={spotlight.onMouseMove}
                     >
                         <ul className="cert-list">
@@ -217,6 +222,7 @@ const Experience = () => {
                         subtitle="Beyond the job"
                         count={activities.length}
                         accent="#f59e0b"
+                        delayClass="delay-7"
                         onMouseMove={spotlight.onMouseMove}
                     >
                         <ul className="activity-list">

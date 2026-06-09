@@ -85,7 +85,7 @@
 
 .about-role:hover,
 .about-role:focus-visible {
-    text-shadow: 0 0 24px rgba(34, 211, 238, 0.6);
+    text-shadow: 0 0 24px rgba(192, 133, 82, 0.6);
 }
 
 .about-bio {
@@ -360,8 +360,8 @@
     position: absolute;
     inset: -3%;
     border-radius: 50%;
-    border: 1px dashed rgba(34, 211, 238, 0.35);
-    box-shadow: 0 0 18px rgba(34, 211, 238, 0.12) inset;
+    border: 1px dashed rgba(192, 133, 82, 0.35);
+    box-shadow: 0 0 18px rgba(192, 133, 82, 0.12) inset;
 }
 
 .orbit-dot {
@@ -403,7 +403,7 @@
     bottom: 8%;
     right: -12%;
     padding: 6px 12px;
-    background: rgba(11, 18, 32, 0.7);
+    background: rgba(75, 46, 43, 0.7);
     border: 1px solid var(--border);
     border-radius: var(--radius-pill);
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;

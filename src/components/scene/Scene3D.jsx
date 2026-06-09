@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unknown-property */
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sparkles, Stars, Environment, Html } from '@react-three/drei';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Float, Sparkles, Stars, Environment, useTexture } from '@react-three/drei';
+import React, { useCallback, useEffect, useRef, useState, useMemo, Suspense } from 'react';
+import { renderToString } from 'react-dom/server';
+import { updateDrone } from '../../hooks/useSoundscape';
 import * as THREE from 'three';
 import { FaReact, FaPython, FaAws, FaNodeJs } from 'react-icons/fa';
 import {
@@ -18,7 +20,22 @@ import {
 } from 'react-icons/si';
 import './Scene3D.css';
 
-/* Scroll progress in [0..1] without re-rendering React on every scroll. */
+/* Detect theme changes */
+const useTheme = () => {
+    const [theme, setTheme] = useState(
+        typeof document !== 'undefined' ? document.documentElement.getAttribute('data-theme') || 'dark' : 'dark'
+    );
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            setTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => observer.disconnect();
+    }, []);
+    return theme;
+};
+
+/* Scroll progress in [0..1] */
 const useScrollProgressRef = () => {
     const ref = useRef(0);
     useEffect(() => {
@@ -37,195 +54,301 @@ const useScrollProgressRef = () => {
     return ref;
 };
 
-/* ---------- Central icosahedron the "core" object ---------- */
+/* ---------- Digital Dot Earth ---------- */
 
-const tmpColor = new THREE.Color();
+/* ---------- Procedural Cracked Magma Planet ---------- */
 
-/* The core sits at the origin of its parent group (no position drift here).
-   It only manages its own rotation, scale-breathe, mouse tilt, and material
-   colour cycling. Position drift is owned by <CoreSystem> below.
-   `meshRef` is a ref forwarded from the parent so the icon Htmls can use the
-   same mesh as their occlusion target gives "planet behind sun" effect. */
-function CoreObject({ scrollRef, mouseRef, meshRef }) {
-    const matRef = useRef();
-    const targetRot = useRef({ x: 0, y: 0 });
+const MagmaPlanet = ({ isLight, meshRef }) => {
+    const materialRef = useRef();
 
-    useFrame((state, delta) => {
-        const t = state.clock.elapsedTime;
-        const p = scrollRef.current;
-        const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
+    // Procedural 3D Simplex noise for cracks
+    const vertexShader = `
+        varying vec2 vUv;
+        varying float vNoise;
+        varying vec3 vNormal;
+        uniform float uTime;
 
-        if (meshRef.current) {
-            meshRef.current.rotation.x += delta * 0.15;
-            meshRef.current.rotation.y += delta * 0.20;
-            targetRot.current.x += (m.ny * 0.45 - targetRot.current.x) * 0.05;
-            targetRot.current.y += (m.nx * 0.45 - targetRot.current.y) * 0.05;
-            meshRef.current.rotation.x += targetRot.current.x * 0.02;
-            meshRef.current.rotation.y += targetRot.current.y * 0.02;
+        // Simplex 3D Noise 
+        // by Ian McEwan, Ashima Arts
+        vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+        vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
 
-            const breathe = 1 + Math.sin(t * 0.6) * 0.04;
-            const scaleByScroll = 1 + Math.sin(p * Math.PI) * 0.25;
-            meshRef.current.scale.setScalar(breathe * scaleByScroll);
+        float snoise(vec3 v){ 
+            const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+            const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+            vec3 i  = floor(v + dot(v, C.yyy) );
+            vec3 x0 = v - i + dot(i, C.xxx) ;
+            vec3 g = step(x0.yzx, x0.xyz);
+            vec3 l = 1.0 - g;
+            vec3 i1 = min( g.xyz, l.zxy );
+            vec3 i2 = max( g.xyz, l.zxy );
+            vec3 x1 = x0 - i1 + 1.0 * C.xxx;
+            vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+            vec3 x3 = x0 - 1.0 + 3.0 * C.xxx;
+            i = mod(i, 289.0 ); 
+            vec4 p = permute( permute( permute( 
+                        i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+                    + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
+                    + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+            float n_ = 1.0/7.0; 
+            vec3  ns = n_ * D.wyz - D.xzx;
+            vec4 j = p - 49.0 * floor(p * ns.z *ns.z);  
+            vec4 x_ = floor(j * ns.z);
+            vec4 y_ = floor(j - 7.0 * x_ );    
+            vec4 x = x_ *ns.x + ns.yyyy;
+            vec4 y = y_ *ns.x + ns.yyyy;
+            vec4 h = 1.0 - abs(x) - abs(y);
+            vec4 b0 = vec4( x.xy, y.xy );
+            vec4 b1 = vec4( x.zw, y.zw );
+            vec4 s0 = floor(b0)*2.0 + 1.0;
+            vec4 s1 = floor(b1)*2.0 + 1.0;
+            vec4 sh = -step(h, vec4(0.0));
+            vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+            vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+            vec3 p0 = vec3(a0.xy,h.x);
+            vec3 p1 = vec3(a0.zw,h.y);
+            vec3 p2 = vec3(a1.xy,h.z);
+            vec3 p3 = vec3(a1.zw,h.w);
+            vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+            p0 *= norm.x;
+            p1 *= norm.y;
+            p2 *= norm.z;
+            p3 *= norm.w;
+            vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+            m = m * m;
+            return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
         }
 
-        if (matRef.current) {
-            matRef.current.distort = 0.25 + Math.sin(p * Math.PI) * 0.45;
-            matRef.current.speed = 1.5 + p * 2.5;
-            const hue = (0.5 + p * 0.55) % 1;
-            tmpColor.setHSL(hue, 0.7, 0.55);
-            matRef.current.color.copy(tmpColor);
-            matRef.current.emissive.copy(tmpColor).multiplyScalar(0.25);
+        void main() {
+            vUv = uv;
+            vNormal = normal;
+
+            // Generate cracks using absolute noise (ridges)
+            float n1 = abs(snoise(position * 2.0 + uTime * 0.05));
+            float n2 = abs(snoise(position * 4.0 - uTime * 0.03));
+            
+            // The noise value (close to 0 = deep crack, large value = crust)
+            vNoise = smoothstep(0.0, 0.4, n1 * 0.6 + n2 * 0.4);
+            
+            // Displace vertices inwards for cracks
+            float displacement = mix(-0.08, 0.0, vNoise);
+            vec3 newPosition = position + normal * displacement;
+            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+        }
+    `;
+
+    const fragmentShader = `
+        uniform vec3 uCrustColor;
+        uniform vec3 uMagmaCore;
+        uniform vec3 uMagmaEdge;
+        uniform float uTime;
+        
+        varying vec2 vUv;
+        varying float vNoise;
+        varying vec3 vNormal;
+
+        void main() {
+            // Light vector for basic shading on the crust
+            vec3 lightDir = normalize(vec3(1.0, 1.0, 0.5));
+            float diff = max(dot(vNormal, lightDir), 0.0);
+            
+            // The magma color (hotter in the deep center of the crack)
+            vec3 magmaColor = mix(uMagmaCore, uMagmaEdge, vNoise * 4.0);
+            
+            // The crust color
+            vec3 shadedCrust = uCrustColor * (0.4 + 0.6 * diff);
+            
+            // Mix between magma and crust based on the noise threshold
+            // Add some pulsing glow to the magma
+            float pulse = sin(uTime * 2.0) * 0.5 + 0.5;
+            float magmaIntensity = smoothstep(0.3, 0.0, vNoise) * (0.8 + 0.2 * pulse);
+            
+            vec3 finalColor = mix(magmaColor * magmaIntensity, shadedCrust, smoothstep(0.1, 0.2, vNoise));
+
+            gl_FragColor = vec4(finalColor, 1.0);
+        }
+    `;
+
+    const uniforms = useMemo(() => {
+        // Base crust color depends on light mode (pale blue/gray vs dark)
+        const crustColor = isLight ? new THREE.Color('#d0d8e0') : new THREE.Color('#1a2636');
+        return {
+            uCrustColor: { value: crustColor },
+            uMagmaCore: { value: new THREE.Color('#ffdd44') }, // Yellow hot core
+            uMagmaEdge: { value: new THREE.Color('#ff2200') }, // Fiery orange edge
+            uTime: { value: 0 }
+        };
+    }, [isLight]);
+
+    useFrame((state) => {
+        if (materialRef.current) {
+            materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
         }
     });
 
     return (
-        <Float speed={1.4} rotationIntensity={0.35} floatIntensity={0.6}>
-            <mesh ref={meshRef}>
-                <icosahedronGeometry args={[0.55, 3]} />
-                <MeshDistortMaterial
-                    ref={matRef}
-                    color="#22d3ee"
-                    emissive="#22d3ee"
-                    emissiveIntensity={0.18}
-                    roughness={0.18}
-                    metalness={0.85}
-                    distort={0.3}
-                    speed={2}
-                    transparent
-                    opacity={0.9}
-                />
-            </mesh>
-        </Float>
+        <mesh ref={meshRef}>
+            {/* High poly count needed for vertex displacement */}
+            <sphereGeometry args={[1.56, 128, 128]} />
+            <shaderMaterial
+                ref={materialRef}
+                vertexShader={vertexShader}
+                fragmentShader={fragmentShader}
+                uniforms={uniforms}
+            />
+        </mesh>
+    );
+};
+
+function DigitalEarth({ scrollRef, mouseRef, meshRef, isLight }) {
+    const groupRef = useRef();
+
+    useFrame((state, delta) => {
+        const p = scrollRef.current;
+        const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
+        
+        if (groupRef.current) {
+            groupRef.current.rotation.y += delta * 0.08;
+            groupRef.current.rotation.x += delta * 0.02;
+            groupRef.current.rotation.x += (m.ny * 0.15 - groupRef.current.rotation.x) * 0.05;
+            groupRef.current.rotation.y += (m.nx * 0.15) * 0.05;
+        }
+        if (meshRef.current) {
+             meshRef.current.rotation.y = groupRef.current.rotation.y;
+             meshRef.current.rotation.x = groupRef.current.rotation.x;
+        }
+    });
+
+    return (
+        <group ref={groupRef}>
+            {/* The animated Cracked Magma Planet */}
+            <MagmaPlanet isLight={isLight} meshRef={meshRef} />
+        </group>
     );
 }
 
-/* ---------- Floating tech icons ring around the central core ---------- */
+/* ---------- Orbiting Tech Satellites ---------- */
 
 const TECH_ICONS = [
     { Icon: FaPython,     color: '#ffce3e' },
     { Icon: SiTensorflow, color: '#ff6f00' },
     { Icon: SiPytorch,    color: '#ee4c2c' },
-    { Icon: FaReact,      color: '#61dafb' },
+    { Icon: FaReact,      color: '#61dafb', lightColor: '#00d8ff' },
     { Icon: SiDocker,     color: '#2496ed' },
     { Icon: SiOpenai,     color: '#10a37f' },
     { Icon: SiAnthropic,  color: '#cc785c' },
-    { Icon: SiLangchain,  color: '#22d3ee' },
+    { Icon: SiLangchain,  color: '#00f7ff', lightColor: '#0099aa' },
     { Icon: SiMongodb,    color: '#4faa41' },
     { Icon: SiRedis,      color: '#dc382d' },
     { Icon: FaNodeJs,     color: '#5fa04e' },
-    { Icon: SiNextdotjs,  color: '#cbd5e1' },
+    { Icon: SiNextdotjs,  color: '#ffffff', lightColor: '#000000' },
     { Icon: FaAws,        color: '#ff9900' },
     { Icon: SiTypescript, color: '#3178c6' },
 ];
 
-function TechIcon({ Icon, color, basePos, phase, occludeRef }) {
-    const groupRef = useRef();
-    const [occluded, setOccluded] = useState(false);
+const useSvgTexture = (Icon, color) => {
+    return useMemo(() => {
+        let svgString = renderToString(<Icon />);
+        svgString = svgString.replace(/currentColor/g, color);
+        svgString = svgString.replace(/width="1em"/, 'width="256"').replace(/height="1em"/, 'height="256"');
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const texture = new THREE.TextureLoader().load(url);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.generateMipmaps = true;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        return texture;
+    }, [Icon, color]);
+};
+
+function TechIconSatellite({ Icon, color, lightColor, index, isLight }) {
+    const orbitGroup = useRef();
+    const iconGroup = useRef();
+    const trailRef = useRef();
+    
+    const displayColor = isLight ? (lightColor || color) : color;
+    const texture = useSvgTexture(Icon, displayColor);
+
+    const [orbitParams] = useState(() => {
+        const isPolar = index % 3 === 0;
+        const angleX = isPolar ? (Math.random() * 0.5 + 1.0) : (Math.random() - 0.5) * 0.5;
+        const angleY = (Math.random() - 0.5) * Math.PI * 2;
+        const angleZ = (Math.random() - 0.5) * Math.PI * 2;
+        
+        const radius = 2.0 + Math.random() * 1.5;
+        const speed = (0.15 + Math.random() * 0.25) * (Math.random() > 0.5 ? 1 : -1);
+        const startPhase = Math.random() * Math.PI * 2;
+        
+        const ringOpacity = Math.random() > 0.6 ? 0.3 : 0.08;
+        return { angleX, angleY, angleZ, radius, speed, startPhase, ringOpacity };
+    });
 
     useFrame((state) => {
         const t = state.clock.elapsedTime;
-        if (!groupRef.current) return;
-        // Gentle local bob around base position so the ring doesn't feel rigid
-        const r = 0.18;
-        const lx = Math.cos(t * 0.35 + phase) * r;
-        const ly = Math.sin(t * 0.35 + phase * 1.3) * r * 0.7;
-        groupRef.current.position.set(
-            basePos[0] + lx,
-            basePos[1] + ly,
-            basePos[2],
-        );
+        if (orbitGroup.current) {
+            orbitGroup.current.rotation.x = orbitParams.angleX;
+            orbitGroup.current.rotation.y = orbitParams.angleY;
+            orbitGroup.current.rotation.z = orbitParams.angleZ;
+            
+            const currentAngle = orbitParams.startPhase + t * orbitParams.speed;
+            iconGroup.current.position.x = Math.cos(currentAngle) * orbitParams.radius;
+            iconGroup.current.position.y = Math.sin(currentAngle) * orbitParams.radius;
+            
+            if (trailRef.current) {
+                trailRef.current.rotation.z = currentAngle;
+            }
+        }
     });
 
-    /* `occlude` accepts an array of refs to test against. drei raycasts from
-       the camera through the html's world position; if the ray hits one of
-       these meshes first, `onOcclude(true)` fires and we fade the icon out. */
-    const occludeTargets = occludeRef ? [occludeRef] : undefined;
+    const ringGeometry = useMemo(() => new THREE.RingGeometry(orbitParams.radius - 0.005, orbitParams.radius + 0.005, 64), [orbitParams.radius]);
+    const trailGeometry = useMemo(() => new THREE.RingGeometry(orbitParams.radius - 0.015, orbitParams.radius + 0.015, 32, 1, 0, Math.PI / 4), [orbitParams.radius]);
+    
+    const blendingMode = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
 
     return (
-        <group ref={groupRef}>
-            <Html
-                center
-                distanceFactor={8}
-                zIndexRange={[0, 0]}
-                occlude={occludeTargets}
-                onOcclude={setOccluded}
-                style={{ pointerEvents: 'none', userSelect: 'none' }}
-            >
-                <div
-                    className={`tech-icon-3d ${occluded ? 'is-occluded' : ''}`}
-                    style={{ color }}
-                >
-                    <Icon />
-                </div>
-            </Html>
+        <group ref={orbitGroup}>
+            <mesh geometry={ringGeometry}>
+                <meshBasicMaterial color={displayColor} transparent opacity={isLight ? orbitParams.ringOpacity * 1.5 : orbitParams.ringOpacity} side={THREE.DoubleSide} blending={blendingMode} />
+            </mesh>
+
+            <mesh geometry={trailGeometry} ref={trailRef}>
+                <meshBasicMaterial color={displayColor} transparent opacity={0.6} side={THREE.DoubleSide} blending={blendingMode} />
+            </mesh>
+
+            <group ref={iconGroup}>
+                <sprite scale={[0.45, 0.45, 0.45]}>
+                    <spriteMaterial 
+                        map={texture} 
+                        transparent={true} 
+                        depthTest={true} 
+                        blending={blendingMode}
+                    />
+                </sprite>
+            </group>
         </group>
     );
 }
 
-/* Pre-compute icon base positions on a tilted, staggered 3D ring around (0,0,0)
-   the same origin as the central core, so the core sits in its centre. */
-const ICON_POSITIONS = TECH_ICONS.map((_, i) => {
-    const angle = (i / TECH_ICONS.length) * Math.PI * 2;
-    // Alternate radii so icons don't sit on a perfect circle
-    const radius = i % 2 === 0 ? 5.2 : 4.6;
-    // Vertical stagger using a low-frequency sinusoid keyed on index
-    const yStagger = Math.sin(i * 1.7) * 1.4;
-    // Tilted ring: Z component is half of the cos of angle so the ring leans
-    // toward the camera on one side and away on the other → 3D feel
-    return [
-        Math.cos(angle) * radius,
-        yStagger,
-        Math.sin(angle) * radius * 0.45 - 1,
-    ];
-});
-
-/* Just the rotating ring, around its own origin (0,0,0). No position drift —
-   that's the parent <CoreSystem>'s job, so the ring shares an origin with the
-   core. `occludeRef` is the core mesh passed to each icon so it hides when
-   its orbital position is behind the core (planets behind sun). */
-function TechIcons({ scrollRef, occludeRef }) {
-    const groupRef = useRef();
-    const speedRef = useRef(0);
-    const lastProgressRef = useRef(0);
-
-    useFrame((state, delta) => {
-        const t = state.clock.elapsedTime;
-        const p = scrollRef.current;
-        if (!groupRef.current) return;
-
-        /* Slow → speed → slow ramp: rotation tracks scroll velocity, lerps. */
-        const dp = p - lastProgressRef.current;
-        lastProgressRef.current = p;
-        const velocity = Math.abs(dp / Math.max(0.001, delta));
-        const baseSpeed = 0.018;
-        const boost = Math.min(velocity * 0.35, 0.05);
-        const target = baseSpeed + boost;
-        speedRef.current += (target - speedRef.current) * 0.04;
-
-        groupRef.current.rotation.y += speedRef.current * delta * 60;
-        groupRef.current.rotation.x = Math.sin(t * 0.08) * 0.06;
-    });
-
+function TechSatellites({ isLight }) {
     return (
-        <group ref={groupRef}>
+        <group>
             {TECH_ICONS.map((item, i) => (
-                <TechIcon
+                <TechIconSatellite
                     key={i}
                     Icon={item.Icon}
                     color={item.color}
-                    basePos={ICON_POSITIONS[i]}
-                    phase={i * 0.7}
-                    occludeRef={occludeRef}
+                    lightColor={item.lightColor}
+                    index={i}
+                    isLight={isLight}
                 />
             ))}
         </group>
     );
 }
 
-/* Single parent group that drifts both the core and the ring together with
-   scroll. The core mesh ref is shared so each icon's <Html> can occlude
-   against it giving the "planet behind sun" effect. */
-function CoreSystem({ scrollRef, mouseRef }) {
+/* ---------- Core System ---------- */
+function CoreSystem({ scrollRef, mouseRef, isLight }) {
     const groupRef = useRef();
     const coreMeshRef = useRef();
 
@@ -233,41 +356,82 @@ function CoreSystem({ scrollRef, mouseRef }) {
         const p = scrollRef.current;
         const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
         if (!groupRef.current) return;
-        groupRef.current.position.y = -p * 4.5;
-        groupRef.current.position.x = Math.sin(p * Math.PI * 2) * 1.5 + m.nx * 0.2;
+        
+        groupRef.current.position.y = -p * 4.0;
+        groupRef.current.position.x = Math.sin(p * Math.PI) * 1.5 + m.nx * 0.1;
     });
 
     return (
         <group ref={groupRef}>
-            <CoreObject
-                scrollRef={scrollRef}
-                mouseRef={mouseRef}
-                meshRef={coreMeshRef}
-            />
-            <TechIcons scrollRef={scrollRef} occludeRef={coreMeshRef} />
+            <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.2}>
+                <DigitalEarth scrollRef={scrollRef} mouseRef={mouseRef} meshRef={coreMeshRef} isLight={isLight} />
+                <TechSatellites isLight={isLight} />
+            </Float>
         </group>
     );
 }
 
 /* ---------- Camera scroll dolly ---------- */
+const cameraWaypoints = [
+    { p: 0.00, offset: new THREE.Vector3(0, 0, 9.5) },        // Hero
+    { p: 0.25, offset: new THREE.Vector3(3.5, 0, 4.5) },      // About: Zoomed into right side
+    { p: 0.50, offset: new THREE.Vector3(-4.5, 1, -3.5) },    // Experience: Orbiting the dark side
+    { p: 0.75, offset: new THREE.Vector3(0, 5, 2) },          // Projects: Top down overview
+    { p: 1.00, offset: new THREE.Vector3(0, 0, 9.5) }         // Contact: Back to wide shot
+];
+
+function getInterpolated(p, array, key) {
+    for (let i = 0; i < array.length - 1; i++) {
+        if (p >= array[i].p && p <= array[i + 1].p) {
+            const t = (p - array[i].p) / (array[i + 1].p - array[i].p);
+            // Smoothstep for cinematic ease
+            const smoothT = t * t * (3 - 2 * t);
+            return array[i][key].clone().lerp(array[i + 1][key], smoothT);
+        }
+    }
+    if (p <= array[0].p) return array[0][key].clone();
+    return array[array.length - 1][key].clone();
+}
 
 function CameraRig({ scrollRef, mouseRef }) {
+    const targetPos = useMemo(() => new THREE.Vector3(), []);
+    const lookAtPos = useMemo(() => new THREE.Vector3(), []);
+
     useFrame((state) => {
         const p = scrollRef.current;
         const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
-        const targetZ = 9 - p * 1.2;
-        const targetY = -p * 0.8 + m.ny * 0.3;
-        const targetX = m.nx * 0.5;
-        state.camera.position.x += (targetX - state.camera.position.x) * 0.05;
-        state.camera.position.y += (targetY - state.camera.position.y) * 0.05;
-        state.camera.position.z += (targetZ - state.camera.position.z) * 0.06;
-        state.camera.lookAt(0, -p * 4.5, 0);
+        
+        // Base planet position coordinates
+        const basePlanetY = -p * 4.0;
+        const basePlanetX = Math.sin(p * Math.PI) * 1.5;
+
+        const isMobile = window.innerWidth < 768;
+        const mobileScaleX = isMobile ? 0.4 : 1.0;
+
+        // Calculate offset along the spline
+        const offset = getInterpolated(p, cameraWaypoints, 'offset');
+        
+        // Final target position incorporates mouse and planet movement
+        targetPos.copy(offset);
+        targetPos.x *= mobileScaleX;
+        if (isMobile) targetPos.z += 3.0; // Pull back further on mobile
+
+        targetPos.y += basePlanetY + m.ny * 0.3;
+        targetPos.x += basePlanetX + m.nx * 0.5;
+
+        updateDrone(p);
+
+        // Smoothly interpolate the camera position for weight
+        state.camera.position.lerp(targetPos, 0.025);
+        
+        // Always look smoothly at the planet's center
+        lookAtPos.set(basePlanetX + m.nx * 0.1, basePlanetY + m.ny * 0.1, 0);
+        state.camera.lookAt(lookAtPos);
     });
     return null;
 }
 
 /* ---------- Error boundary for WebGL failures ---------- */
-
 class WebGLErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
@@ -281,41 +445,33 @@ class WebGLErrorBoundary extends React.Component {
     }
     render() {
         if (this.state.hasError) {
-            return <div className="scene-3d" aria-hidden="true" style={{ background: '#070b16' }} />;
+            return <div className="scene-3d" aria-hidden="true" style={{ background: 'var(--bg-0)' }} />;
         }
         return this.props.children;
     }
 }
 
 /* ---------- Scene root ---------- */
-
 const Scene3D = ({ mouseRef }) => {
     const scrollRef = useScrollProgressRef();
+    const theme = useTheme();
+    const isLight = theme === 'light';
     const [canvasKey, setCanvasKey] = useState(0);
     const [contextLost, setContextLost] = useState(false);
 
     const handleCreated = useCallback((state) => {
         const canvas = state.gl.domElement;
-
         const onLost = (e) => {
             e.preventDefault();
-            console.warn('[Scene3D] WebGL context lost – will attempt restore');
             setContextLost(true);
         };
         const onRestored = () => {
-            console.info('[Scene3D] WebGL context restored');
             setContextLost(false);
         };
-
         canvas.addEventListener('webglcontextlost', onLost);
         canvas.addEventListener('webglcontextrestored', onRestored);
-
-        // Store cleanup refs on the gl object so we can remove them later
-        state.gl.__ctxLost = onLost;
-        state.gl.__ctxRestored = onRestored;
     }, []);
 
-    // If context was lost, remount the Canvas after a short delay
     useEffect(() => {
         if (!contextLost) return;
         const timer = setTimeout(() => {
@@ -335,25 +491,34 @@ const Scene3D = ({ mouseRef }) => {
                         antialias: true,
                         alpha: true,
                         powerPreference: 'high-performance',
-                        failIfMajorPerformanceCaveat: false,
                     }}
-                    camera={{ position: [0, 0, 9], fov: 50 }}
+                    camera={{ position: [0, 0, 9.5], fov: 50 }}
                     onCreated={handleCreated}
                 >
-                    <color attach="background" args={['#070b16']} />
-
-                    <ambientLight intensity={0.35} />
-                    <pointLight position={[6, 6, 6]} intensity={0.9} color="#22d3ee" />
-                    <pointLight position={[-6, -4, -3]} intensity={0.7} color="#a78bfa" />
-                    <pointLight position={[0, 5, -5]} intensity={0.4} color="#f472b6" />
+                    <ambientLight intensity={isLight ? 0.6 : 0.2} />
+                    <pointLight position={[6, 6, 6]} intensity={isLight ? 0.8 : 1.5} color={isLight ? '#C08552' : '#22d3ee'} />
+                    <pointLight position={[-6, -4, -3]} intensity={0.5} color={isLight ? '#8C5A3C' : '#87CEFA'} />
 
                     <CameraRig scrollRef={scrollRef} mouseRef={mouseRef} />
-                    <CoreSystem scrollRef={scrollRef} mouseRef={mouseRef} />
+                    <CoreSystem scrollRef={scrollRef} mouseRef={mouseRef} isLight={isLight} />
 
-                    <Sparkles count={140} scale={[16, 16, 10]} size={2.4} speed={0.35} color="#22d3ee" opacity={0.6} />
-                    <Stars radius={50} depth={40} count={1200} factor={3} saturation={0} fade speed={0.4} />
-
-                    <Environment preset="night" />
+                    <Sparkles 
+                        count={150} 
+                        scale={[18, 18, 12]} 
+                        size={isLight ? 3 : 2} 
+                        speed={0.4} 
+                        color={isLight ? '#C08552' : '#00f7ff'} 
+                        opacity={isLight ? 0.8 : 0.4} 
+                    />
+                    <Stars 
+                        radius={60} 
+                        depth={40} 
+                        count={2000} 
+                        factor={isLight ? 5 : 4} 
+                        saturation={0} 
+                        fade 
+                        speed={0.5} 
+                    />
                 </Canvas>
             </div>
         </WebGLErrorBoundary>

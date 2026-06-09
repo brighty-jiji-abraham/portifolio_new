@@ -52,6 +52,7 @@ import {
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSpotlight } from '../hooks/useInteractive';
+import { playTick } from '../hooks/useSoundscape';
 import { projects } from './Projects';
 import './Skills.css';
 
@@ -60,7 +61,7 @@ const groups = [
         title: 'Languages',
         subtitle: 'What I write code in',
         Icon: FiCode,
-        accent: '#22d3ee',
+        accent: '#C08552',
         items: [
             { Icon: FaPython, label: 'Python', color: '#ffce3e' },
             { Icon: FaJsSquare, label: 'JavaScript', color: '#f0db4f' },
@@ -77,18 +78,18 @@ const groups = [
         title: 'Frameworks',
         subtitle: 'What I build with',
         Icon: FiLayers,
-        accent: '#a78bfa',
+        accent: '#8C5A3C',
         items: [
             { Icon: SiReact, label: 'React', color: '#61dafb' },
-            { Icon: SiNextdotjs, label: 'Next.js', color: '#cbd5e1' },
+            { Icon: SiNextdotjs, label: 'Next.js', color: '#F5DEC3' },
             { Icon: SiVite, label: 'Vite', color: '#646cff' },
             { Icon: SiTailwindcss, label: 'Tailwind CSS', color: '#38bdf8' },
-            { Icon: SiExpress, label: 'Express', color: '#cbd5e1' },
+            { Icon: SiExpress, label: 'Express', color: '#F5DEC3' },
             { Icon: SiLaravel, label: 'Laravel', color: '#ff2d20', matches: ['laravel', 'laravel api'] },
             { Icon: SiWordpress, label: 'WordPress', color: '#21759b', matches: ['wordpress', 'wp'] },
-            { Icon: SiFlask, label: 'Flask', color: '#cbd5e1', matches: ['flask', 'gevent'] },
+            { Icon: SiFlask, label: 'Flask', color: '#F5DEC3', matches: ['flask', 'gevent'] },
             { Icon: SiFlutter, label: 'Flutter', color: '#02569b' },
-            { Icon: SiSocketdotio, label: 'Socket.IO', color: '#cbd5e1', matches: ['socket.io', 'engine.io'] },
+            { Icon: SiSocketdotio, label: 'Socket.IO', color: '#F5DEC3', matches: ['socket.io', 'engine.io'] },
             { Icon: SiCelery, label: 'Celery', color: '#a9cc54' },
             { Icon: SiSwagger, label: 'Swagger', color: '#85ea2d', matches: ['swagger', 'openapi'] },
             { Icon: SiPostman, label: 'Postman', color: '#ff6c37' },
@@ -98,19 +99,19 @@ const groups = [
         title: 'AI / ML',
         subtitle: 'Models, training, inference',
         Icon: FiCpu,
-        accent: '#f472b6',
+        accent: '#4B2E2B',
         items: [
             { Icon: SiOpenai, label: 'OpenAI', color: '#10a37f', matches: ['openai', 'openai gpt-4', 'gpt-4', 'gpt-3.5'] },
             { Icon: SiClaude, label: 'Claude', color: '#cc785c', matches: ['claude', 'anthropic', 'anthropic api'] },
             { Icon: SiAnthropic, label: 'Claude Code', color: '#cc785c', matches: ['claude code', 'sub-agents', 'slash commands'] },
             { Icon: SiTensorflow, label: 'TensorFlow', color: '#ff6f00' },
             { Icon: SiPytorch, label: 'PyTorch', color: '#ee4c2c' },
-            { Icon: SiLangchain, label: 'LangChain', color: '#22d3ee' },
+            { Icon: SiLangchain, label: 'LangChain', color: '#C08552' },
             { Icon: SiOpencv, label: 'OpenCV', color: '#5fa04e' },
             { Icon: SiScikitlearn, label: 'scikit-learn', color: '#f7931e' },
             { Icon: SiSpacy, label: 'spaCy', color: '#09a3d5' },
-            { Icon: GiMeshNetwork, label: 'Neural Networks', color: '#a78bfa', matches: ['neural networks', 'cnn', 'lstm', 'rnn', 'transformers'] },
-            { Icon: FaMagic, label: 'Generative AI', color: '#f472b6', matches: ['generative ai', 'genai', 'llm', 'rag', 'mcp', 'ollama', 'together', 'faiss', 'chromadb'] },
+            { Icon: GiMeshNetwork, label: 'Neural Networks', color: '#8C5A3C', matches: ['neural networks', 'cnn', 'lstm', 'rnn', 'transformers'] },
+            { Icon: FaMagic, label: 'Generative AI', color: '#4B2E2B', matches: ['generative ai', 'genai', 'llm', 'rag', 'mcp', 'ollama', 'together', 'faiss', 'chromadb'] },
             { Icon: SiWeightsandbiases, label: 'Weights & Biases', color: '#FFBE00' },
         ],
     },
@@ -122,8 +123,8 @@ const groups = [
         items: [
             { Icon: SiMongodb, label: 'MongoDB', color: '#4faa41' },
             { Icon: SiMysql, label: 'MySQL', color: '#00758f' },
-            { Icon: SiPrisma, label: 'Prisma', color: '#cbd5e1', matches: ['prisma', 'prisma db', 'prisma orm'] },
-            { Icon: FaDatabase, label: 'SQL', color: '#94a3b8', matches: ['sql', 'sqlalchemy'] },
+            { Icon: SiPrisma, label: 'Prisma', color: '#F5DEC3', matches: ['prisma', 'prisma db', 'prisma orm'] },
+            { Icon: FaDatabase, label: 'SQL', color: '#e2c5b3', matches: ['sql', 'sqlalchemy'] },
             { Icon: SiRedis, label: 'Redis', color: '#dc382d' },
             { Icon: SiDocker, label: 'Docker', color: '#2496ed' },
             { Icon: SiNginx, label: 'NGINX', color: '#009639' },
@@ -131,7 +132,7 @@ const groups = [
             { Icon: SiGooglecloud, label: 'Google Cloud', color: '#4285f4' },
             { Icon: SiCloudflare, label: 'Cloudflare', color: '#f38020', matches: ['cloudflare', 'cloudflare workers', 'r2', 'kv'] },
             { Icon: SiGit, label: 'Git', color: '#f05033' },
-            { Icon: SiGithub, label: 'GitHub', color: '#cbd5e1' },
+            { Icon: SiGithub, label: 'GitHub', color: '#F5DEC3' },
         ],
     },
     {
@@ -148,7 +149,7 @@ const groups = [
             { Icon: SiAffinitydesigner, label: 'Affinity Designer', color: '#50baea' },
             { Icon: SiAffinityphoto, label: 'Affinity Photo', color: '#e874fd' },
             { Icon: SiBlender, label: 'Blender', color: '#ea7600' },
-            { Icon: SiUnity, label: 'Unity', color: '#cbd5e1' },
+            { Icon: SiUnity, label: 'Unity', color: '#F5DEC3' },
             { Icon: SiSparkar, label: 'Spark AR', color: '#ff5e5b' },
             { Icon: GiMusicalKeyboard, label: 'FL Studio', color: '#f59e0b' },
         ],
@@ -161,6 +162,7 @@ const Skills = () => {
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
     const handleMouseEnter = (e, skill) => {
+        playTick();
         setHoveredSkill(skill);
         setTooltipPos({ x: e.clientX, y: e.clientY });
     };
@@ -183,7 +185,7 @@ const Skills = () => {
 
     return (
         <div className="skills">
-            <div className="skills-head">
+            <div className="skills-head cinematic-reveal delay-1">
                 <span className="section-eyebrow">Skills</span>
                 <h2 className="section-title">What I work with</h2>
                 <p className="section-lead">
@@ -197,11 +199,12 @@ const Skills = () => {
                     return (
                         <article
                             key={group.title}
-                            className="skill-card"
+                            className="skill-card cinematic-reveal"
                             style={{
-                                animationDelay: `${gi * 0.08}s`,
+                                animationDelay: `${gi * 0.08 + 0.3}s`,
                                 '--card-accent': group.accent,
                             }}
+                            onMouseEnter={playTick}
                             onMouseMove={spotlight.onMouseMove}
                         >
                             <header className="skill-card-head">

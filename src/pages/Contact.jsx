@@ -84,7 +84,7 @@ const Contact = () => {
 
     return (
         <div className="contact">
-            <div className="contact-head">
+            <div className="contact-head cinematic-reveal delay-1">
                 <span className="section-eyebrow">Contact</span>
                 <h2 className="section-title">Let&apos;s talk</h2>
                 <p className="section-lead">
@@ -94,7 +94,7 @@ const Contact = () => {
 
             <div className="contact-grid">
                 <aside className="contact-info">
-                    <div className="info-item">
+                    <div className="info-item cinematic-reveal delay-2">
                         <FiMail className="info-icon" />
                         <div>
                             <div className="info-label">Email</div>
@@ -103,7 +103,7 @@ const Contact = () => {
                             </a>
                         </div>
                     </div>
-                    <div className="info-item">
+                    <div className="info-item cinematic-reveal delay-3">
                         <FiLinkedin className="info-icon" />
                         <div>
                             <div className="info-label">LinkedIn</div>
@@ -117,7 +117,7 @@ const Contact = () => {
                             </a>
                         </div>
                     </div>
-                    <div className="info-item">
+                    <div className="info-item cinematic-reveal delay-4">
                         <FiMapPin className="info-icon" />
                         <div>
                             <div className="info-label">Location</div>
@@ -126,7 +126,7 @@ const Contact = () => {
                     </div>
                 </aside>
 
-                <form className="contact-form" onSubmit={handleSubmit} noValidate>
+                <form className="contact-form cinematic-reveal delay-5" onSubmit={handleSubmit} noValidate>
                     <div className="row">
                         <div className="field">
                             <label htmlFor="first_name">First name</label>
