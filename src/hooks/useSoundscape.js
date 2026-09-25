@@ -56,13 +56,6 @@ export function playTick() {
     osc.stop(audioCtx.currentTime + 0.05);
 }
 
-export function updateDrone(p) {
-    if (!isInitialized || !bgMusic) return;
-    // We can't modulate pitch easily with HTML5 audio without distortion,
-    // but we can gently adjust volume based on scroll if desired.
-    // For natural music, keeping it at a steady volume is usually best.
-}
-
 let subscribers = [];
 
 export function useSoundscape() {

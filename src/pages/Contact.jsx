@@ -190,7 +190,7 @@ const Contact = () => {
 
                     {status === 'sent' && (
                         <p className="contact-status is-success" role="status">
-                            <FiCheckCircle /> Thanks your message is on its way. I&apos;ll get back to you at the email you provided.
+                            <FiCheckCircle /> Thanks! Your message is on its way. I&apos;ll get back to you at the email you provided.
                         </p>
                     )}
 

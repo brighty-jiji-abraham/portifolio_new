@@ -1,0 +1,199 @@
+.story :is(button, a.btn),
+.app-header .theme-toggle {
+  position: relative;
+  isolation: isolate;
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  transform: perspective(600px) translate3d(var(--tx, 0px), var(--ty, 0px), 0)
+    rotateX(var(--button-rx, 0deg)) rotateY(var(--button-ry, 0deg));
+  transition:
+    transform 250ms var(--ease),
+    box-shadow 250ms,
+    border-color 250ms,
+    background 250ms,
+    color 200ms;
+}
+.story .btn-primary {
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--accent) 48%, transparent),
+    color-mix(in srgb, var(--accent) 20%, transparent)
+  );
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 #fff3,
+    0 8px 24px var(--accent-glow);
+}
+.story .btn-ghost,
+.story .orbit-controls button,
+.story .project-filters button:not(.is-selected),
+.app-header .theme-toggle {
+  background:
+    linear-gradient(130deg, var(--glass-shine), transparent 65%), var(--card-bg);
+  border-color: var(--glass-border);
+  box-shadow: inset 0 1px 0 #fff2;
+}
+.story .project-filters button.is-selected {
+  background: color-mix(in srgb, var(--accent) 35%, var(--card-bg));
+  color: var(--text);
+  box-shadow:
+    inset 0 1px 0 #fff3,
+    0 0 18px var(--accent-glow);
+}
+.story .project-expand {
+  padding: 7px 11px;
+  margin-bottom: 14px;
+  min-height: 36px;
+  border: 1px solid var(--glass-border);
+  border-radius: 9px;
+  background: var(--surface-strong);
+}
+.story :is(button, a.btn)::after,
+.app-header .theme-toggle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    80px circle at var(--button-light-x, 50%) var(--button-light-y, 50%),
+    color-mix(in srgb, var(--mint) 22%, transparent),
+    transparent 85%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 250ms;
+}
+.story :is(button, a.btn):is(:hover, :focus-visible)::after,
+.app-header .theme-toggle:is(:hover, :focus-visible)::after {
+  opacity: 1;
+}
+.story .btn::before {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 25px;
+  height: 25px;
+  border: 1px solid var(--mint);
+  border-left-color: transparent;
+  border-radius: 50%;
+  box-shadow: 0 0 9px color-mix(in srgb, var(--mint) 25%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.3;
+  rotate: -45deg;
+  transition:
+    opacity 200ms,
+    scale 400ms var(--ease);
+}
+.story .btn:is(:hover, :focus-visible)::before {
+  opacity: 0.9;
+  scale: 1;
+  animation: buttonOrbit 2.5s linear infinite;
+}
+.story :is(button, a.btn):active {
+  transform: perspective(600px)
+    translate3d(var(--tx, 0px), var(--ty, 0px), -8px) scale(0.96);
+}
+.story :is(button, a.btn):disabled {
+  transform: none;
+}
+.button-space-burst {
+  position: fixed;
+  width: 0;
+  height: 0;
+  z-index: 1000;
+  pointer-events: none;
+  animation: spaceBurstLifetime 800ms linear;
+}
+.button-shockwave {
+  position: absolute;
+  left: -12px;
+  top: -12px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--mint);
+  border-radius: 50%;
+  animation: buttonShockwave 600ms var(--ease) both;
+}
+.button-asteroid {
+  position: absolute;
+  width: 5px;
+  height: 7px;
+  left: -3px;
+  top: -3px;
+  background: var(--accent);
+  clip-path: polygon(30% 0, 90% 15%, 100% 65%, 60% 100%, 0 75%, 6% 20%);
+  animation: buttonDebris 650ms var(--ease) both;
+}
+.button-launch-rocket {
+  position: absolute;
+  width: 22px;
+  height: 33px;
+  left: -11px;
+  top: -22px;
+  filter: drop-shadow(0 2px 5px #0004);
+  animation: buttonLaunch 780ms cubic-bezier(0.35, 0, 0.8, 0.5) both;
+}
+@keyframes buttonOrbit {
+  to {
+    rotate: 315deg;
+  }
+}
+@keyframes spaceBurstLifetime {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes buttonShockwave {
+  from {
+    scale: 0.2;
+    opacity: 0.8;
+  }
+  to {
+    scale: 4;
+    opacity: 0;
+  }
+}
+@keyframes buttonDebris {
+  from {
+    transform: rotate(var(--debris-angle)) translateX(3px);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(var(--debris-angle)) translateX(var(--debris-distance))
+      rotate(150deg);
+    opacity: 0;
+  }
+}
+@keyframes buttonLaunch {
+  0% {
+    transform: translate(0, 0) rotate(35deg) scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(70px, -115px) rotate(40deg) scale(0.8);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .story :is(button, a.btn),
+  .app-header .theme-toggle {
+    transform: none !important;
+  }
+  .story .btn::before,
+  .button-space-burst {
+    display: none;
+  }
+}

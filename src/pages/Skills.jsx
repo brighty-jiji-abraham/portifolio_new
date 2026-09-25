@@ -1,268 +1,407 @@
-import { FaJava, FaNodeJs, FaPython, FaJsSquare, FaFilm, FaCameraRetro, FaMagic, FaDatabase } from 'react-icons/fa';
-import { FaAws } from 'react-icons/fa6';
-import { BiLogoPhp } from 'react-icons/bi';
-import { GiMeshNetwork, GiMusicalKeyboard } from 'react-icons/gi';
-import { TbBrandCSharp } from 'react-icons/tb';
-import { GrSwift } from 'react-icons/gr';
-import { DiPhotoshop } from 'react-icons/di';
-import { FiCode, FiLayers, FiCpu, FiDatabase, FiAperture } from 'react-icons/fi';
 import {
-    SiCplusplus,
-    SiSolidity,
-    SiGit,
-    SiOpenai,
-    SiClaude,
-    SiAnthropic,
-    SiReact,
-    SiNextdotjs,
-    SiExpress,
-    SiLaravel,
-    SiFlask,
-    SiFlutter,
-    SiSocketdotio,
-    SiCelery,
-    SiTailwindcss,
-    SiVite,
-    SiTensorflow,
-    SiPytorch,
-    SiLangchain,
-    SiOpencv,
-    SiScikitlearn,
-    SiSpacy,
-    SiMongodb,
-    SiRedis,
-    SiNginx,
-    SiGooglecloud,
-    SiDocker,
-    SiAffinitydesigner,
-    SiAffinityphoto,
-    SiBlender,
-    SiMysql,
-    SiSparkar,
-    SiGithub,
-    SiUnity,
-    SiWeightsandbiases,
-    SiCloudflare,
-    SiPrisma,
-    SiFigma,
-    SiWordpress,
-    SiSwagger,
-    SiPostman,
-} from 'react-icons/si';
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useSpotlight } from '../hooks/useInteractive';
-import { playTick } from '../hooks/useSoundscape';
-import { projects } from './Projects';
-import './Skills.css';
+  FaJava,
+  FaNodeJs,
+  FaPython,
+  FaJsSquare,
+  FaFilm,
+  FaCameraRetro,
+  FaMagic,
+  FaDatabase,
+} from "react-icons/fa";
+import { FaAws } from "react-icons/fa6";
+import { BiLogoPhp } from "react-icons/bi";
+import { GiMeshNetwork, GiMusicalKeyboard } from "react-icons/gi";
+import { TbBrandCSharp } from "react-icons/tb";
+import { GrSwift } from "react-icons/gr";
+import { DiPhotoshop } from "react-icons/di";
+import {
+  FiCode,
+  FiLayers,
+  FiCpu,
+  FiDatabase,
+  FiAperture,
+} from "react-icons/fi";
+import {
+  SiCplusplus,
+  SiSolidity,
+  SiGit,
+  SiOpenai,
+  SiClaude,
+  SiAnthropic,
+  SiReact,
+  SiNextdotjs,
+  SiExpress,
+  SiLaravel,
+  SiFlask,
+  SiFlutter,
+  SiSocketdotio,
+  SiCelery,
+  SiTailwindcss,
+  SiVite,
+  SiTensorflow,
+  SiPytorch,
+  SiLangchain,
+  SiOpencv,
+  SiScikitlearn,
+  SiSpacy,
+  SiMongodb,
+  SiRedis,
+  SiNginx,
+  SiGooglecloud,
+  SiDocker,
+  SiAffinitydesigner,
+  SiAffinityphoto,
+  SiBlender,
+  SiMysql,
+  SiSparkar,
+  SiGithub,
+  SiUnity,
+  SiWeightsandbiases,
+  SiCloudflare,
+  SiPrisma,
+  SiFigma,
+  SiWordpress,
+  SiSwagger,
+  SiPostman,
+} from "react-icons/si";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useSpotlight } from "../hooks/useInteractive";
+import { playTick } from "../hooks/useSoundscape";
+import { projects } from "../data/projects";
+import "./Skills.css";
 
 const groups = [
-    {
-        title: 'Languages',
-        subtitle: 'What I write code in',
-        Icon: FiCode,
-        accent: '#C08552',
-        items: [
-            { Icon: FaPython, label: 'Python', color: '#ffce3e' },
-            { Icon: FaJsSquare, label: 'JavaScript', color: '#f0db4f' },
-            { Icon: SiCplusplus, label: 'C/C++', color: '#5c6bc0', matches: ['c/c++', 'c++', 'cpp'] },
-            { Icon: FaJava, label: 'Java', color: '#e76f00' },
-            { Icon: GrSwift, label: 'Swift', color: '#f05138' },
-            { Icon: BiLogoPhp, label: 'PHP', color: '#777bb3' },
-            { Icon: SiSolidity, label: 'Solidity', color: '#b2b2b2' },
-            { Icon: FaNodeJs, label: 'Node.js', color: '#5fa04e' },
-            { Icon: TbBrandCSharp, label: 'C#', color: '#7c3aed' },
+  {
+    title: "Languages",
+    subtitle: "What I write code in",
+    Icon: FiCode,
+    accent: "#C08552",
+    items: [
+      { Icon: FaPython, label: "Python", color: "#ffce3e" },
+      { Icon: FaJsSquare, label: "JavaScript", color: "#f0db4f" },
+      {
+        Icon: SiCplusplus,
+        label: "C/C++",
+        color: "#5c6bc0",
+        matches: ["c/c++", "c++", "cpp"],
+      },
+      { Icon: FaJava, label: "Java", color: "#e76f00" },
+      { Icon: GrSwift, label: "Swift", color: "#f05138" },
+      { Icon: BiLogoPhp, label: "PHP", color: "#777bb3" },
+      { Icon: SiSolidity, label: "Solidity", color: "#b2b2b2" },
+      { Icon: FaNodeJs, label: "Node.js", color: "#5fa04e" },
+      { Icon: TbBrandCSharp, label: "C#", color: "#7c3aed" },
+    ],
+  },
+  {
+    title: "Frameworks",
+    subtitle: "What I build with",
+    Icon: FiLayers,
+    accent: "#bcb0e8",
+    items: [
+      { Icon: SiReact, label: "React", color: "#61dafb" },
+      { Icon: SiNextdotjs, label: "Next.js", color: "#F5DEC3" },
+      { Icon: SiVite, label: "Vite", color: "#646cff" },
+      { Icon: SiTailwindcss, label: "Tailwind CSS", color: "#38bdf8" },
+      { Icon: SiExpress, label: "Express", color: "#F5DEC3" },
+      {
+        Icon: SiLaravel,
+        label: "Laravel",
+        color: "#ff2d20",
+        matches: ["laravel", "laravel api"],
+      },
+      {
+        Icon: SiWordpress,
+        label: "WordPress",
+        color: "#21759b",
+        matches: ["wordpress", "wp"],
+      },
+      {
+        Icon: SiFlask,
+        label: "Flask",
+        color: "#F5DEC3",
+        matches: ["flask", "gevent"],
+      },
+      { Icon: SiFlutter, label: "Flutter", color: "#02569b" },
+      {
+        Icon: SiSocketdotio,
+        label: "Socket.IO",
+        color: "#F5DEC3",
+        matches: ["socket.io", "engine.io"],
+      },
+      { Icon: SiCelery, label: "Celery", color: "#a9cc54" },
+      {
+        Icon: SiSwagger,
+        label: "Swagger",
+        color: "#85ea2d",
+        matches: ["swagger", "openapi"],
+      },
+      { Icon: SiPostman, label: "Postman", color: "#ff6c37" },
+    ],
+  },
+  {
+    title: "AI / ML",
+    subtitle: "Models, training, inference",
+    Icon: FiCpu,
+    accent: "#a1d8c6",
+    items: [
+      {
+        Icon: SiOpenai,
+        label: "OpenAI",
+        color: "#10a37f",
+        matches: ["openai", "openai gpt-4", "gpt-4", "gpt-3.5"],
+      },
+      {
+        Icon: SiClaude,
+        label: "Claude",
+        color: "#cc785c",
+        matches: ["claude", "anthropic", "anthropic api"],
+      },
+      {
+        Icon: SiAnthropic,
+        label: "Claude Code",
+        color: "#cc785c",
+        matches: ["claude code", "sub-agents", "slash commands"],
+      },
+      { Icon: SiTensorflow, label: "TensorFlow", color: "#ff6f00" },
+      { Icon: SiPytorch, label: "PyTorch", color: "#ee4c2c" },
+      { Icon: SiLangchain, label: "LangChain", color: "#C08552" },
+      { Icon: SiOpencv, label: "OpenCV", color: "#5fa04e" },
+      { Icon: SiScikitlearn, label: "scikit-learn", color: "#f7931e" },
+      { Icon: SiSpacy, label: "spaCy", color: "#09a3d5" },
+      {
+        Icon: GiMeshNetwork,
+        label: "Neural Networks",
+        color: "#e1a775",
+        matches: ["neural networks", "cnn", "lstm", "rnn", "transformers"],
+      },
+      {
+        Icon: FaMagic,
+        label: "Generative AI",
+        color: "#bcb0e8",
+        matches: [
+          "generative ai",
+          "genai",
+          "llm",
+          "rag",
+          "mcp",
+          "ollama",
+          "together",
+          "faiss",
+          "chromadb",
         ],
-    },
-    {
-        title: 'Frameworks',
-        subtitle: 'What I build with',
-        Icon: FiLayers,
-        accent: '#8C5A3C',
-        items: [
-            { Icon: SiReact, label: 'React', color: '#61dafb' },
-            { Icon: SiNextdotjs, label: 'Next.js', color: '#F5DEC3' },
-            { Icon: SiVite, label: 'Vite', color: '#646cff' },
-            { Icon: SiTailwindcss, label: 'Tailwind CSS', color: '#38bdf8' },
-            { Icon: SiExpress, label: 'Express', color: '#F5DEC3' },
-            { Icon: SiLaravel, label: 'Laravel', color: '#ff2d20', matches: ['laravel', 'laravel api'] },
-            { Icon: SiWordpress, label: 'WordPress', color: '#21759b', matches: ['wordpress', 'wp'] },
-            { Icon: SiFlask, label: 'Flask', color: '#F5DEC3', matches: ['flask', 'gevent'] },
-            { Icon: SiFlutter, label: 'Flutter', color: '#02569b' },
-            { Icon: SiSocketdotio, label: 'Socket.IO', color: '#F5DEC3', matches: ['socket.io', 'engine.io'] },
-            { Icon: SiCelery, label: 'Celery', color: '#a9cc54' },
-            { Icon: SiSwagger, label: 'Swagger', color: '#85ea2d', matches: ['swagger', 'openapi'] },
-            { Icon: SiPostman, label: 'Postman', color: '#ff6c37' },
-        ],
-    },
-    {
-        title: 'AI / ML',
-        subtitle: 'Models, training, inference',
-        Icon: FiCpu,
-        accent: '#4B2E2B',
-        items: [
-            { Icon: SiOpenai, label: 'OpenAI', color: '#10a37f', matches: ['openai', 'openai gpt-4', 'gpt-4', 'gpt-3.5'] },
-            { Icon: SiClaude, label: 'Claude', color: '#cc785c', matches: ['claude', 'anthropic', 'anthropic api'] },
-            { Icon: SiAnthropic, label: 'Claude Code', color: '#cc785c', matches: ['claude code', 'sub-agents', 'slash commands'] },
-            { Icon: SiTensorflow, label: 'TensorFlow', color: '#ff6f00' },
-            { Icon: SiPytorch, label: 'PyTorch', color: '#ee4c2c' },
-            { Icon: SiLangchain, label: 'LangChain', color: '#C08552' },
-            { Icon: SiOpencv, label: 'OpenCV', color: '#5fa04e' },
-            { Icon: SiScikitlearn, label: 'scikit-learn', color: '#f7931e' },
-            { Icon: SiSpacy, label: 'spaCy', color: '#09a3d5' },
-            { Icon: GiMeshNetwork, label: 'Neural Networks', color: '#8C5A3C', matches: ['neural networks', 'cnn', 'lstm', 'rnn', 'transformers'] },
-            { Icon: FaMagic, label: 'Generative AI', color: '#4B2E2B', matches: ['generative ai', 'genai', 'llm', 'rag', 'mcp', 'ollama', 'together', 'faiss', 'chromadb'] },
-            { Icon: SiWeightsandbiases, label: 'Weights & Biases', color: '#FFBE00' },
-        ],
-    },
-    {
-        title: 'Data & Infra',
-        subtitle: 'Storage, ops, deployment',
-        Icon: FiDatabase,
-        accent: '#4ade80',
-        items: [
-            { Icon: SiMongodb, label: 'MongoDB', color: '#4faa41' },
-            { Icon: SiMysql, label: 'MySQL', color: '#00758f' },
-            { Icon: SiPrisma, label: 'Prisma', color: '#F5DEC3', matches: ['prisma', 'prisma db', 'prisma orm'] },
-            { Icon: FaDatabase, label: 'SQL', color: '#e2c5b3', matches: ['sql', 'sqlalchemy'] },
-            { Icon: SiRedis, label: 'Redis', color: '#dc382d' },
-            { Icon: SiDocker, label: 'Docker', color: '#2496ed' },
-            { Icon: SiNginx, label: 'NGINX', color: '#009639' },
-            { Icon: FaAws, label: 'AWS', color: '#ff9900', matches: ['aws', 'aws bedrock', 's3', 'lambda', 'iam', 'ec2', 'rds'] },
-            { Icon: SiGooglecloud, label: 'Google Cloud', color: '#4285f4' },
-            { Icon: SiCloudflare, label: 'Cloudflare', color: '#f38020', matches: ['cloudflare', 'cloudflare workers', 'r2', 'kv'] },
-            { Icon: SiGit, label: 'Git', color: '#f05033' },
-            { Icon: SiGithub, label: 'GitHub', color: '#F5DEC3' },
-        ],
-    },
-    {
-        title: 'Creative & Tools',
-        subtitle: 'Design, motion, audio, 3D',
-        Icon: FiAperture,
-        accent: '#f59e0b',
-        items: [
-            { Icon: SiFigma, label: 'Figma', color: '#f24e1e' },
-            { Icon: DiPhotoshop, label: 'Photoshop', color: '#2da8fa' },
-            { Icon: FaMagic, label: 'After Effects', color: '#9a98fc' },
-            { Icon: FaFilm, label: 'Premiere Pro', color: '#9c9bfb' },
-            { Icon: FaCameraRetro, label: 'Lightroom', color: '#00a5f3' },
-            { Icon: SiAffinitydesigner, label: 'Affinity Designer', color: '#50baea' },
-            { Icon: SiAffinityphoto, label: 'Affinity Photo', color: '#e874fd' },
-            { Icon: SiBlender, label: 'Blender', color: '#ea7600' },
-            { Icon: SiUnity, label: 'Unity', color: '#F5DEC3' },
-            { Icon: SiSparkar, label: 'Spark AR', color: '#ff5e5b' },
-            { Icon: GiMusicalKeyboard, label: 'FL Studio', color: '#f59e0b' },
-        ],
-    },
+      },
+      { Icon: SiWeightsandbiases, label: "Weights & Biases", color: "#FFBE00" },
+    ],
+  },
+  {
+    title: "Data & Infra",
+    subtitle: "Storage, ops, deployment",
+    Icon: FiDatabase,
+    accent: "#4ade80",
+    items: [
+      { Icon: SiMongodb, label: "MongoDB", color: "#4faa41" },
+      { Icon: SiMysql, label: "MySQL", color: "#00758f" },
+      {
+        Icon: SiPrisma,
+        label: "Prisma",
+        color: "#F5DEC3",
+        matches: ["prisma", "prisma db", "prisma orm"],
+      },
+      {
+        Icon: FaDatabase,
+        label: "SQL",
+        color: "#e2c5b3",
+        matches: ["sql", "sqlalchemy"],
+      },
+      { Icon: SiRedis, label: "Redis", color: "#dc382d" },
+      { Icon: SiDocker, label: "Docker", color: "#2496ed" },
+      { Icon: SiNginx, label: "NGINX", color: "#009639" },
+      {
+        Icon: FaAws,
+        label: "AWS",
+        color: "#ff9900",
+        matches: ["aws", "aws bedrock", "s3", "lambda", "iam", "ec2", "rds"],
+      },
+      { Icon: SiGooglecloud, label: "Google Cloud", color: "#4285f4" },
+      {
+        Icon: SiCloudflare,
+        label: "Cloudflare",
+        color: "#f38020",
+        matches: ["cloudflare", "cloudflare workers", "r2", "kv"],
+      },
+      { Icon: SiGit, label: "Git", color: "#f05033" },
+      { Icon: SiGithub, label: "GitHub", color: "#F5DEC3" },
+    ],
+  },
+  {
+    title: "Creative & Tools",
+    subtitle: "Design, motion, audio, 3D",
+    Icon: FiAperture,
+    accent: "#f59e0b",
+    items: [
+      { Icon: SiFigma, label: "Figma", color: "#f24e1e" },
+      { Icon: DiPhotoshop, label: "Photoshop", color: "#2da8fa" },
+      { Icon: FaMagic, label: "After Effects", color: "#9a98fc" },
+      { Icon: FaFilm, label: "Premiere Pro", color: "#9c9bfb" },
+      { Icon: FaCameraRetro, label: "Lightroom", color: "#00a5f3" },
+      {
+        Icon: SiAffinitydesigner,
+        label: "Affinity Designer",
+        color: "#50baea",
+      },
+      { Icon: SiAffinityphoto, label: "Affinity Photo", color: "#e874fd" },
+      { Icon: SiBlender, label: "Blender", color: "#ea7600" },
+      { Icon: SiUnity, label: "Unity", color: "#F5DEC3" },
+      { Icon: SiSparkar, label: "Spark AR", color: "#ff5e5b" },
+      { Icon: GiMusicalKeyboard, label: "FL Studio", color: "#f59e0b" },
+    ],
+  },
 ];
 
 const Skills = () => {
-    const spotlight = useSpotlight();
-    const [hoveredSkill, setHoveredSkill] = useState(null);
-    const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const spotlight = useSpotlight();
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
-    const handleMouseEnter = (e, skill) => {
-        playTick();
-        setHoveredSkill(skill);
-        setTooltipPos({ x: e.clientX, y: e.clientY });
+  const handleMouseEnter = (e, skill) => {
+    playTick();
+    setHoveredSkill(skill);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = Math.min(280, window.innerWidth - 24);
+    setTooltipPos({
+      x: Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)),
+      y: Math.max(12, Math.min(rect.bottom + 10, window.innerHeight - 230)),
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredSkill(null);
+  };
+
+  useEffect(() => {
+    const dismiss = () => setHoveredSkill(null);
+    window.addEventListener("scroll", dismiss, { passive: true });
+    window.addEventListener("resize", dismiss);
+    return () => {
+      window.removeEventListener("scroll", dismiss);
+      window.removeEventListener("resize", dismiss);
     };
+  }, []);
 
-    const handleMouseMove = (e) => {
-        setTooltipPos({ x: e.clientX, y: e.clientY });
-    };
+  const relevantProjects = hoveredSkill
+    ? projects.filter((p) =>
+        p.stack.some((s) =>
+          hoveredSkill.matches.some((m) => s.toLowerCase() === m.toLowerCase()),
+        ),
+      )
+    : [];
 
-    const handleMouseLeave = () => {
-        setHoveredSkill(null);
-    };
+  return (
+    <div className="skills">
+      <div className="skills-head cinematic-reveal delay-1">
+        <span className="section-eyebrow">Skills</span>
+        <h2 className="section-title">What I work with</h2>
+        <p className="section-lead">
+          The tools behind the ideas. Explore a skill to see where I&apos;ve put
+          it to work.
+        </p>
+      </div>
 
-    const relevantProjects = hoveredSkill
-        ? projects.filter((p) =>
-              p.stack.some((s) =>
-                  hoveredSkill.matches.some((m) => s.toLowerCase() === m.toLowerCase())
-              )
-          )
-        : [];
+      <div className="skill-grid">
+        {groups.map((group, gi) => {
+          const GroupIcon = group.Icon;
+          return (
+            <article
+              key={group.title}
+              className="skill-card cinematic-reveal"
+              style={{
+                animationDelay: `${gi * 0.08 + 0.3}s`,
+                "--card-accent": group.accent,
+              }}
+              onMouseEnter={playTick}
+              onMouseMove={spotlight.onMouseMove}
+            >
+              <header className="skill-card-head">
+                <span className="skill-card-icon" aria-hidden="true">
+                  <GroupIcon />
+                </span>
+                <div className="skill-card-headtext">
+                  <h3 className="skill-card-title">{group.title}</h3>
+                  <p className="skill-card-subtitle">{group.subtitle}</p>
+                </div>
+                <span className="skill-card-count" aria-hidden="true">
+                  {group.items.length}
+                </span>
+              </header>
 
-    return (
-        <div className="skills">
-            <div className="skills-head cinematic-reveal delay-1">
-                <span className="section-eyebrow">Skills</span>
-                <h2 className="section-title">What I work with</h2>
-                <p className="section-lead">
-                    A snapshot of the languages, frameworks, AI/ML stack, data &amp; infra, and creative tools I use day-to-day.
-                </p>
-            </div>
-
-            <div className="skill-grid">
-                {groups.map((group, gi) => {
-                    const GroupIcon = group.Icon;
-                    return (
-                        <article
-                            key={group.title}
-                            className="skill-card cinematic-reveal"
-                            style={{
-                                animationDelay: `${gi * 0.08 + 0.3}s`,
-                                '--card-accent': group.accent,
-                            }}
-                            onMouseEnter={playTick}
-                            onMouseMove={spotlight.onMouseMove}
-                        >
-                            <header className="skill-card-head">
-                                <span className="skill-card-icon" aria-hidden="true">
-                                    <GroupIcon />
-                                </span>
-                                <div className="skill-card-headtext">
-                                    <h3 className="skill-card-title">{group.title}</h3>
-                                    <p className="skill-card-subtitle">{group.subtitle}</p>
-                                </div>
-                                <span className="skill-card-count" aria-hidden="true">
-                                    {group.items.length}
-                                </span>
-                            </header>
-
-                                <ul className="skill-chips">
-                                    {group.items.map(({ Icon, label, color, matches }) => {
-                                        const skill = { label, matches: matches || [label] };
-                                        return (
-                                            <li
-                                                key={label}
-                                                className="skill-chip"
-                                                style={{ '--chip-color': color }}
-                                                onMouseEnter={(e) => handleMouseEnter(e, skill)}
-                                                onMouseMove={handleMouseMove}
-                                                onMouseLeave={handleMouseLeave}
-                                            >
-                                                <Icon className="chip-icon" />
-                                                <span>{label}</span>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                        </article>
-                    );
-                })}
-            </div>
-
-            {hoveredSkill && relevantProjects.length > 0 &&
-                createPortal(
-                    <div
-                        className="skill-tooltip"
-                        style={{
-                            left: tooltipPos.x + 16,
-                            top: tooltipPos.y + 16,
+              <ul className="skill-chips">
+                {group.items.map(({ Icon, label, color, matches }) => {
+                  const skill = { label, matches: matches || [label] };
+                  return (
+                    <li key={label}>
+                      <button
+                        type="button"
+                        className="skill-chip"
+                        style={{ "--chip-color": color }}
+                        onMouseEnter={(e) => handleMouseEnter(e, skill)}
+                        onFocus={(e) => handleMouseEnter(e, skill)}
+                        onClick={(e) => handleMouseEnter(e, skill)}
+                        onMouseLeave={handleMouseLeave}
+                        onBlur={handleMouseLeave}
+                        onKeyDown={(e) => {
+                          if (e.key === "Escape") handleMouseLeave();
                         }}
-                    >
-                        <div className="skill-tooltip-header">Featured in:</div>
-                        <ul className="skill-tooltip-list">
-                            {relevantProjects.map((p) => (
-                                <li key={p.title}>{p.title}</li>
-                            ))}
-                        </ul>
-                    </div>,
-                    document.body
-                )}
-        </div>
-    );
+                        aria-describedby={
+                          hoveredSkill?.label === label &&
+                          relevantProjects.length > 0
+                            ? "skill-projects"
+                            : undefined
+                        }
+                      >
+                        <Icon className="chip-icon" />
+                        <span>{label}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </article>
+          );
+        })}
+      </div>
+
+      {hoveredSkill &&
+        relevantProjects.length > 0 &&
+        createPortal(
+          <div
+            className="skill-tooltip"
+            id="skill-projects"
+            role="tooltip"
+            style={{
+              left: tooltipPos.x,
+              top: tooltipPos.y,
+            }}
+          >
+            <div className="skill-tooltip-header">
+              {hoveredSkill.label} in action
+            </div>
+            <ul className="skill-tooltip-list">
+              {relevantProjects.slice(0, 4).map((p) => (
+                <li key={p.title}>{p.title}</li>
+              ))}
+            </ul>
+            {relevantProjects.length > 4 && (
+              <p className="skill-tooltip-more">
+                And {relevantProjects.length - 4} more projects
+              </p>
+            )}
+          </div>,
+          document.body,
+        )}
+    </div>
+  );
 };
 
 export default Skills;

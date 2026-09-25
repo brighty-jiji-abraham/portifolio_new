@@ -1,15 +1,17 @@
 import { useEffect, useRef } from 'react';
 import './CustomCursor.css';
+import { useMotionPreference } from '../../hooks/useMotionPreference';
 
 const INTERACTIVE_SELECTOR = 'a, button, input, textarea, select, [data-cursor]';
 
 const CustomCursor = () => {
+    const reducedMotion = useMotionPreference();
     const dotRef = useRef(null);
     const ringRef = useRef(null);
 
     useEffect(() => {
         // Skip on touch / pointer-coarse devices
-        if (typeof window === 'undefined') return;
+        if (typeof window === 'undefined' || reducedMotion) return;
         const mql = window.matchMedia('(hover: hover) and (pointer: fine)');
         if (!mql.matches) return;
 
@@ -94,7 +96,7 @@ const CustomCursor = () => {
             document.removeEventListener('mouseenter', showCursor);
             document.body.classList.remove('has-custom-cursor');
         };
-    }, []);
+    }, [reducedMotion]);
 
     return (
         <>

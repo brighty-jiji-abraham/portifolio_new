@@ -1,589 +1,537 @@
 /* eslint-disable react/no-unknown-property */
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Float, Sparkles, Stars, Environment, useTexture } from '@react-three/drei';
-import React, { useCallback, useEffect, useRef, useState, useMemo, Suspense } from 'react';
-import { renderToString } from 'react-dom/server';
-import { updateDrone } from '../../hooks/useSoundscape';
-import * as THREE from 'three';
-import { FaReact, FaPython, FaAws, FaNodeJs } from 'react-icons/fa';
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
+import { Component, Suspense, useEffect, useRef, useState } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { FaReact, FaPython, FaAws, FaNodeJs } from "react-icons/fa";
 import {
-    SiPytorch,
-    SiTensorflow,
-    SiDocker,
-    SiOpenai,
-    SiAnthropic,
-    SiLangchain,
-    SiMongodb,
-    SiRedis,
-    SiNextdotjs,
-    SiTypescript,
-    SiKubernetes,
-    SiPostgresql,
-    SiGraphql,
-    SiVuedotjs,
-    SiTailwindcss,
-    SiLinux,
-} from 'react-icons/si';
-import './Scene3D.css';
+  SiPytorch,
+  SiTensorflow,
+  SiDocker,
+  SiOpenai,
+  SiMongodb,
+  SiRedis,
+  SiTypescript,
+  SiAnthropic,
+  SiKubernetes,
+  SiLangchain,
+  SiPostgresql,
+  SiGraphql,
+  SiNextdotjs,
+  SiVuedotjs,
+  SiTailwindcss,
+  SiLinux,
+} from "react-icons/si";
+import * as THREE from "three";
+import SpaceObjects from "./SpaceObjects";
+import "./Scene3D.css";
 
-/* Detect theme changes */
-const useTheme = () => {
-    const [theme, setTheme] = useState(
-        typeof document !== 'undefined' ? document.documentElement.getAttribute('data-theme') || 'dark' : 'dark'
+const TECH = [
+  { Icon: FaPython, color: "#ffce3e" },
+  { Icon: FaReact, color: "#61dafb" },
+  { Icon: SiOpenai, color: "#77d5b3" },
+  { Icon: SiPytorch, color: "#ff7561" },
+  { Icon: SiDocker, color: "#54baff" },
+  { Icon: SiAnthropic, color: "#edb391" },
+  { Icon: FaNodeJs, color: "#8bd66d" },
+  { Icon: SiTensorflow, color: "#ffa64e" },
+  { Icon: SiMongodb, color: "#73bf67" },
+  { Icon: FaAws, color: "#ffbc65" },
+  { Icon: SiTypescript, color: "#69a6ff" },
+  { Icon: SiRedis, color: "#ff7474" },
+  { Icon: SiKubernetes, color: "#739bff" },
+  { Icon: SiLangchain, color: "#83d8d2" },
+  { Icon: SiPostgresql, color: "#72a7d0" },
+  { Icon: SiGraphql, color: "#f16ccc" },
+  { Icon: SiNextdotjs, color: "#ffffff", lightColor: "#302118" },
+  { Icon: SiVuedotjs, color: "#69cfaa" },
+  { Icon: SiTailwindcss, color: "#38bdf8" },
+  { Icon: SiLinux, color: "#fcc624" },
+];
+const ORBITS = [
+  {
+    radius: 2.35,
+    rotation: [0.9, 0.25, -0.25],
+    color: "#dba57c",
+    speed: 0.13,
+    phase: 0,
+  },
+  {
+    radius: 2.6,
+    rotation: [-0.65, -0.35, 0.45],
+    color: "#82c9c2",
+    speed: -0.09,
+    phase: 0.45,
+  },
+  {
+    radius: 2.85,
+    rotation: [0.4, 1.05, -0.4],
+    color: "#b6a2db",
+    speed: 0.065,
+    phase: 0.9,
+  },
+  {
+    radius: 3.05,
+    rotation: [1.2, -0.5, 0.7],
+    color: "#8bb8e5",
+    speed: -0.075,
+    phase: 1.35,
+  },
+  {
+    radius: 3.25,
+    rotation: [-0.35, 0.7, -0.65],
+    color: "#dda1c9",
+    speed: 0.085,
+    phase: 1.8,
+  },
+];
+
+function useTheme() {
+  const [theme, setTheme] = useState(
+    () => document.documentElement.dataset.theme || "dark",
+  );
+  useEffect(() => {
+    const observer = new MutationObserver(() =>
+      setTheme(document.documentElement.dataset.theme || "dark"),
     );
-    useEffect(() => {
-        const observer = new MutationObserver(() => {
-            setTheme(document.documentElement.getAttribute('data-theme') || 'dark');
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-        return () => observer.disconnect();
-    }, []);
-    return theme;
-};
-
-/* Scroll progress in [0..1] */
-const useScrollProgressRef = () => {
-    const ref = useRef(0);
-    useEffect(() => {
-        const update = () => {
-            const max = document.documentElement.scrollHeight - window.innerHeight;
-            ref.current = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-        };
-        update();
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update, { passive: true });
-        return () => {
-            window.removeEventListener('scroll', update);
-            window.removeEventListener('resize', update);
-        };
-    }, []);
-    return ref;
-};
-
-/* ---------- Procedural Lava Layer ---------- */
-const LavaLayer = () => {
-    const materialRef = useRef();
-
-    const vertexShader = `
-        varying vec2 vUv;
-        varying float vNoise;
-        uniform float uTime;
-
-        // Simplex 3D Noise 
-        vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
-        vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
-
-        float snoise(vec3 v){ 
-            const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-            const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
-            vec3 i  = floor(v + dot(v, C.yyy) );
-            vec3 x0 = v - i + dot(i, C.xxx) ;
-            vec3 g = step(x0.yzx, x0.xyz);
-            vec3 l = 1.0 - g;
-            vec3 i1 = min( g.xyz, l.zxy );
-            vec3 i2 = max( g.xyz, l.zxy );
-            vec3 x1 = x0 - i1 + 1.0 * C.xxx;
-            vec3 x2 = x0 - i2 + 2.0 * C.xxx;
-            vec3 x3 = x0 - 1.0 + 3.0 * C.xxx;
-            i = mod(i, 289.0 ); 
-            vec4 p = permute( permute( permute( 
-                        i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
-                    + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
-                    + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
-            float n_ = 1.0/7.0; 
-            vec3  ns = n_ * D.wyz - D.xzx;
-            vec4 j = p - 49.0 * floor(p * ns.z *ns.z);  
-            vec4 x_ = floor(j * ns.z);
-            vec4 y_ = floor(j - 7.0 * x_ );    
-            vec4 x = x_ *ns.x + ns.yyyy;
-            vec4 y = y_ *ns.x + ns.yyyy;
-            vec4 h = 1.0 - abs(x) - abs(y);
-            vec4 b0 = vec4( x.xy, y.xy );
-            vec4 b1 = vec4( x.zw, y.zw );
-            vec4 s0 = floor(b0)*2.0 + 1.0;
-            vec4 s1 = floor(b1)*2.0 + 1.0;
-            vec4 sh = -step(h, vec4(0.0));
-            vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-            vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
-            vec3 p0 = vec3(a0.xy,h.x);
-            vec3 p1 = vec3(a0.zw,h.y);
-            vec3 p2 = vec3(a1.xy,h.z);
-            vec3 p3 = vec3(a1.zw,h.w);
-            vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-            p0 *= norm.x;
-            p1 *= norm.y;
-            p2 *= norm.z;
-            p3 *= norm.w;
-            vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-            m = m * m;
-            return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
-        }
-
-        void main() {
-            vUv = uv;
-
-            float n1 = abs(snoise(position * 2.0 + uTime * 0.05));
-            float n2 = abs(snoise(position * 4.0 - uTime * 0.03));
-            
-            vNoise = smoothstep(0.0, 0.4, n1 * 0.6 + n2 * 0.4);
-            
-            // Push lava outwards based on crack depth to make it 3D
-            float burst = smoothstep(0.12, 0.0, vNoise);
-            float displacement = mix(0.005, 0.035, burst);
-            
-            vec3 newPosition = position + normal * displacement; 
-            
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-        }
-    `;
-
-    const fragmentShader = `
-        uniform vec3 uMagmaCore;
-        uniform vec3 uMagmaEdge;
-        uniform float uTime;
-        
-        varying vec2 vUv;
-        varying float vNoise;
-
-        void main() {
-            vec3 magmaColor = mix(uMagmaCore, uMagmaEdge, vNoise * 4.0);
-            
-            float pulse = sin(uTime * 2.0) * 0.5 + 0.5;
-            float magmaIntensity = smoothstep(0.3, 0.0, vNoise) * (0.8 + 0.2 * pulse);
-            
-            // Crust is transparent (alpha=0), Cracks are glowing (alpha=1)
-            float alpha = smoothstep(0.12, 0.0, vNoise);
-            
-            gl_FragColor = vec4(magmaColor * magmaIntensity, alpha * 0.95);
-        }
-    `;
-
-    const uniforms = useMemo(() => ({
-        uMagmaCore: { value: new THREE.Color('#ffdd44') },
-        uMagmaEdge: { value: new THREE.Color('#ff2200') },
-        uTime: { value: 0 }
-    }), []);
-
-    useFrame((state) => {
-        if (materialRef.current) {
-            materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
-        }
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
     });
+    return () => observer.disconnect();
+  }, []);
+  return theme;
+}
 
-    return (
-        <mesh>
-            <sphereGeometry args={[1.56, 128, 128]} />
-            <shaderMaterial
-                ref={materialRef}
-                vertexShader={vertexShader}
-                fragmentShader={fragmentShader}
-                uniforms={uniforms}
-                transparent={true}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-            />
+function useIconTexture(Icon, color) {
+  const [texture, setTexture] = useState(null);
+  useEffect(() => {
+    const svg = renderToStaticMarkup(<Icon />)
+      .replace(/currentColor/g, color)
+      .replace(/width="1em"/, 'width="128"')
+      .replace(/height="1em"/, 'height="128"');
+    const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+    let disposed = false;
+    const loaded = new THREE.TextureLoader().load(url, (map) => {
+      URL.revokeObjectURL(url);
+      if (disposed) return;
+      map.colorSpace = THREE.SRGBColorSpace;
+      setTexture(map);
+    });
+    return () => {
+      disposed = true;
+      URL.revokeObjectURL(url);
+      loaded.dispose();
+    };
+  }, [Icon, color]);
+  return texture;
+}
+
+function Earth({ timeRef, isLight }) {
+  const globe = useRef();
+  const clouds = useRef();
+  const base = import.meta.env.BASE_URL;
+  const [color, normal, specular, cloud] = useTexture(
+    [
+      `${base}textures/earth_color.jpg`,
+      `${base}textures/earth_normal.jpg`,
+      `${base}textures/earth_specular.jpg`,
+      `${base}textures/earth_clouds.png`,
+    ],
+    (maps) => {
+      // Only color maps contain sRGB color data; normal/specular are linear data.
+      maps[0].colorSpace = THREE.SRGBColorSpace;
+      maps[3].colorSpace = THREE.SRGBColorSpace;
+      maps.forEach((map) => {
+        map.anisotropy = 4;
+      });
+    },
+  );
+  useFrame(() => {
+    if (globe.current)
+      globe.current.rotation.y = 3.45 + timeRef.current * 0.055;
+    if (clouds.current)
+      clouds.current.rotation.y = 3.45 + timeRef.current * 0.068;
+  });
+  return (
+    <group rotation={[0.12, 0, -0.18]} scale={1.22}>
+      <mesh ref={globe}>
+        <sphereGeometry args={[1.58, 64, 48]} />
+        <meshPhongMaterial
+          map={color}
+          normalMap={normal}
+          normalScale={[0.5, 0.5]}
+          specularMap={specular}
+          specular="#263f47"
+          shininess={24}
+        />
+      </mesh>
+      <mesh ref={clouds}>
+        <sphereGeometry args={[1.6, 48, 32]} />
+        <meshPhongMaterial
+          map={cloud}
+          transparent
+          opacity={0.27}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[1.67, 48, 32]} />
+        <shaderMaterial
+          transparent
+          depthWrite={false}
+          side={THREE.BackSide}
+          blending={THREE.AdditiveBlending}
+          uniforms={{
+            color: { value: new THREE.Color(isLight ? "#5888a8" : "#82d8e5") },
+          }}
+          vertexShader={`varying vec3 vNormal; varying vec3 vView;
+                        void main() { vec4 pos = modelViewMatrix * vec4(position, 1.0);
+                        vNormal = normalize(normalMatrix * normal); vView = normalize(-pos.xyz);
+                        gl_Position = projectionMatrix * pos; }`}
+          fragmentShader={`varying vec3 vNormal; varying vec3 vView; uniform vec3 color;
+                        void main() { float glow = pow(clamp(0.62 + dot(normalize(vNormal), normalize(vView)), 0.0, 1.0), 3.0);
+                        gl_FragColor = vec4(color, glow * 0.7); }`}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+function Satellite({ item, index, orbit, timeRef, isLight }) {
+  const sprite = useRef();
+  const texture = useIconTexture(
+    item.Icon,
+    isLight ? item.lightColor || item.color : item.color,
+  );
+  useFrame(() => {
+    if (!sprite.current) return;
+    const angle =
+      (index * Math.PI) / 2 + orbit.phase + timeRef.current * orbit.speed;
+    sprite.current.position.set(
+      Math.cos(angle) * orbit.radius,
+      Math.sin(angle) * orbit.radius,
+      0,
+    );
+  });
+  return (
+    <sprite ref={sprite} scale={[0.38, 0.38, 0.38]}>
+      <spriteMaterial
+        key={texture?.uuid || "loading"}
+        map={texture}
+        transparent
+        opacity={texture ? 0.95 : 0}
+        depthTest
+        depthWrite={false}
+      />
+    </sprite>
+  );
+}
+
+function Asteroids({ timeRef }) {
+  const belt = useRef();
+  const rock = useRef(new THREE.Object3D());
+  useFrame(() => {
+    if (!belt.current) return;
+    const t = timeRef.current;
+    for (let i = 0; i < 14; i++) {
+      const angle = (i / 14) * Math.PI * 2 + t * 0.028;
+      const radius = 3.55 + (i % 4) * 0.13;
+      rock.current.position.set(
+        Math.cos(angle) * radius,
+        Math.sin(angle) * radius * 0.74,
+        Math.sin(angle + i * 0.8) * 0.9 - 0.5,
+      );
+      rock.current.rotation.set(i + t * 0.08, i * 0.7 + t * 0.12, i * 0.3);
+      const size = 0.055 + (i % 4) * 0.022;
+      rock.current.scale.set(size * 1.35, size, size * 0.8);
+      rock.current.updateMatrix();
+      belt.current.setMatrixAt(i, rock.current.matrix);
+    }
+    belt.current.instanceMatrix.needsUpdate = true;
+  });
+  return (
+    <instancedMesh
+      ref={belt}
+      args={[null, null, 14]}
+      name="asteroid-belt"
+      frustumCulled={false}
+    >
+      <icosahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial color="#988375" roughness={0.95} flatShading />
+    </instancedMesh>
+  );
+}
+
+function OrbitalRocket({ timeRef }) {
+  const rocket = useRef();
+  const flame = useRef();
+  useFrame(() => {
+    const t = timeRef.current;
+    const angle = -2.3 + t * 0.075;
+    if (rocket.current) {
+      rocket.current.position.set(
+        Math.cos(angle) * 3.65,
+        Math.sin(angle) * 2.7,
+        0.7,
+      );
+      rocket.current.rotation.z =
+        Math.atan2(Math.cos(angle) * 2.7, -Math.sin(angle) * 3.65) -
+        Math.PI / 2;
+    }
+    if (flame.current) flame.current.scale.y = 0.9 + Math.sin(t * 24) * 0.16;
+  });
+  return (
+    <group ref={rocket} scale={0.62} name="orbital-rocket">
+      <mesh>
+        <cylinderGeometry args={[0.13, 0.15, 0.52, 16]} />
+        <meshStandardMaterial
+          color="#e4e8de"
+          roughness={0.45}
+          metalness={0.15}
+        />
+      </mesh>
+      <mesh position={[0, 0.39, 0]}>
+        <coneGeometry args={[0.13, 0.26, 16]} />
+        <meshStandardMaterial color="#df8f63" roughness={0.45} />
+      </mesh>
+      {[-1, 1].map((side) => (
+        <mesh
+          key={side}
+          position={[side * 0.15, -0.2, 0]}
+          rotation={[0, 0, side * -0.35]}
+        >
+          <coneGeometry args={[0.11, 0.32, 3]} />
+          <meshStandardMaterial color="#bd6b48" roughness={0.55} />
         </mesh>
-    );
-};
-
-/* ---------- Photorealistic Earth ---------- */
-
-const EarthGlobe = ({ isLight, meshRef }) => {
-    const basePath = import.meta.env.BASE_URL;
-    const [colorMap, normalMap, specularMap, cloudsMap] = useTexture([
-        `${basePath}textures/earth_color.jpg`,
-        `${basePath}textures/earth_normal.jpg`,
-        `${basePath}textures/earth_specular.jpg`,
-        `${basePath}textures/earth_clouds.png`
-    ]);
-
-    useEffect(() => {
-        if (colorMap) {
-            [colorMap, normalMap, specularMap, cloudsMap].forEach(t => {
-                t.colorSpace = THREE.SRGBColorSpace;
-                t.anisotropy = 16;
-            });
-            // Fix normal map intensity if needed
-            normalMap.colorSpace = THREE.LinearSRGBColorSpace;
-        }
-    }, [colorMap, normalMap, specularMap, cloudsMap]);
-
-    const cloudsRef = useRef();
-    useFrame((state, delta) => {
-        if (cloudsRef.current) {
-            cloudsRef.current.rotation.y += delta * 0.04;
-        }
-    });
-
-    return (
-        <group>
-            {/* The Solid Earth */}
-            <mesh ref={meshRef}>
-                <sphereGeometry args={[1.56, 64, 64]} />
-                <meshPhongMaterial
-                    map={colorMap}
-                    normalMap={normalMap}
-                    specularMap={specularMap}
-                    specular={new THREE.Color('white')}
-                    shininess={isLight ? 25 : 15}
-                />
-            </mesh>
-
-            {/* Glowing Lava Cracks Overlaid on Earth */}
-            <LavaLayer />
-
-            {/* The Cloud Layer with 3D Displacement */}
-            <mesh ref={cloudsRef}>
-                <sphereGeometry args={[1.57, 128, 128]} />
-                <meshPhongMaterial
-                    map={cloudsMap}
-                    transparent={true}
-                    opacity={isLight ? 0.4 : 0.25}
-                    blending={THREE.AdditiveBlending}
-                    side={THREE.DoubleSide}
-                    depthWrite={false}
-                    displacementMap={cloudsMap}
-                    displacementScale={0.03}
-                />
-            </mesh>
-        </group>
-    );
-};
-
-function DigitalEarth({ scrollRef, mouseRef, meshRef, isLight }) {
-    const groupRef = useRef();
-
-    useFrame((state, delta) => {
-        const p = scrollRef.current;
-        const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
-        
-        if (groupRef.current) {
-            groupRef.current.rotation.y += delta * 0.08;
-            groupRef.current.rotation.x += delta * 0.02;
-            groupRef.current.rotation.x += (m.ny * 0.15 - groupRef.current.rotation.x) * 0.05;
-            groupRef.current.rotation.y += (m.nx * 0.15) * 0.05;
-        }
-        if (meshRef.current) {
-             meshRef.current.rotation.y = groupRef.current.rotation.y;
-             meshRef.current.rotation.x = groupRef.current.rotation.x;
-        }
-    });
-
-    return (
-        <group ref={groupRef}>
-            <Suspense fallback={null}>
-                <EarthGlobe isLight={isLight} meshRef={meshRef} />
-            </Suspense>
-        </group>
-    );
+      ))}
+      <mesh position={[0, 0.07, 0.14]}>
+        <circleGeometry args={[0.065, 16]} />
+        <meshBasicMaterial color="#81d6e5" />
+      </mesh>
+      <mesh position={[0, 0.07, 0.14]}>
+        <torusGeometry args={[0.069, 0.013, 8, 20]} />
+        <meshStandardMaterial color="#617b85" metalness={0.4} roughness={0.4} />
+      </mesh>
+      <group ref={flame} position={[0, -0.27, 0]}>
+        <mesh position={[0, -0.2, 0]} rotation={[0, 0, Math.PI]}>
+          <coneGeometry args={[0.115, 0.4, 12]} />
+          <meshBasicMaterial
+            color="#eea451"
+            transparent
+            opacity={0.8}
+            depthWrite={false}
+          />
+        </mesh>
+        <mesh position={[0, -0.13, 0.06]} rotation={[0, 0, Math.PI]}>
+          <coneGeometry args={[0.065, 0.26, 12]} />
+          <meshBasicMaterial color="#fff1b3" />
+        </mesh>
+      </group>
+    </group>
+  );
 }
 
-/* ---------- Orbiting Tech Satellites ---------- */
+function Universe({
+  scrollRef,
+  mouseRef,
+  orbitRef,
+  reducedMotion,
+  paused,
+  isLight,
+}) {
+  const world = useRef();
+  const timeRef = useRef(0);
+  const layout = useRef({ x: 0, y: 0, width: 400 });
+  const initialized = useRef(false);
+  const { invalidate } = useThree();
 
-const TECH_ICONS = [
-    { Icon: FaPython,       color: '#ffce3e' },
-    { Icon: SiTensorflow,   color: '#ff6f00' },
-    { Icon: SiPytorch,      color: '#ee4c2c' },
-    { Icon: FaReact,        color: '#61dafb', lightColor: '#00d8ff' },
-    { Icon: SiDocker,       color: '#2496ed' },
-    { Icon: SiKubernetes,   color: '#326ce5' },
-    { Icon: SiOpenai,       color: '#10a37f' },
-    { Icon: SiAnthropic,    color: '#cc785c' },
-    { Icon: SiLangchain,    color: '#00f7ff', lightColor: '#0099aa' },
-    { Icon: SiMongodb,      color: '#4faa41' },
-    { Icon: SiPostgresql,   color: '#336791' },
-    { Icon: SiRedis,        color: '#dc382d' },
-    { Icon: SiGraphql,      color: '#e10098' },
-    { Icon: FaNodeJs,       color: '#5fa04e' },
-    { Icon: SiNextdotjs,    color: '#ffffff', lightColor: '#000000' },
-    { Icon: SiVuedotjs,     color: '#4fc08d' },
-    { Icon: SiTailwindcss,  color: '#38bdf8' },
-    { Icon: FaAws,          color: '#ff9900' },
-    { Icon: SiLinux,        color: '#fcc624' },
-    { Icon: SiTypescript,   color: '#3178c6' },
-];
+  useEffect(() => {
+    const target = document.getElementById("hero-world");
+    if (!target) return;
+    const measure = () => {
+      const rect = target.getBoundingClientRect();
+      layout.current = {
+        x: rect.left + rect.width / 2,
+        y: rect.top + window.scrollY + rect.height / 2,
+        width: rect.width,
+      };
+      invalidate();
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(target);
+    observer.observe(document.querySelector(".about"));
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", invalidate, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", invalidate);
+    };
+  }, [invalidate]);
 
-const useSvgTexture = (Icon, color) => {
-    return useMemo(() => {
-        let svgString = renderToString(<Icon />);
-        svgString = svgString.replace(/currentColor/g, color);
-        svgString = svgString.replace(/width="1em"/, 'width="256"').replace(/height="1em"/, 'height="256"');
-        const blob = new Blob([svgString], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        const texture = new THREE.TextureLoader().load(url);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.generateMipmaps = true;
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
-        return texture;
-    }, [Icon, color]);
-};
-
-function TechIconSatellite({ Icon, color, lightColor, index, isLight }) {
-    const orbitGroup = useRef();
-    const iconGroup = useRef();
-    const trailRef = useRef();
-    
-    const displayColor = isLight ? (lightColor || color) : color;
-    const texture = useSvgTexture(Icon, displayColor);
-
-    const [orbitParams] = useState(() => {
-        const isPolar = index % 3 === 0;
-        const angleX = isPolar ? (Math.random() * 0.5 + 1.0) : (Math.random() - 0.5) * 0.5;
-        const angleY = (Math.random() - 0.5) * Math.PI * 2;
-        const angleZ = (Math.random() - 0.5) * Math.PI * 2;
-        
-        const radius = 2.0 + Math.random() * 1.5;
-        const speed = (0.15 + Math.random() * 0.25) * (Math.random() > 0.5 ? 1 : -1);
-        const startPhase = Math.random() * Math.PI * 2;
-        
-        const ringOpacity = Math.random() > 0.6 ? 0.3 : 0.08;
-        return { angleX, angleY, angleZ, radius, speed, startPhase, ringOpacity };
-    });
-
-    useFrame((state) => {
-        const t = state.clock.elapsedTime;
-        if (orbitGroup.current) {
-            orbitGroup.current.rotation.x = orbitParams.angleX;
-            orbitGroup.current.rotation.y = orbitParams.angleY;
-            orbitGroup.current.rotation.z = orbitParams.angleZ;
-            
-            const currentAngle = orbitParams.startPhase + t * orbitParams.speed;
-            iconGroup.current.position.x = Math.cos(currentAngle) * orbitParams.radius;
-            iconGroup.current.position.y = Math.sin(currentAngle) * orbitParams.radius;
-            
-            if (trailRef.current) {
-                trailRef.current.rotation.z = currentAngle;
-            }
-        }
-    });
-
-    const ringGeometry = useMemo(() => new THREE.RingGeometry(orbitParams.radius - 0.005, orbitParams.radius + 0.005, 64), [orbitParams.radius]);
-    const trailGeometry = useMemo(() => new THREE.RingGeometry(orbitParams.radius - 0.015, orbitParams.radius + 0.015, 32, 1, 0, Math.PI / 4), [orbitParams.radius]);
-    
-    const blendingMode = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
-
-    return (
-        <group ref={orbitGroup}>
-            <mesh geometry={ringGeometry}>
-                <meshBasicMaterial color={displayColor} transparent opacity={isLight ? orbitParams.ringOpacity * 1.5 : orbitParams.ringOpacity} side={THREE.DoubleSide} blending={blendingMode} />
-            </mesh>
-
-            <mesh geometry={trailGeometry} ref={trailRef}>
-                <meshBasicMaterial color={displayColor} transparent opacity={0.6} side={THREE.DoubleSide} blending={blendingMode} />
-            </mesh>
-
-            <group ref={iconGroup}>
-                <sprite scale={[0.45, 0.45, 0.45]}>
-                    <spriteMaterial 
-                        map={texture} 
-                        transparent={true} 
-                        depthTest={true} 
-                        blending={blendingMode}
-                    />
-                </sprite>
-            </group>
-        </group>
+  useFrame((state, dt) => {
+    const delta = Math.min(dt, 0.05);
+    const { departure, chapter, progress } = scrollRef.current;
+    const pointer =
+      reducedMotion || paused ? { nx: 0, ny: 0 } : mouseRef.current;
+    if (!reducedMotion && !paused) {
+      timeRef.current += delta * (1 + orbitRef.current.boost);
+      orbitRef.current.boost = THREE.MathUtils.damp(
+        orbitRef.current.boost,
+        0,
+        1.4,
+        delta,
+      );
+    }
+    if (!world.current) return;
+    const { width, height } = state.viewport;
+    const rect = layout.current;
+    const transition = departure;
+    const side = Math.cos((chapter - 1) * Math.PI) * 0.37;
+    const x = (rect.x / state.size.width - 0.5) * width;
+    const y = (0.5 - (rect.y - window.scrollY) / state.size.height) * height;
+    const heroScale = ((rect.width / state.size.width) * width) / 6.3;
+    // Grow continuously with the native page scroll, reaching 2.8x at the end.
+    // The full orbit system scales together so satellites stay outside Earth.
+    const scale = heroScale * (1 + progress * 1.8);
+    const targetX =
+      THREE.MathUtils.lerp(x, side * width, transition) + pointer.nx * 0.045;
+    const targetY =
+      THREE.MathUtils.lerp(y, -0.35, transition) - pointer.ny * 0.04;
+    const alpha =
+      reducedMotion || paused || !initialized.current
+        ? 1
+        : 1 - Math.exp(-9 * delta);
+    world.current.position.x = THREE.MathUtils.lerp(
+      world.current.position.x,
+      targetX,
+      alpha,
     );
-}
+    world.current.position.y = THREE.MathUtils.lerp(
+      world.current.position.y,
+      targetY,
+      alpha,
+    );
+    world.current.scale.setScalar(
+      THREE.MathUtils.lerp(world.current.scale.x, scale, alpha),
+    );
+    world.current.rotation.y = reducedMotion
+      ? 0
+      : chapter * 0.2 + pointer.nx * 0.05;
+    initialized.current = true;
+  });
 
-function TechSatellites({ isLight }) {
-    return (
-        <group>
-            {TECH_ICONS.map((item, i) => (
-                <TechIconSatellite
-                    key={i}
-                    Icon={item.Icon}
-                    color={item.color}
-                    lightColor={item.lightColor}
-                    index={i}
-                    isLight={isLight}
-                />
+  return (
+    <>
+      <ambientLight intensity={isLight ? 1.3 : 1.1} />
+      <directionalLight position={[5, 4, 7]} intensity={2.2} color="#fff1df" />
+      <pointLight position={[-4, -1, 3]} intensity={12} color="#7ebfd3" />
+      <group ref={world} name="tech-universe">
+        <Suspense
+          fallback={
+            <mesh scale={1.22}>
+              <sphereGeometry args={[1.58, 32, 24]} />
+              <meshPhongMaterial color="#31505c" />
+            </mesh>
+          }
+        >
+          <Earth timeRef={timeRef} isLight={isLight} />
+        </Suspense>
+        <Asteroids timeRef={timeRef} />
+        <OrbitalRocket timeRef={timeRef} />
+        <SpaceObjects timeRef={timeRef} />
+        {ORBITS.map((orbit, ring) => (
+          <group key={ring} rotation={orbit.rotation}>
+            <mesh>
+              <ringGeometry
+                args={[orbit.radius - 0.005, orbit.radius + 0.005, 128]}
+              />
+              <meshBasicMaterial
+                color={orbit.color}
+                transparent
+                opacity={isLight ? 0.36 : 0.25}
+                side={THREE.DoubleSide}
+                depthWrite={false}
+              />
+            </mesh>
+            {TECH.slice(ring * 4, ring * 4 + 4).map((item, i) => (
+              <Satellite
+                key={i}
+                item={item}
+                index={i}
+                orbit={orbit}
+                timeRef={timeRef}
+                isLight={isLight}
+              />
             ))}
-        </group>
-    );
+          </group>
+        ))}
+      </group>
+    </>
+  );
 }
 
-/* ---------- Core System ---------- */
-function CoreSystem({ scrollRef, mouseRef, isLight }) {
-    const groupRef = useRef();
-    const coreMeshRef = useRef();
-
-    useFrame(() => {
-        const p = scrollRef.current;
-        const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
-        if (!groupRef.current) return;
-        
-        groupRef.current.position.y = -p * 4.0;
-        groupRef.current.position.x = Math.sin(p * Math.PI) * 1.5 + m.nx * 0.1;
-    });
-
-    return (
-        <group ref={groupRef}>
-            <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.2}>
-                <DigitalEarth scrollRef={scrollRef} mouseRef={mouseRef} meshRef={coreMeshRef} isLight={isLight} />
-                <TechSatellites isLight={isLight} />
-            </Float>
-        </group>
-    );
+class WebGLErrorBoundary extends Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error) {
+    console.warn("The decorative 3D scene is unavailable:", error.message);
+  }
+  render() {
+    return this.state.hasError ? null : this.props.children;
+  }
 }
 
-/* ---------- Camera scroll dolly ---------- */
-const cameraWaypoints = [
-    { p: 0.00, offset: new THREE.Vector3(0, 0, 9.5) },        // Hero
-    { p: 0.25, offset: new THREE.Vector3(3.5, 0, 4.5) },      // About: Zoomed into right side
-    { p: 0.50, offset: new THREE.Vector3(-4.5, 1, -3.5) },    // Experience: Orbiting the dark side
-    { p: 0.75, offset: new THREE.Vector3(0, 5, 2) },          // Projects: Top down overview
-    { p: 1.00, offset: new THREE.Vector3(0, 0, 9.5) }         // Contact: Back to wide shot
-];
-
-function getInterpolated(p, array, key) {
-    for (let i = 0; i < array.length - 1; i++) {
-        if (p >= array[i].p && p <= array[i + 1].p) {
-            const t = (p - array[i].p) / (array[i + 1].p - array[i].p);
-            // Smoothstep for cinematic ease
-            const smoothT = t * t * (3 - 2 * t);
-            return array[i][key].clone().lerp(array[i + 1][key], smoothT);
-        }
-    }
-    if (p <= array[0].p) return array[0][key].clone();
-    return array[array.length - 1][key].clone();
+function ContextEvents() {
+  const { gl, invalidate } = useThree();
+  useEffect(() => {
+    const lost = (event) => event.preventDefault();
+    const restored = () => invalidate();
+    gl.domElement.addEventListener("webglcontextlost", lost);
+    gl.domElement.addEventListener("webglcontextrestored", restored);
+    return () => {
+      gl.domElement.removeEventListener("webglcontextlost", lost);
+      gl.domElement.removeEventListener("webglcontextrestored", restored);
+    };
+  }, [gl, invalidate]);
+  return null;
 }
 
-function CameraRig({ scrollRef, mouseRef }) {
-    const targetPos = useMemo(() => new THREE.Vector3(), []);
-    const lookAtPos = useMemo(() => new THREE.Vector3(), []);
-
-    useFrame((state) => {
-        const p = scrollRef.current;
-        const m = mouseRef ? mouseRef.current : { nx: 0, ny: 0 };
-        
-        // Base planet position coordinates
-        const basePlanetY = -p * 4.0;
-        const basePlanetX = Math.sin(p * Math.PI) * 1.5;
-
-        const isMobile = window.innerWidth < 768;
-        const mobileScaleX = isMobile ? 0.4 : 1.0;
-
-        // Calculate offset along the spline
-        const offset = getInterpolated(p, cameraWaypoints, 'offset');
-        
-        // Final target position incorporates mouse and planet movement
-        targetPos.copy(offset);
-        targetPos.x *= mobileScaleX;
-        if (isMobile) targetPos.z += 3.0; // Pull back further on mobile
-
-        targetPos.y += basePlanetY + m.ny * 0.3;
-        targetPos.x += basePlanetX + m.nx * 0.5;
-
-        updateDrone(p);
-
-        // Smoothly interpolate the camera position for weight
-        state.camera.position.lerp(targetPos, 0.025);
-        
-        // Always look smoothly at the planet's center
-        lookAtPos.set(basePlanetX + m.nx * 0.1, basePlanetY + m.ny * 0.1, 0);
-        state.camera.lookAt(lookAtPos);
-    });
-    return null;
+export default function Scene3D(props) {
+  const theme = useTheme();
+  const [visible, setVisible] = useState(() => !document.hidden);
+  useEffect(() => {
+    const update = () => setVisible(!document.hidden);
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+  return (
+    <div className="scene-3d" aria-hidden="true">
+      <WebGLErrorBoundary>
+        <Canvas
+          dpr={[1, 1.5]}
+          frameloop={
+            props.reducedMotion || props.paused || !visible
+              ? "demand"
+              : "always"
+          }
+          gl={{
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance",
+          }}
+          camera={{ position: [0, 0, 10], fov: 45 }}
+          fallback={<div className="scene-fallback" />}
+        >
+          <ContextEvents />
+          <Universe {...props} isLight={theme === "light"} />
+        </Canvas>
+      </WebGLErrorBoundary>
+    </div>
+  );
 }
-
-/* ---------- Error boundary for WebGL failures ---------- */
-class WebGLErrorBoundary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { hasError: false };
-    }
-    static getDerivedStateFromError() {
-        return { hasError: true };
-    }
-    componentDidCatch(err) {
-        console.warn('[Scene3D] WebGL error caught by boundary:', err.message);
-    }
-    render() {
-        if (this.state.hasError) {
-            return <div className="scene-3d" aria-hidden="true" style={{ background: 'var(--bg-0)' }} />;
-        }
-        return this.props.children;
-    }
-}
-
-/* ---------- Scene root ---------- */
-const Scene3D = ({ mouseRef }) => {
-    const scrollRef = useScrollProgressRef();
-    const theme = useTheme();
-    const isLight = theme === 'light';
-    const [canvasKey, setCanvasKey] = useState(0);
-    const [contextLost, setContextLost] = useState(false);
-
-    const handleCreated = useCallback((state) => {
-        const canvas = state.gl.domElement;
-        const onLost = (e) => {
-            e.preventDefault();
-            setContextLost(true);
-        };
-        const onRestored = () => {
-            setContextLost(false);
-        };
-        canvas.addEventListener('webglcontextlost', onLost);
-        canvas.addEventListener('webglcontextrestored', onRestored);
-    }, []);
-
-    useEffect(() => {
-        if (!contextLost) return;
-        const timer = setTimeout(() => {
-            setCanvasKey((k) => k + 1);
-            setContextLost(false);
-        }, 1500);
-        return () => clearTimeout(timer);
-    }, [contextLost]);
-
-    return (
-        <WebGLErrorBoundary>
-            <div className="scene-3d" aria-hidden="true">
-                <Canvas
-                    key={canvasKey}
-                    dpr={[1, 1.5]}
-                    gl={{
-                        antialias: true,
-                        alpha: true,
-                        powerPreference: 'high-performance',
-                    }}
-                    camera={{ position: [0, 0, 9.5], fov: 50 }}
-                    onCreated={handleCreated}
-                >
-                    <ambientLight intensity={isLight ? 0.3 : 0.15} />
-                    {/* The Sun! Strong directional light to show off terrain */}
-                    <directionalLight 
-                        position={[10, 8, 8]} 
-                        intensity={isLight ? 2.5 : 1.8} 
-                        color={isLight ? '#ffffff' : '#e0f7fa'} 
-                    />
-                    <pointLight position={[-6, -4, -3]} intensity={isLight ? 0.4 : 0.8} color={isLight ? '#8C5A3C' : '#87CEFA'} />
-
-                    <CameraRig scrollRef={scrollRef} mouseRef={mouseRef} />
-                    <CoreSystem scrollRef={scrollRef} mouseRef={mouseRef} isLight={isLight} />
-
-                    <Sparkles 
-                        count={150} 
-                        scale={[18, 18, 12]} 
-                        size={isLight ? 3 : 2} 
-                        speed={0.4} 
-                        color={isLight ? '#C08552' : '#00f7ff'} 
-                        opacity={isLight ? 0.8 : 0.4} 
-                    />
-                    <Stars 
-                        radius={60} 
-                        depth={40} 
-                        count={2000} 
-                        factor={isLight ? 5 : 4} 
-                        saturation={0} 
-                        fade 
-                        speed={0.5} 
-                    />
-                </Canvas>
-            </div>
-        </WebGLErrorBoundary>
-    );
-};
-
-export default Scene3D;

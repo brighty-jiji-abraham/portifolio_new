@@ -1,552 +1,304 @@
-/* ===========================================================
-   Top scroll-progress bar (Sci-Fi / Laser)
-   =========================================================== */
-
 .scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    z-index: 100;
-    background: linear-gradient(90deg, transparent, var(--accent), #fff);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.08s linear;
-    pointer-events: none;
-    box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: 100;
+  background: var(--accent);
+  transform: scaleX(var(--page-progress, 0));
+  transform-origin: left;
+  pointer-events: none;
 }
-
-/* ===========================================================
-   Header Container (Cybernetic)
-   =========================================================== */
-
 .app-header {
-    position: fixed;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 99;
-    width: min(1160px, calc(100% - 24px));
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px 8px 16px;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
-    transition: padding 0.3s var(--ease), top 0.3s var(--ease);
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+  width: min(1180px, calc(100% - 64px));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px 10px 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--header-bg);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px #00000010;
+  transition:
+    top 250ms,
+    background 250ms;
 }
-
-.app-header.is-scrolled {
-    top: 10px;
-    padding: 6px 10px 6px 14px;
+:root[data-scrolled="true"] .app-header {
+  top: 10px;
+  background: var(--header-bg-scrolled);
 }
-
-/* The glowing border layer */
-.app-header::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background: rgba(192, 133, 82, 0.2);
-    clip-path: polygon(
-        16px 0, 
-        100% 0, 
-        100% calc(100% - 16px), 
-        calc(100% - 16px) 100%, 
-        0 100%, 
-        0 16px
-    );
-    transition: background 0.3s ease;
-}
-
-.app-header.is-scrolled::after {
-    background: rgba(192, 133, 82, 0.5);
-}
-
-/* Grid pattern overlay & inner background */
-.app-header::before {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    z-index: -1;
-    pointer-events: none;
-    background-color: var(--header-bg);
-    background-image: 
-        linear-gradient(rgba(192, 133, 82, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(192, 133, 82, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    clip-path: polygon(
-        15.5px 0, 
-        100% 0, 
-        100% calc(100% - 15.5px), 
-        calc(100% - 15.5px) 100%, 
-        0 100%, 
-        0 15.5px
-    );
-    transition: background-color 0.3s ease;
-}
-
-.app-header.is-scrolled::before {
-    background-color: var(--header-bg-scrolled);
-}
-
-/* ===========================================================
-   Brand
-   =========================================================== */
-
 .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 4px 10px 4px 6px;
-    transition: transform 0.2s ease, text-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 650;
 }
-
-.brand:hover {
-    transform: translateY(-1px);
-    text-shadow: 0 0 8px rgba(192, 133, 82, 0.6);
-}
-
-/* Radar scanner for brand mark */
 .brand-mark {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid rgba(192, 133, 82, 0.4);
-    background: var(--header-bg-scrolled);
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(192, 133, 82, 0.2), inset 0 0 8px rgba(192, 133, 82, 0.2);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
 }
-
-/* The sweeping radar beam */
 .brand-mark::before {
-    content: '';
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    top: 0;
-    right: 0;
-    transform-origin: bottom left;
-    background: conic-gradient(from 0deg, transparent 0deg, rgba(192, 133, 82, 0.8) 90deg, transparent 90deg);
-    animation: radarSweep 3s linear infinite;
+  content: "";
+  position: absolute;
+  inset: 7px -5px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  transition: transform 500ms var(--ease);
 }
-
-/* Crosshairs in radar */
-.brand-mark::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-        linear-gradient(rgba(192, 133, 82, 0.3) 1px, transparent 1px) center/100% 1px no-repeat,
-        linear-gradient(90deg, rgba(192, 133, 82, 0.3) 1px, transparent 1px) center/1px 100% no-repeat;
-    border-radius: 50%;
+.brand:hover .brand-mark::before {
+  transform: rotate(145deg);
 }
-
 .brand-dot {
-    position: relative;
-    z-index: 2;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 8px 2px var(--accent);
-    animation: radarBlink 3s infinite;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
 }
-
-@keyframes radarSweep {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes radarBlink {
-    0%, 80%, 100% { opacity: 0.3; }
-    90% { opacity: 1; box-shadow: 0 0 12px 4px #fff; }
-}
-
 .brand-name {
-    display: inline-flex;
-    white-space: nowrap;
-    color: var(--text);
-    font-family: 'Courier New', Courier, monospace; /* Tech font */
+  display: inline-flex;
+  white-space: nowrap;
 }
-
 .brand .letter {
-    display: inline-block;
-    color: var(--text);
-    opacity: 0;
-    transform: translateY(4px);
-    animation: glitchIn 0.45s var(--ease) both;
-    white-space: pre;
+  white-space: pre;
 }
-
-@keyframes glitchIn {
-    0% { opacity: 0; transform: translateY(4px) skewX(20deg); text-shadow: 2px 0 red, -2px 0 blue; }
-    50% { opacity: 1; transform: translateY(0) skewX(-10deg); text-shadow: -2px 0 red, 2px 0 blue; }
-    100% { opacity: 1; transform: translateY(0) skewX(0); text-shadow: none; }
-}
-
-/* ===========================================================
-   Nav
-   =========================================================== */
-
-.app-nav {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border: 1px solid rgba(192, 133, 82, 0.3);
-    border-radius: 50%;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.theme-toggle:hover {
-    background: rgba(192, 133, 82, 0.1);
-    border-color: rgba(192, 133, 82, 0.8);
-    transform: scale(1.05);
-}
-
-.nav-links {
-    position: relative;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    background: rgba(192, 133, 82, 0.03);
-    padding: 4px;
-    border: 1px solid rgba(192, 133, 82, 0.15);
-    clip-path: polygon(
-        8px 0, 
-        100% 0, 
-        100% calc(100% - 8px), 
-        calc(100% - 8px) 100%, 
-        0 100%, 
-        0 8px
-    );
-}
-
-/* HUD Targeting Brackets for the Active Link */
-.nav-indicator {
-    position: absolute;
-    top: 4px;
-    bottom: 4px;
-    left: 0;
-    width: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    will-change: transform, width;
-    background: transparent; /* Remove old solid background */
-    box-shadow: none;
-}
-
-.nav-indicator::before,
-.nav-indicator::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 8px;
-    border: 2px solid var(--accent);
-    box-shadow: 0 0 8px var(--accent-glow);
-    transition: all 0.2s ease;
-}
-
-.nav-indicator::before {
-    left: 0;
-    border-right: none;
-}
-
-.nav-indicator::after {
-    right: 0;
-    border-left: none;
-}
-
-.nav-indicator.is-ready {
-    opacity: 1;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                opacity 0.25s ease;
-}
-
-.nav-link {
-    position: relative;
-    z-index: 1;
-    padding: 6px 14px;
-    text-decoration: none;
-    color: var(--text-soft);
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-family: 'Courier New', Courier, monospace;
-    transition: color 0.25s ease, text-shadow 0.25s ease;
-}
-
-.nav-link:hover,
-.nav-link:focus-visible {
-    color: var(--text);
-    text-shadow: 0 0 8px rgba(192, 133, 82, 0.5);
-    outline: none;
-}
-
-.nav-link.active {
-    color: var(--accent);
-    text-shadow: 0 0 10px rgba(192, 133, 82, 0.8);
-}
-
-/* ===========================================================
-   Hamburger (Tech Crosshair)
-   =========================================================== */
-
-.hamburger {
-    display: none;
-    position: relative;
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border: 1px solid rgba(192, 133, 82, 0.3);
-    padding: 0;
-    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.hamburger:hover { 
-    background-color: rgba(192, 133, 82, 0.1); 
-    border-color: rgba(192, 133, 82, 0.8);
-}
-
-.hamburger:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
-.hamburger .line {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 20px;
-    height: 2px;
-    background-color: var(--accent);
-    transform-origin: center;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 0 5px var(--accent);
-}
-
-.hamburger .line:nth-child(1) { transform: translate(-50%, -6px); }
-.hamburger .line:nth-child(2) { transform: translate(-50%, -50%); }
-.hamburger .line:nth-child(3) { transform: translate(-50%, 4px); }
-
-.hamburger.is-open .line:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
-.hamburger.is-open .line:nth-child(2) { opacity: 0; }
-.hamburger.is-open .line:nth-child(3) { transform: translate(-50%, -50%) rotate(-45deg); }
-
+.app-nav,
 .desktop-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-
+.desktop-controls {
+  padding-right: 14px;
+  border-right: 1px solid var(--border);
+  margin-right: 5px;
+}
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  transition:
+    color 200ms,
+    background 200ms,
+    rotate 350ms var(--ease);
+}
+.theme-toggle:hover {
+  color: var(--accent);
+  background: var(--surface-strong);
+  rotate: -12deg;
+}
+.nav-links {
+  position: relative;
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.nav-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  opacity: 0;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-strong);
+  border-radius: 10px;
+  pointer-events: none;
+}
+.nav-indicator.is-ready {
+  opacity: 1;
+  transition:
+    transform 350ms var(--ease),
+    width 350ms var(--ease);
+}
+.nav-link {
+  position: relative;
+  z-index: 1;
+  padding: 8px 13px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color 200ms;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--text);
+}
+.hamburger {
+  display: none;
+  position: relative;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: none;
+  border-radius: 12px;
+  color: var(--text);
+}
+.hamburger .line {
+  position: absolute;
+  left: 11px;
+  width: 18px;
+  height: 1.5px;
+  top: 19px;
+  background: currentColor;
+  transition:
+    transform 200ms,
+    opacity 200ms;
+}
+.hamburger .line:nth-child(1) {
+  transform: translateY(-5px);
+}
+.hamburger .line:nth-child(3) {
+  transform: translateY(5px);
+}
+.hamburger.is-open .line:nth-child(1) {
+  transform: rotate(45deg);
+}
+.hamburger.is-open .line:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.is-open .line:nth-child(3) {
+  transform: rotate(-45deg);
+}
 .mobile-menu-footer {
+  display: none;
+}
+@media (max-width: 900px) {
+  .app-header {
+    width: calc(100% - 32px);
+  }
+  .brand-name {
+    font-size: 0.8rem;
+  }
+  .nav-link {
+    padding-inline: 9px;
+  }
+  .desktop-controls {
+    padding-right: 7px;
+    gap: 2px;
+  }
+}
+@media (max-width: 760px) {
+  .app-header {
+    top: 12px;
+    padding: 8px 10px 8px 16px;
+    border-radius: 16px;
+  }
+  .brand {
+    gap: 9px;
+  }
+  .brand-name {
+    font-size: 0.83rem;
+  }
+  .brand-mark {
+    width: 26px;
+    height: 26px;
+  }
+  .desktop-controls {
     display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+  .nav-indicator {
+    display: none;
+  }
+  .nav-links {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: min(300px, calc(100vw - 32px));
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    background: var(--header-bg-scrolled);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.97);
+    transform-origin: top right;
+    transition:
+      opacity 200ms,
+      visibility 200ms,
+      transform 250ms var(--ease);
+    max-height: calc(100dvh - 100px);
+    overflow-y: auto;
+  }
+  .nav-links.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+  .nav-link {
+    font-size: 1rem;
+    padding: 11px 16px;
+    border-radius: 10px;
+  }
+  .nav-link.active {
+    background: var(--surface-strong);
+    color: var(--accent);
+  }
+  .mobile-menu-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 12px 8px;
+    margin-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .mobile-controls {
+    display: flex;
+    gap: 12px;
+  }
+  .theme-toggle {
+    width: 42px;
+    height: 42px;
+    border-color: var(--border);
+  }
+  .music-copyright {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+  }
+  .music-copyright strong {
+    color: var(--accent);
+  }
 }
-
-/* ===========================================================
-   Mobile
-   =========================================================== */
-
-@media screen and (max-width: 768px) {
-    .desktop-controls {
-        display: none;
-    }
-
-    .mobile-menu-footer {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        padding: 16px;
-        margin-top: 12px;
-        border-top: 1px solid rgba(192, 133, 82, 0.2);
-    }
-
-    .mobile-controls {
-        display: flex;
-        gap: 12px;
-    }
-
-    .music-copyright {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 0.75rem;
-        color: var(--text-muted);
-    }
-
-    .music-copyright strong {
-        color: var(--accent);
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 2px;
-    }
-
-    .app-header {
-        top: 14px;
-        padding: 8px 16px;
-        width: calc(100vw - 24px);
-    }
-
-    .app-header.is-scrolled {
-        padding: 8px 16px;
-    }
-
-    .brand {
-        gap: 10px;
-        padding: 4px;
-    }
-
-    .brand-mark {
-        width: 24px;
-        height: 24px;
-    }
-
-    .brand-name {
-        font-size: 1rem;
-        white-space: nowrap;
-    }
-
-    .theme-toggle, .hamburger {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-    }
-
-    .hamburger .line {
-        width: 20px;
-    }
-
-    .app-nav {
-        gap: 10px;
-    }
-
-    .hamburger { display: block; }
-
-    .nav-indicator { display: none; }
-
-    .nav-links {
-        position: absolute;
-        top: calc(100% + 14px);
-        right: 0;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        min-width: 260px;
-        padding: 12px;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        opacity: 0;
-        transform: translateY(-10px) scale(0.96);
-        transform-origin: top right;
-        pointer-events: none;
-        transition: opacity 0.22s ease, transform 0.22s ease;
-    }
-
-    /* Inner background for nav-links with clip-path so the external drop-shadow works */
-    .nav-links::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background-color: var(--header-bg-scrolled);
-        border: 1px solid rgba(192, 133, 82, 0.3);
-        background-image: 
-            linear-gradient(rgba(192, 133, 82, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(192, 133, 82, 0.05) 1px, transparent 1px);
-        background-size: 15px 15px;
-        clip-path: polygon(
-            16px 0, 
-            100% 0, 
-            100% calc(100% - 16px), 
-            calc(100% - 16px) 100%, 
-            0 100%, 
-            0 16px
-        );
-        box-shadow: inset 0 0 20px rgba(192, 133, 82, 0.05);
-    }
-
-    .nav-links.show {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        pointer-events: auto;
-    }
-
-    .nav-link {
-        padding: 16px 20px;
-        font-size: 1rem;
-        min-height: 48px;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid rgba(192, 133, 82, 0.1);
-    }
-
-    .nav-link:last-child {
-        border-bottom: none;
-    }
-
-    .nav-link.active {
-        color: var(--accent);
-        background: rgba(192, 133, 82, 0.1);
-        text-shadow: 0 0 10px rgba(192, 133, 82, 0.8);
-        border-left: 3px solid var(--accent);
-        padding-left: 17px; /* Adjust for border */
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .app-header {
-        padding: 8px 12px;
-        width: calc(100vw - 16px);
-    }
-    .brand {
-        gap: 8px;
-    }
-    .brand-mark {
-        width: 20px;
-        height: 20px;
-    }
-    .brand-name { 
-        font-size: 0.9rem;
-    }
-    .theme-toggle, .hamburger {
-        width: 36px;
-        height: 36px;
-        font-size: 1rem;
-    }
-    .hamburger .line {
-        width: 18px;
-    }
-    .hamburger .line:nth-child(1) { transform: translate(-50%, -5px); }
-    .hamburger .line:nth-child(3) { transform: translate(-50%, 5px); }
+@media (max-width: 360px) {
+  .brand-name {
+    font-size: 0.73rem;
+  }
+  .brand-mark {
+    width: 22px;
+    height: 22px;
+  }
 }

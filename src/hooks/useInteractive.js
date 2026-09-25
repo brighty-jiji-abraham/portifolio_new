@@ -2,12 +2,15 @@
 
 import { useCallback } from 'react';
 
+const canAnimate = () => window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches;
+
 /**
  * Cursor-following spotlight. Updates --mx / --my on the element.
  * Pair with a CSS radial-gradient on ::after using those vars.
  */
 export const useSpotlight = () => {
     const onMouseMove = useCallback((e) => {
+        if (!canAnimate()) return;
         const el = e.currentTarget;
         const rect = el.getBoundingClientRect();
         el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
@@ -23,6 +26,7 @@ export const useSpotlight = () => {
 export const useTilt = (strength = 8) => {
     const onMouseMove = useCallback(
         (e) => {
+            if (!canAnimate()) return;
             const el = e.currentTarget;
             const rect = el.getBoundingClientRect();
             const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -46,6 +50,7 @@ export const useTilt = (strength = 8) => {
 export const useMagnetic = (factor = 0.25) => {
     const onMouseMove = useCallback(
         (e) => {
+            if (!canAnimate()) return;
             const el = e.currentTarget;
             const rect = el.getBoundingClientRect();
             const x = (e.clientX - rect.left - rect.width / 2) * factor;

@@ -20,10 +20,11 @@ export const useScramble = (text, { duration = 600 } = {}) => {
     }, [text]);
 
     const scramble = useCallback(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         if (runningRef.current) return;
-        runningRef.current = true;
         const el = elRef.current;
         if (!el) return;
+        runningRef.current = true;
         const oldText = el.textContent || '';
         const newText = text;
         const length = Math.max(oldText.length, newText.length);

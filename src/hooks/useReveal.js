@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
  * Returns a ref + boolean. Add `is-visible` class via the boolean.
  * Defaults stagger gracefully across the page.
  */
-export const useReveal = ({ threshold = 0.05, once = true } = {}) => {
+export const useReveal = ({ threshold = 0, once = true } = {}) => {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
 
@@ -27,7 +27,8 @@ export const useReveal = ({ threshold = 0.05, once = true } = {}) => {
                     }
                 });
             },
-            { threshold, rootMargin: '0px 0px -10% 0px' },
+            // Tall sections must reveal even when only their heading fits onscreen.
+            { threshold, rootMargin: '0px 0px -32px 0px' },
         );
         io.observe(el);
         return () => io.disconnect();
