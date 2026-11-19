@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unknown-property */
 import { Suspense, useContext, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import useSceneTexture from "./useSceneTexture";
 import * as THREE from "three";
 import { SceneQualityContext } from "./SceneQualityContext";
 
 function DeepSky({ isLight }) {
   const { textures } = useContext(SceneQualityContext);
   const sky = useRef();
-  const texture = useTexture(textures.sky, (map) => {
+  const texture = useSceneTexture(textures.sky, (map) => {
     map.colorSpace = THREE.SRGBColorSpace;
   });
   const uniforms = useMemo(() => ({
@@ -113,7 +113,7 @@ function PinpointStars({ isLight, timeRef }) {
 export function Moon({ scale = 1, ...props }) {
   const { textures, anisotropy, level } = useContext(SceneQualityContext);
   const gl = useThree(state => state.gl);
-  const [color, height] = useTexture([
+  const [color, height] = useSceneTexture([
     textures.moon,
     textures.moonHeight,
   ], (maps) => {

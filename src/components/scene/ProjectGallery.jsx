@@ -1,3 +1,4 @@
+import { createSceneCanvas } from "./scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -10,7 +11,7 @@ import ProjectSculpture from "./ProjectSculpture";
 
 function Label({ text, color, position, width = 6, size = 36 }) {
   const map = useMemo(() => {
-    const canvas = document.createElement("canvas");
+    const canvas = createSceneCanvas();
     canvas.width = 1024;
     canvas.height = 256;
     const ctx = canvas.getContext("2d");
@@ -82,13 +83,13 @@ export default function ProjectGallery({
     canvas.addEventListener("pointermove", move);
     canvas.addEventListener("pointerup", up);
     canvas.addEventListener("pointercancel", up);
-    window.addEventListener("blur", up);
+    globalThis.addEventListener("blur", up);
     return () => {
       canvas.removeEventListener("pointerdown", down);
       canvas.removeEventListener("pointermove", move);
       canvas.removeEventListener("pointerup", up);
       canvas.removeEventListener("pointercancel", up);
-      window.removeEventListener("blur", up);
+      globalThis.removeEventListener("blur", up);
     };
   }, [gl, journey]);
   useFrame((_, dt) => {

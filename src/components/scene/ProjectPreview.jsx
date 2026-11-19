@@ -1,3 +1,4 @@
+import { createSceneCanvas, setSceneCursor } from "./scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -7,7 +8,7 @@ import { projectVisuals } from "../../data/projectVisuals";
 
 function previewTexture(index, isLight, active, compact) {
   const visual = projectVisuals[index];
-  const canvas = document.createElement("canvas");
+  const canvas = createSceneCanvas();
   canvas.width = 512;
   canvas.height = 512;
   const ctx = canvas.getContext("2d");
@@ -119,7 +120,7 @@ export default function ProjectPreview({ index, active, position, onSelect, isLi
   const group = useRef();
   const map = useMemo(() => previewTexture(index, isLight, active, compact), [index, isLight, active, compact]);
   useEffect(() => () => map.dispose(), [map]);
-  useEffect(() => () => { document.body.style.cursor = ""; }, []);
+  useEffect(() => () => { setSceneCursor(""); }, []);
   useFrame((_, dt) => {
     const target = position[1] + (hovered || active ? 0.08 : 0);
     group.current.position.y = journey.current.explorer?.motionOff
@@ -129,8 +130,8 @@ export default function ProjectPreview({ index, active, position, onSelect, isLi
     <group
       ref={group} position={position} scale={compact ? 3.2 : 1}
       name={`project-preview-${index}`}
-      onPointerOver={event => { event.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }}
-      onPointerOut={() => { setHovered(false); document.body.style.cursor = ""; }}
+      onPointerOver={event => { event.stopPropagation(); setHovered(true); setSceneCursor("pointer"); }}
+      onPointerOut={() => { setHovered(false); setSceneCursor(""); }}
       onClick={event => { event.stopPropagation(); onSelect(index); }}
     >
       <RoundedBox args={[1.15, 1.15, 0.065]} radius={0.04} smoothness={3}>

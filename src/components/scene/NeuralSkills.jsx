@@ -1,3 +1,4 @@
+import { setSceneCursor } from "./scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -34,8 +35,8 @@ function Neuron({
         if (journey.current.explorer?.dragged) return;
         event.stopPropagation(); onSelect(index);
       }}
-      onPointerOver={event => { event.stopPropagation(); onHover(index); document.body.style.cursor = "pointer"; }}
-      onPointerOut={() => { onHover(-1); document.body.style.cursor = ""; }}
+      onPointerOver={event => { event.stopPropagation(); onHover(index); setSceneCursor("pointer"); }}
+      onPointerOut={() => { onHover(-1); setSceneCursor(""); }}
     >
       <Billboard>
         <StellarLight color={starColor} size={compact ? 2.0 : active ? 1.85 : 1.45}
@@ -235,7 +236,7 @@ export default function NeuralSkills({
   }, [selected, category, pulse, timeRef]);
   useEffect(
     () => () => {
-      document.body.style.cursor = "";
+      setSceneCursor("");
     },
     [],
   );

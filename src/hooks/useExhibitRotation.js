@@ -1,3 +1,4 @@
+import { setSceneCursor } from "../components/scene/scenePlatform";
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { MathUtils } from "three";
@@ -46,14 +47,14 @@ export function useExhibitRotation(id, journeyRef, reset, limits = [0.4, 0.85], 
     canvas.addEventListener("pointermove", move);
     canvas.addEventListener("pointerup", up);
     canvas.addEventListener("pointercancel", up);
-    window.addEventListener("blur", up);
+    globalThis.addEventListener("blur", up);
     return () => {
       canvas.removeEventListener("pointerdown", down);
       canvas.removeEventListener("pointermove", move);
       canvas.removeEventListener("pointerup", up);
       canvas.removeEventListener("pointercancel", up);
-      window.removeEventListener("blur", up);
-      document.body.style.cursor = "";
+      globalThis.removeEventListener("blur", up);
+      setSceneCursor("");
     };
   }, [gl, id, journeyRef, limitX, limitY]);
   useFrame((_, dt) => {

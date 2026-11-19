@@ -3,18 +3,18 @@ import {
   Suspense,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
 import { experiences } from "../../data/experience";
-import profileImage from "../../assets/profile-thumbnail.webp";
 import { setUniverseAudio } from "../../hooks/useSoundscape";
 import useAstronaut from "./useAstronaut";
 import AstronautView from "./AstronautView";
+import InformationPanel from "./InformationPanel";
+import useInformationPanel from "./useInformationPanel";
 import "./PortfolioJourney.css";
 
-const Scene3D = lazy(() => import("../scene/Scene3D"));
+const Scene3D = lazy(() => import("../scene/WorkerScene"));
 const TextPortfolio = lazy(() => import("./TextPortfolio"));
 const BlackHoleJourney = lazy(() => import("./BlackHoleJourney"));
 
@@ -23,11 +23,17 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
   const { exit: exitUniverse } = astronaut;
   const [unavailable, setUnavailable] = useState(false);
   const [ready, setReady] = useState(false);
-  const [informationHost, setInformationHost] = useState(null);
-  const informationPortal = useMemo(
-    () => ({ current: informationHost }),
-    [informationHost],
-  );
+  const [sceneStarted, setSceneStarted] = useState(false);
+  useEffect(() => {
+    // Give the HTML interface a paint before creating the graphics context.
+    // This is a single browser frame, independent of device or audit software.
+    let task;
+    const frame = requestAnimationFrame(() => {
+      task = setTimeout(() => setSceneStarted(true), 0);
+    });
+    return () => { cancelAnimationFrame(frame); clearTimeout(task); };
+  }, []);
+  const informationPanel = useInformationPanel(astronaut.inspection);
   const [paused, setPaused] = useState(false);
   const [blackHoleOpen, setBlackHoleOpen] = useState(false);
   const blackHoleTrigger = useRef(null);
@@ -138,6 +144,27 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
     astronaut.enter();
   };
 
+  const informationContent = {
+    motion: !reducedMotion && !paused,
+    onDismiss: astronaut.dismissInformation,
+    onInspect: astronaut.inspect,
+    category,
+    onCategory: chooseCategory,
+    selected,
+    onSkill: setSelected,
+    onNeuralPulse: () => setNeuralPulse(value => value + 1),
+    onNetworkReset: () => setNetworkReset(value => value + 1),
+    project,
+    onProject: setProject,
+    milestone,
+    onMilestone: chooseMilestone,
+    onTraceJourney: traceJourney,
+    tracing,
+    onSkyReset: () => setSkyReset(value => value + 1),
+    onContactStatus: contactStatus,
+    onSignal: previewSignal,
+  };
+
   if (!astronaut.enabled)
     return (
       <Suspense
@@ -157,8 +184,9 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
 
   return (
     <div className="portfolio-universe" data-ready={ready} data-cinematic={blackHoleOpen}>
-      <Suspense fallback={null}>
+      {sceneStarted && <Suspense fallback={null}>
         <Scene3D
+          ready={ready}
           qualityMode={settings.qualityMode}
           cinemaActive={blackHoleOpen}
           cinema={blackHoleOpen ? cinema : null}
@@ -180,36 +208,9 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
           signal={signal}
           exploring
           flight={astronaut.flight}
-          information={
-            ready && informationHost
-              ? {
-                  inspection: astronaut.inspection,
-                  portal: informationPortal,
-                  content: {
-                    motion: !reducedMotion && !paused,
-                    onDismiss: astronaut.dismissInformation,
-                    onInspect: astronaut.inspect,
-                    category,
-                    onCategory: chooseCategory,
-                    selected,
-                    onSkill: setSelected,
-                    onNeuralPulse: () => setNeuralPulse((value) => value + 1),
-                    onNetworkReset: () => setNetworkReset((value) => value + 1),
-                    project,
-                    onProject: setProject,
-                    milestone,
-                    onMilestone: chooseMilestone,
-                    onTraceJourney: traceJourney,
-                    tracing,
-                    onSkyReset: () => setSkyReset((value) => value + 1),
-                    onContactStatus: contactStatus,
-                    onSignal: previewSignal,
-                  },
-                }
-              : null
-          }
+          information={informationPanel}
         />
-      </Suspense>
+      </Suspense>}
       <AstronautView
         onBlackHole={openBlackHole}
         flight={astronaut.flight}
@@ -217,12 +218,13 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
         reducedMotion={reducedMotion}
         inspection={astronaut.inspection}
         onInspect={astronaut.inspect}
-        onPortal={setInformationHost}
         settings={settings}
         paused={paused}
         onPause={() => setPaused((value) => !value)}
         ready={ready}
-      />
+      >
+        <InformationPanel panel={informationPanel} content={informationContent} />
+      </AstronautView>
       {blackHoleOpen && (
         <Suspense fallback={
           <div className="black-hole-loading" role="status">
@@ -234,12 +236,7 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
         </Suspense>
       )}
       {!ready && (
-        <div className="universe-loading" role="status">
-          <img src={profileImage} width="88" height="88" alt="" />
-          <h1>Brighty Jiji Abraham.</h1>
-          <p>AI-Native Software Engineer · R&D Specialist</p>
-          <span>Opening my universe…</span>
-        </div>
+        <span className="profile-readable-text" role="status">Opening my universe…</span>
       )}
     </div>
   );

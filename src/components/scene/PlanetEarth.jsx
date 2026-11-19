@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useContext, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import useSceneTexture from "./useSceneTexture";
 import * as THREE from "three";
 import { SceneQualityContext } from "./SceneQualityContext";
 
@@ -23,7 +23,7 @@ export default function PlanetEarth({ timeRef }) {
   const gl = useThree(state => state.gl);
   const globe = useRef();
   const surface = useRef();
-  const [day, night, water, clouds] = useTexture([
+  const [day, night, water, clouds] = useSceneTexture([
     textures.earth,
     textures.night,
     textures.water,

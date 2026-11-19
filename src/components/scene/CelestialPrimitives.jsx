@@ -1,3 +1,4 @@
+import { createSceneCanvas } from "./scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -5,7 +6,7 @@ import * as THREE from "three";
 
 export function WorldLabel({ text, color, position, width = 3, size = 54 }) {
   const map = useMemo(() => {
-    const canvas = document.createElement("canvas");
+    const canvas = createSceneCanvas();
     canvas.width = 1024;
     canvas.height = 192;
     const ctx = canvas.getContext("2d");

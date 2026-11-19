@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useContext, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import useSceneTexture from "./useSceneTexture";
 import * as THREE from "three";
 import { SceneQualityContext } from "./SceneQualityContext";
 
@@ -13,7 +13,7 @@ export default function BlackHole({ timeRef, cinemaActive = false }) {
   const material = useRef();
   const { size } = useThree();
   const compact = size.width < 1000;
-  const sky = useTexture(textures.sky);
+  const sky = useSceneTexture(textures.sky);
   const skyInverse = useMemo(() => new THREE.Matrix3().setFromMatrix4(
     new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(0.25, -1.1, 0.52)),
   ).invert(), []);

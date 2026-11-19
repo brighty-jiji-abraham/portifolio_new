@@ -1,26 +1,18 @@
 /* eslint-disable react/no-unknown-property */
-import { useMemo, useState } from "react";
-import { useThree } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
-import { UNIVERSE_STOPS } from "../journey/destinations";
-import { spatialLayout } from "../journey/spatialLayout";
-import UniverseInfo from "../journey/UniverseInfo";
+import { useEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { Vector3 } from "three";
+import { cameraCSSMatrix, objectCSSMatrix } from "./panelProjection";
 
 export default function WorldInformation({
   inspection,
-  portal,
+  stop,
+  layout,
+  projectionRef,
   isLight,
-  content,
 }) {
-  const { size } = useThree();
-  const [previous, setPrevious] = useState("about");
-  if (inspection && inspection !== previous) setPrevious(inspection);
-  const id = inspection || previous;
-  const stop = UNIVERSE_STOPS.find((item) => item.id === id);
-  const layout = useMemo(
-    () => spatialLayout(stop, size.width, size.height),
-    [stop, size.width, size.height],
-  );
+  const anchor = useRef();
+  const vectors = useMemo(() => ({ position: new Vector3(), direction: new Vector3() }), []);
   const tether = useMemo(() => {
     const [x, y, z] = stop.target;
     const [px, py, pz] = layout.panel;
@@ -36,8 +28,31 @@ export default function WorldInformation({
         : [x + layout.side * 3.6 * layout.modelScale, y, z, edgeX, edgeY, pz],
     );
   }, [stop, layout]);
+  useEffect(() => {
+    const view = projectionRef.current;
+    view.connected = true;
+    return () => { view.connected = false; };
+  }, [projectionRef]);
+  useFrame(({ camera, size }) => {
+    const view = projectionRef.current;
+    if (!anchor.current || !view.screen || !view.camera || !view.object) return;
+    camera.updateMatrixWorld();
+    anchor.current.updateWorldMatrix(true, false);
+    vectors.position.setFromMatrixPosition(anchor.current.matrixWorld).sub(camera.position);
+    camera.getWorldDirection(vectors.direction);
+    const display = vectors.position.dot(vectors.direction) < 0 ? "none" : "block";
+    const fov = camera.projectionMatrix.elements[5] * size.height / 2;
+    const perspective = `${fov}px`;
+    const cameraTransform = `translateZ(${fov}px)${cameraCSSMatrix(camera.matrixWorldInverse.elements)}translate(${size.width / 2}px,${size.height / 2}px)`;
+    const objectTransform = objectCSSMatrix(anchor.current.matrixWorld.elements, layout.pixelsPerUnit);
+    if (view.display !== display) { view.screen.style.display = display; view.display = display; }
+    if (view.perspective !== perspective) { view.screen.style.perspective = perspective; view.perspective = perspective; }
+    if (view.cameraTransform !== cameraTransform) { view.camera.style.transform = cameraTransform; view.cameraTransform = cameraTransform; }
+    if (view.objectTransform !== objectTransform) { view.object.style.transform = objectTransform; view.objectTransform = objectTransform; }
+  });
   return (
     <group name="world-information">
+      <group ref={anchor} position={layout.panel} />
       <group visible={!!inspection}>
         <line>
           <bufferGeometry>
@@ -50,26 +65,6 @@ export default function WorldInformation({
           />
         </line>
       </group>
-      <Html
-        transform
-        position={layout.panel}
-        distanceFactor={layout.distanceFactor}
-        portal={portal}
-        zIndexRange={[2, 2]}
-        pointerEvents={inspection ? "auto" : "none"}
-        style={{
-          visibility: inspection ? "visible" : "hidden",
-          opacity: inspection ? 1 : 0,
-          transition: content.motion
-            ? `opacity 220ms ease, visibility 0s ${inspection ? "0s" : "220ms"}`
-            : "none",
-          pointerEvents: inspection ? "auto" : "none",
-          "--info-width": `${layout.panelWidth}px`,
-          "--info-height": `${layout.panelHeight}px`,
-        }}
-      >
-        <UniverseInfo id={id} active={!!inspection} {...content} />
-      </Html>
     </group>
   );
 }

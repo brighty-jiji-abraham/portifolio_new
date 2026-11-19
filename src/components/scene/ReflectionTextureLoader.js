@@ -1,5 +1,6 @@
+import { createSceneCanvas } from "./scenePlatform";
 import {
-  CubeUVReflectionMapping, DataTexture, HalfFloatType, ImageLoader,
+  CubeUVReflectionMapping, DataTexture, HalfFloatType, ImageLoader, ImageBitmapLoader,
   LinearFilter, LinearSRGBColorSpace, Loader, RGBAFormat,
 } from "three";
 
@@ -7,12 +8,14 @@ import {
 // Decode the original HDR values; do not apply an image color grade or resize.
 export default class ReflectionTextureLoader extends Loader {
   load(url, onLoad, onProgress, onError) {
-    const loader = new ImageLoader(this.manager);
+    const loader = typeof document === "undefined" || typeof WorkerGlobalScope !== "undefined"
+      ? new ImageBitmapLoader(this.manager).setOptions({ imageOrientation: "none", premultiplyAlpha: "none", colorSpaceConversion: "none" })
+      : new ImageLoader(this.manager);
     loader.setCrossOrigin(this.crossOrigin);
     loader.setPath(this.path);
     return loader.load(url, (image) => {
       try {
-        const canvas = document.createElement("canvas");
+        const canvas = createSceneCanvas();
         canvas.width = image.width;
         canvas.height = image.height;
         const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -31,6 +34,7 @@ export default class ReflectionTextureLoader extends Loader {
         texture.colorSpace = LinearSRGBColorSpace;
         texture.minFilter = texture.magFilter = LinearFilter;
         texture.needsUpdate = true;
+        image.close?.();
         onLoad(texture);
       } catch (error) {
         onError?.(error);

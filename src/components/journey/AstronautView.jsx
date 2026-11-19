@@ -54,7 +54,7 @@ export default function AstronautView({
   reducedMotion,
   inspection,
   onInspect,
-  onPortal,
+  children,
   settings,
   paused,
   onPause,
@@ -297,7 +297,7 @@ export default function AstronautView({
           </Thruster>
         </div>
       </div>
-      <div className="world-info-portal" ref={onPortal} />
+      <div className="world-info-portal">{children}</div>
     </div>
   );
 }

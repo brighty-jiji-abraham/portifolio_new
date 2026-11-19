@@ -1,3 +1,4 @@
+import { blurScenePanel } from "./scenePlatform";
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
@@ -57,8 +58,7 @@ export default function AstronautCamera({ flight: flightRef, reducedMotion, disa
     let pointer = null;
     const down = (event) => {
       if (!flightRef.current.enabled || event.button !== 0) return;
-      if (document.activeElement?.closest(".spatial-panel"))
-        document.activeElement.blur();
+      blurScenePanel();
       pointer = {
         id: event.pointerId,
         x: event.clientX,
@@ -90,13 +90,13 @@ export default function AstronautCamera({ flight: flightRef, reducedMotion, disa
     canvas.addEventListener("pointermove", move);
     canvas.addEventListener("pointerup", up);
     canvas.addEventListener("pointercancel", up);
-    window.addEventListener("blur", up);
+    globalThis.addEventListener("blur", up);
     return () => {
       canvas.removeEventListener("pointerdown", down);
       canvas.removeEventListener("pointermove", move);
       canvas.removeEventListener("pointerup", up);
       canvas.removeEventListener("pointercancel", up);
-      window.removeEventListener("blur", up);
+      globalThis.removeEventListener("blur", up);
     };
   }, [flightRef, gl]);
   useFrame(({ camera }, delta) => {

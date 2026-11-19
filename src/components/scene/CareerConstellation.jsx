@@ -1,3 +1,4 @@
+import { setSceneCursor } from "./scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -88,11 +89,11 @@ function MilestoneStar({
         onPointerOver={(e) => {
           e.stopPropagation();
           onHover(entry.experienceIndex);
-          document.body.style.cursor = "pointer";
+          setSceneCursor("pointer");
         }}
         onPointerOut={() => {
           onHover(null);
-          document.body.style.cursor = "";
+          setSceneCursor("");
         }}
       >
         <sphereGeometry args={[compact ? 0.8 : 0.43, 16, 12]} />
@@ -280,7 +281,7 @@ export default function CareerConstellation({
   );
   useEffect(
     () => () => {
-      document.body.style.cursor = "";
+      setSceneCursor("");
     },
     [],
   );

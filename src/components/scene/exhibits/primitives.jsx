@@ -1,3 +1,4 @@
+import { createSceneCanvas } from "../scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo } from "react";
 import { Line, RoundedBox } from "@react-three/drei";
@@ -109,7 +110,7 @@ export function Route({ points, color, opacity = 0.35, ...props }) {
 
 function useNumberTexture(number, isLight = false) {
   const map = useMemo(() => {
-    const canvas = document.createElement("canvas");
+    const canvas = createSceneCanvas();
     canvas.width = canvas.height = 128;
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = isLight ? "#263b47" : "#f5ead3";

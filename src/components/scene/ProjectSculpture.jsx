@@ -1,3 +1,4 @@
+import { createSceneCanvas } from "./scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -107,7 +108,7 @@ function Chess({ color, isLight, timeRef }) {
   const squares = useRef();
   const animation = useRef(null);
   const map = useMemo(() => {
-    const canvas = document.createElement("canvas");
+    const canvas = createSceneCanvas();
     canvas.width = canvas.height = 256;
     const ctx = canvas.getContext("2d");
     for (let y = 0; y < 8; y++)

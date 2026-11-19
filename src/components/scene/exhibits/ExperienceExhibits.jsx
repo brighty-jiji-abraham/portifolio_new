@@ -1,3 +1,4 @@
+import { createSceneCanvas } from "../scenePlatform";
 /* eslint-disable react/no-unknown-property */
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -497,7 +498,7 @@ export function Bingo({ color, isLight, timeRef }) {
     numbers = useRef(),
     winning = useRef();
   const map = useMemo(() => {
-    const canvas = document.createElement("canvas");
+    const canvas = createSceneCanvas();
     canvas.width = canvas.height = 512;
     const ctx = canvas.getContext("2d");
     BINGO_NUMBERS.forEach((n, i) => {
