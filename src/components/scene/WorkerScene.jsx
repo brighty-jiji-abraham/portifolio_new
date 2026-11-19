@@ -89,6 +89,12 @@ export default function WorkerScene(props) {
       if (!alive) return;
       const current = latest.current;
       switch (data.type) {
+        case "prepared": {
+          const value = current.quality.prepareTextures(data.mbps);
+          post({ type: "start", props: sceneSnapshot(current.props,
+            { ...current.quality, value }, current.visible, current.theme) });
+          break;
+        }
         case "ready": current.props.onReady(); break;
         case "failure": fail(data.error); break;
         case "projection": project(data); break;

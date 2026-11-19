@@ -49,10 +49,16 @@ export async function startSceneWorker({ canvas, width, height, props: initial }
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.debug.checkShaderErrors = import.meta.env.DEV;
   const root = createRoot(canvas);
+  let lastReport;
   const control = { enabled: false, keys: new Set(), lookX: 0, lookY: 0, dragged: false,
     onInspect: id => { control.reading = id; control.keys.clear(); send({ type: "inspect", id }); },
     dismissInformation: options => { control.reading = null; send({ type: "dismiss", options }); },
-    report: report => send({ type: "report", report }),
+    report: report => {
+      const encoded = JSON.stringify(report);
+      if (encoded === lastReport) return;
+      lastReport = encoded;
+      send({ type: "report", report });
+    },
   };
   const callbacks = Object.fromEntries(["onSelect", "onProject", "onMilestone"].map(callback => [
     callback, value => send({ type: "select", callback, value, dragged: control.dragged }),

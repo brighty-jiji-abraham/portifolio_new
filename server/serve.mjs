@@ -1,5 +1,5 @@
 // Production static server for the built site (dist/), run by PM2 (ecosystem.config.cjs) behind nginx.
-// Env: HOST (default 127.0.0.1), PORT (default 3014), DIST_DIR (default: dist/ next to this folder).
+// Env: HOST, PORT, DIST_DIR; optional PREVIOUS_DIST_DIR retains old hashed assets during deploys.
 // No dependencies, so the server keeps running while `npm ci` rebuilds node_modules.
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
@@ -9,6 +9,7 @@ import { pipeline } from "node:stream";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(process.env.DIST_DIR || fileURLToPath(new URL("../dist", import.meta.url)));
+const previousAssets = process.env.PREVIOUS_DIST_DIR ? resolve(process.env.PREVIOUS_DIST_DIR, "assets") : null;
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 3014);
 
@@ -59,17 +60,17 @@ function cacheControl(relativePath, ext) {
   return "public, max-age=86400";
 }
 
-async function findFile(pathname) {
-  const target = resolve(root, `.${pathname}`);
-  // Never serve anything outside dist/.
-  if (target !== root && !target.startsWith(root + sep)) return null;
+async function findFile(pathname, directory = root) {
+  const target = resolve(directory, `.${pathname}`);
+  // Never serve anything outside the selected public directory.
+  if (target !== directory && !target.startsWith(directory + sep)) return null;
   try {
     const stats = await stat(target);
-    if (stats.isFile()) return { file: target, stats };
+    if (stats.isFile()) return { file: target, stats, relativePath: target.slice(directory.length).split(sep).join("/") };
     if (stats.isDirectory()) {
       const index = resolve(target, "index.html");
       const indexStats = await stat(index);
-      if (indexStats.isFile()) return { file: index, stats: indexStats };
+      if (indexStats.isFile()) return { file: index, stats: indexStats, relativePath: index.slice(directory.length).split(sep).join("/") };
     }
   } catch {
     // Missing file: handled by the caller.
@@ -123,8 +124,7 @@ function parseRange(req, size, etag, lastModified) {
   return { start, end };
 }
 
-function serveFile(req, res, { file, stats }) {
-  const relativePath = file.slice(root.length).split(sep).join("/");
+function serveFile(req, res, { file, stats, relativePath }) {
   const ext = extname(file).toLowerCase();
   const etag = `"${Math.floor(stats.mtimeMs).toString(16)}-${stats.size.toString(16)}"`;
   const lastModified = stats.mtime.toUTCString();
@@ -136,6 +136,10 @@ function serveFile(req, res, { file, stats }) {
     ETag: etag,
     "Accept-Ranges": "bytes",
   };
+  // Browser HTML still revalidates. A narrowly scoped Cloudflare Cache Rule can
+  // serve the same public document nearby for a minute, avoiding an origin trip.
+  // This header alone does not make HTML eligible for Cloudflare caching.
+  if (ext === ".html") headers["Cloudflare-CDN-Cache-Control"] = "public, max-age=60";
 
   if (isFresh(req, etag, lastModified)) {
     res.writeHead(304, headers);
@@ -188,6 +192,12 @@ async function handle(req, res) {
   }
 
   let found = await findFile(pathname);
+  // Cached HTML and already-open tabs can reference the previous deployment's
+  // immutable chunks. Only assets are eligible; never serve an old HTML page.
+  if (!found && previousAssets && pathname.startsWith("/assets/")) {
+    found = await findFile(pathname.slice("/assets".length), previousAssets);
+    if (found) found.relativePath = `/assets${found.relativePath}`;
+  }
   // An address without a file extension is a page: answer it with the app.
   // A missing file with an extension (a texture, a model) stays a real 404 instead of returning HTML.
   if (!found && !extname(pathname)) found = await findFile("/index.html");

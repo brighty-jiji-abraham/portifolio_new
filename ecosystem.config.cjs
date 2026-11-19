@@ -23,6 +23,8 @@ module.exports = {
         HOST: "127.0.0.1",
         // 3001-3013 are taken by the other sites on this server.
         PORT: "3014",
+        // deploy.sh retains this folder while cached HTML/open tabs finish.
+        PREVIOUS_DIST_DIR: require('node:path').join(__dirname, 'dist-prev'),
       },
     },
   ],

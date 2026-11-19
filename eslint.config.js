@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist', '.claude', 'public/draco'] },
+  { ignores: ['dist', '.claude', '.agents', 'public/draco'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {

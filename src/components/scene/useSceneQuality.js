@@ -70,7 +70,16 @@ export default function useSceneQuality(mode, cinematic) {
   const reportLevel = useCallback(next => setAutomatic(next), []);
   const value = useMemo(() => ({ textures: universeTextureSets[activeTextures], level,
     anisotropy: [2, 4, 8, 16][level] }), [activeTextures, level]);
+  const prepareTextures = useCallback(measured => {
+    // Module-worker transfers can appear on the page's timeline. Read it now:
+    // a queued PerformanceObserver/React update may not have committed yet.
+    const sample = measured || measuredBandwidth(performance.getEntriesByType("resource")) || bandwidth;
+    const initialTier = textureTier(mode, connection, device, sample);
+    reportBandwidth(sample);
+    setTextures(initialTier);
+    return { ...value, textures: universeTextureSets[cinematic ? activeTextures : initialTier] };
+  }, [mode, connection, device, bandwidth, reportBandwidth, value, cinematic, activeTextures]);
 
-  return { value, level, textureTier: activeTextures, reportLevel, reportBandwidth,
+  return { value, level, textureTier: activeTextures, reportLevel, reportBandwidth, prepareTextures,
     dpr: pixelRatioFor(level, size.width, size.height, size.ratio) };
 }

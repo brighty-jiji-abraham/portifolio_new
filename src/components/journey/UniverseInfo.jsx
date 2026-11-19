@@ -6,6 +6,9 @@ import {
   FiLinkedin,
 } from "react-icons/fi";
 import profileImage from "../../assets/profile-thumbnail.webp";
+import profile96 from "../../assets/profile-thumbnail-96.webp?no-inline";
+import profile128 from "../../assets/profile-thumbnail-128.webp?no-inline";
+import profile192 from "../../assets/profile-thumbnail-192.webp?no-inline";
 import { profile, profileStats } from "../../data/profile";
 import { ProfileName, ProfileRole, AnimatedNumber } from "./ProfileTypography";
 import { useMagnetic } from "../../hooks/useInteractive";
@@ -71,7 +74,10 @@ export default function UniverseInfo({
         <div className="spatial-section" hidden={id !== "about"}>
           <p className="spatial-eyebrow">01 / The person behind the universe</p>
           <div className="spatial-profile">
-            <img src={profileImage} alt={profile.name} width="76" height="76" fetchPriority="high" />
+            <img src={profileImage}
+              srcSet={`${profile96} 96w, ${profile128} 128w, ${profile192} 192w, ${profileImage} 256w`}
+              sizes="(min-width: 640px) and (max-height: 600px) 55px, (max-width: 999px) 64px, 72px"
+              alt={profile.name} width="76" height="76" fetchPriority="high" />
             <p>
               Based in Kerala.
               <br />

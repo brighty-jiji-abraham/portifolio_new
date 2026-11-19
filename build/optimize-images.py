@@ -45,9 +45,11 @@ for source, target, width, lossless in [
         )
 
 with Image.open(ROOT / "src/assets/profile-img.jpg") as image:
-    image.resize((256, 256), Image.Resampling.LANCZOS).save(
-        ROOT / "src/assets/profile-thumbnail.webp", "WEBP", quality=94, method=6
-    )
+    for width in (96, 128, 192, 256):
+        name = "profile-thumbnail.webp" if width == 256 else f"profile-thumbnail-{width}.webp"
+        image.resize((width, width), Image.Resampling.LANCZOS).save(
+            ROOT / "src/assets" / name, "WEBP", quality=94, method=6
+        )
 
 # The bake tool produces an opaque PNG with packed HDR bytes. Recompress losslessly.
 for reflection in OUT.glob("room-environment*.png"):
