@@ -11,7 +11,7 @@ npm run dev
 
 Open the local URL printed by Vite, including the configured `/portifolio_new/` base path. `npm run build` produces the static site in `dist`; `npm run preview` serves that build locally.
 
-Run `npm run lint` for static checks and `node --test tests/projectCues.test.mjs` for animation-sound timing regressions.
+Run `npm run lint` for static checks and `node --test tests/*.test.mjs` for animation-sound timing and search metadata regressions.
 
 ## Explore
 
@@ -65,6 +65,18 @@ Project previews show short project titles and field-specific diagrams instead o
 `projectVisuals.js` maps each project to its animation. `scene/exhibits/` groups the system, media, and interactive sequences around reusable materials and geometry. Only the selected exhibit mounts, and its sequence restarts when selected. `useExhibitClock` derives playback from the shared universe clock, so pause and reduced-motion preferences also stop every project animation. The sequences use local geometry and reuse the existing Earth textures; no animation library, video, or new downloaded model is required. `SceneReflections.jsx` supplies locally generated softbox reflections without loading an HDR asset.
 
 The neural network, project screens, constellation, and orbit paths are built locally. The career constellation has no outer decorative ring or tick marks; its interactive stars and connecting paths remain. Project screens use portfolio titles and technologies with abstract diagrams. No runtime asset CDN is required. Legacy Kenney and NASA models retain their bundled credits.
+
+## Search and discoverability
+
+The canonical site is **https://brighty.pro/**. `src/data/discovery.js` owns the page description, name variants, expertise and visible profile answers. The original page title remains **Brighty Jiji Abraham Portfolio**. Keep the description in `public/site.webmanifest` in sync; a test checks this.
+
+`build/portfolioSeo.js` adds metadata, social previews and Schema.org JSON-LD to the initial HTML during development and production builds. The graph links the Person, ProfilePage, WebSite, current employer and selected projects. It uses the same profile, experience and project data as the interface. JSON-LD is embedded in the page and also exported as `portfolio.jsonld`; it is not a JSONL training dataset. No ratings, awards or unsupported “best developer” claims are added.
+
+The initial HTML includes a readable portfolio with all selected projects, experience, education and contact links. Visitors without JavaScript can use it directly. React replaces it with the interactive portfolio; the same profile answers appear in both the universe and text views. This content is served to everyone without user-agent detection. The build also creates `robots.txt` and a single-URL `sitemap.xml`; hash destinations belong to the same page.
+
+For the main domain, build with `npm run build:server` and serve `dist/` at the domain root. `npm run build` retains the GitHub Pages base path while identifying brighty.pro as the canonical site. These commands only build files; they do not publish them.
+
+After publishing, confirm that the homepage, `/robots.txt`, `/sitemap.xml`, `/portfolio.jsonld` and `/og-image.jpg` return successfully. Use [Google Search Console](https://search.google.com/search-console) to verify the domain, submit the sitemap and inspect the homepage. Check the deployed page with [Google’s Rich Results Test](https://search.google.com/test/rich-results) and [Schema.org’s validator](https://validator.schema.org/). Keep the website link on LinkedIn and GitHub consistent with the canonical domain. Indexing and rankings are controlled by search engines; standard crawlable content and accurate structured data also support [Google’s AI search features](https://developers.google.com/search/docs/appearance/ai-features).
 
 ## Production bundles
 

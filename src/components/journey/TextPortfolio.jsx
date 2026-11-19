@@ -4,6 +4,7 @@ import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import Section from "../section/Section";
 import TextHero from "./TextHero";
+import ProfileOverview from "./ProfileOverview";
 import Skills from "../../pages/Skills";
 import Projects from "../../pages/Projects";
 import Experience from "../../pages/Experience";
@@ -45,6 +46,7 @@ export default function TextPortfolio({
           onEnter={onEnter}
           unavailable={unavailable}
         />
+        <ProfileOverview />
       </Section>
       <Section id="skills">
         <Skills />

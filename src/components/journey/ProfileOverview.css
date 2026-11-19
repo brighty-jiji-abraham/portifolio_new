@@ -1,0 +1,45 @@
+.profile-overview {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-strong);
+  max-width: 72ch;
+}
+.profile-overview h3,
+.spatial-panel .profile-overview h3 {
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.profile-overview p {
+  color: var(--text-soft);
+  line-height: 1.75;
+}
+.profile-overview details {
+  padding-block: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.profile-overview summary {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding-block: 4px;
+}
+.profile-overview details p,
+.spatial-panel .profile-overview details p {
+  margin: 12px 0;
+  font-size: 14px;
+}
+.profile-overview a {
+  display: inline-block;
+  color: var(--accent);
+  font-size: 13px;
+  text-underline-offset: 4px;
+  padding-block: 5px;
+}
+.profile-overview :is(summary, a):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}

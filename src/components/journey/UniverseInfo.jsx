@@ -27,6 +27,7 @@ import {
 import Contact from "../../pages/Contact";
 import { ProfileName, ProfileRole, AnimatedNumber } from "./ProfileTypography";
 import { useMagnetic } from "../../hooks/useInteractive";
+import ProfileOverview from "./ProfileOverview";
 import "./UniverseInfo.css";
 
 const TITLES = {
@@ -172,6 +173,7 @@ export default function UniverseInfo({
               Start a conversation <FiArrowUpRight />
             </button>
           </div>
+          <ProfileOverview onInspect={onInspect} />
         </div>
         <div className="spatial-section" hidden={id !== "skills"}>
           <p className="spatial-eyebrow">02 / A connected toolkit</p>

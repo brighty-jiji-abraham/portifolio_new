@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import portfolioSeo from './build/portfolioSeo.js';
 
 export default defineConfig({
   base: '/portifolio_new/',
-  plugins: [react()],
+  plugins: [react(), portfolioSeo()],
   build: {
     rolldownOptions: {
       output: {
