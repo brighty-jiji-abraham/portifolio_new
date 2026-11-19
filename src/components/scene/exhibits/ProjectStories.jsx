@@ -1,6 +1,30 @@
-import { Conversation, Retriever, DataQuery, Gateway, Workflow, Tenants, Workout } from "./SystemExhibits";
-import { Publisher, SkinScan, VisualAssistant, Classifier, SpeechEmotion, Sentiment } from "./MediaExhibits";
-import { Ballot, Commerce, Events, PortfolioWorld, ResponsiveSites, SharedEditor, Bingo, Treasure } from "./ExperienceExhibits";
+import {
+  Conversation,
+  Retriever,
+  DataQuery,
+  Gateway,
+  Workflow,
+  Tenants,
+  Workout,
+} from "./SystemExhibits";
+import {
+  Publisher,
+  SkinScan,
+  VisualAssistant,
+  Classifier,
+  SpeechEmotion,
+  Sentiment,
+} from "./MediaExhibits";
+import {
+  Ballot,
+  Commerce,
+  Events,
+  PortfolioWorld,
+  ResponsiveSites,
+  SharedEditor,
+  Bingo,
+  Treasure,
+} from "./ExperienceExhibits";
 
 const EXHIBITS = {
   conversation: Conversation,
@@ -28,5 +52,9 @@ const EXHIBITS = {
 
 export default function ProjectStories({ animation, ...props }) {
   const Exhibit = EXHIBITS[animation];
-  return <group name={`project-story-${animation}`}><Exhibit {...props} /></group>;
+  return (
+    <group name={`project-story-${animation}`}>
+      <Exhibit {...props} />
+    </group>
+  );
 }

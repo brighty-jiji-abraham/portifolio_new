@@ -54,8 +54,9 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
       cinematic: blackHoleOpen,
       paused: astronaut.enabled && paused,
       atmosphere: astronaut.enabled,
+      projects: astronaut.enabled && ready && astronaut.inspection === "projects" && !paused && !reducedMotion,
     });
-  }, [blackHoleOpen, paused, astronaut.enabled]);
+  }, [blackHoleOpen, paused, astronaut.enabled, astronaut.inspection, reducedMotion, ready]);
   const [category, setCategory] = useState(2);
   const [selected, setSelected] = useState(0);
   const [project, setProject] = useState(0);

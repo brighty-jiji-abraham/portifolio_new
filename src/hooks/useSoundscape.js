@@ -36,6 +36,11 @@ function syncAudio() {
     ? journey.ready && !journey.paused && journey.progress < 1
     : !universe.paused);
   graph.setMix({ ...universe, progress: journey.progress, universeVolume: volumes.universe, blackHoleVolume: volumes.blackHole });
+  const projectsAudible = audible && !universe.cinematic && !!universe.projects;
+  if (projectsAudible !== current.projectsAudible) {
+    current.projectsAudible = projectsAudible;
+    if (!projectsAudible) graph.stopProjectCues();
+  }
 
   if (audible !== current.audible) {
     current.audible = audible;
@@ -121,6 +126,15 @@ export function clearJourneyAudio() {
 
 export function playTick() {
   if (!muted && runtime?.audible && !universe.cinematic) runtime.graph.playTick(volumes.universe);
+}
+
+export function playProjectCue(cue) {
+  if (muted || !runtime?.projectsAudible || document.hidden || runtime.context.state !== "running") return false;
+  return runtime.graph.playProjectCue(cue);
+}
+
+export function stopProjectSounds() {
+  runtime?.graph.stopProjectCues();
 }
 
 function disposeAudio() {

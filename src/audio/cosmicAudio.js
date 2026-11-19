@@ -1,3 +1,5 @@
+import { createProjectEffects } from "./projectEffects";
+
 const clamp = (value) => Math.min(1, Math.max(0, value));
 const smoothstep = (start, end, value) => {
   const t = clamp((value - start) / (end - start));
@@ -59,6 +61,7 @@ export function createCosmicAudio(context) {
   const ambient = gain(0, master);
   const journey = gain(0, master);
   const musicInput = gain(0, master);
+  const projectBus = gain(0, master);
 
   // Deterministic stereo noise, generated once after the visitor enables sound.
   const length = Math.ceil(context.sampleRate * 6);
@@ -115,13 +118,14 @@ export function createCosmicAudio(context) {
   tone(0.075, gain(0.45, pan.pan));
   const airFilter = filter("lowpass", 500, pan);
   noise(white, filter("highpass", 180, airFilter));
+  const projectEffects = createProjectEffects(context, projectBus, white);
 
   return {
     musicInput,
     setAudible(audible) {
       glide(master.gain, audible ? 0.55 : 0, audible ? 0.2 : 0.055);
     },
-    setMix({ cinematic, progress = 0, atmosphere = true, universeVolume = 1, blackHoleVolume = 1 }) {
+    setMix({ cinematic, progress = 0, atmosphere = true, projects = false, universeVolume = 1, blackHoleVolume = 1 }) {
       const p = clamp(Number.isFinite(progress) ? progress : 0);
       const proximity = smoothstep(0.05, 0.94, p) ** 1.35;
       const descent = smoothstep(0.12, 0.96, p);
@@ -129,6 +133,7 @@ export function createCosmicAudio(context) {
       const frequency = 50 - 21 * proximity;
       glide(ambient.gain, !cinematic && atmosphere ? clamp(universeVolume) : 0, 0.12);
       glide(musicInput.gain, cinematic ? 0 : 0.28 * clamp(universeVolume), 0.12);
+      glide(projectBus.gain, !cinematic && projects ? clamp(universeVolume) : 0, 0.03);
       glide(journey.gain, cinematic ? horizonFade * clamp(blackHoleVolume) : 0, 0.12);
       glide(rumble.gain, 0.16 + 0.95 * proximity);
       glide(rumbleFilter.frequency, 100 + 130 * proximity);
@@ -160,7 +165,10 @@ export function createCosmicAudio(context) {
       start(oscillator);
       oscillator.stop(now + 0.07);
     },
+    playProjectCue: (cue) => projectEffects.play(cue),
+    stopProjectCues: () => projectEffects.stop(),
     dispose() {
+      projectEffects.dispose();
       for (const source of sources) source.stop();
       for (const node of nodes) node.disconnect();
       sources.clear();

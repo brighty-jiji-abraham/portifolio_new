@@ -44,7 +44,7 @@ export default function SoundToggle({ settings, className = "" }) {
         <div id={`${id}-volumes`} className="sound-volume-panel" role="group" aria-label="Sound volume controls">
           <p className="sound-volume-title">Sound levels</p>
           {[
-            ["universe", "Universe ambience", "Background music & atmosphere"],
+            ["universe", "Universe ambience", "Music, atmosphere & project sounds"],
             ["blackHole", "Black hole effects", "Rumble & rushing air"],
           ].map(([channel, name, description]) => {
             const percent = Math.round(volumes[channel] * 100);
