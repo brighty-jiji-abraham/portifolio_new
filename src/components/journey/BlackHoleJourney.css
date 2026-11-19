@@ -1,0 +1,122 @@
+.black-hole-journey {
+  --sound-bg: #0c1118;
+  --sound-button: #11151bb3;
+  --sound-text: #f3eee7;
+  --sound-muted: #b3bdca;
+  --sound-accent: #e0b989;
+  --sound-border: #ffffff30;
+  --cinema-text: #f3eee7;
+  --cinema-muted: #b3bdca;
+  --cinema-accent: #dfb884;
+  --cinema-rule: #ffffff35;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cinema-text);
+  overflow: hidden;
+  color-scheme: dark;
+}
+.black-hole-journey[data-light-departure="true"] {
+  --cinema-text: #183043;
+  --cinema-muted: #294b65;
+  --cinema-accent: #855021;
+  --cinema-rule: #294b6560;
+}
+.black-hole-journey::backdrop { background: transparent; }
+.black-hole-cinema { position: absolute; inset: 0; }
+.black-hole-horizon-fade { position: absolute; inset: 0; background: #010204; pointer-events: none; }
+.black-hole-cinema::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(#010204c9, transparent 20%, transparent 55%, #010204b3 82%, #010204e6);
+}
+.black-hole-header {
+  position: absolute;
+  inset: max(24px, env(safe-area-inset-top)) 40px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.black-hole-wordmark { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; }
+.black-hole-wordmark > span:first-child { color: var(--cinema-accent); font-size: 30px; }
+.black-hole-wordmark > span:last-child { color: var(--cinema-muted); font-weight: 400; }
+.black-hole-actions { display: flex; gap: 10px; align-items: center; }
+.black-hole-actions button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #ffffff30;
+  border-radius: 24px;
+  padding: 0 18px;
+  color: #f3eee7;
+  background: #11151bb3;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.black-hole-actions button:hover { border-color: #e0b989; background: #232019; }
+.black-hole-actions button:focus-visible, .black-hole-timeline input:focus-visible { outline: 2px solid #e0b989; outline-offset: 5px; }
+.black-hole-actions button:disabled { opacity: .5; cursor: default; }
+.black-hole-actions .sound-toggle[aria-pressed="true"] { color: #e0b989; border-color: #e0b98980; }
+.black-hole-still { color: var(--cinema-muted); font-size: 12px; }
+.black-hole-caption {
+  position: absolute;
+  inset: auto 6vw max(34px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+.black-hole-chapter { color: var(--cinema-accent); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; margin: 0 0 12px; }
+.black-hole-caption h1 { max-width: 840px; margin: 0; color: var(--cinema-text); font-size: clamp(28px, 4.1vw, 62px); font-weight: 400; letter-spacing: -.045em; line-height: 1.12; text-wrap: balance; }
+.black-hole-description { margin: 13px 0 24px; color: var(--cinema-muted); font-size: 14px; line-height: 1.5; }
+.black-hole-timeline { pointer-events: auto; max-width: 100%; }
+.black-hole-timeline input {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.black-hole-timeline input::-webkit-slider-runnable-track { height: 2px; background: linear-gradient(to right, var(--cinema-accent) var(--journey-progress), var(--cinema-rule) var(--journey-progress)); }
+.black-hole-timeline input::-moz-range-track { height: 2px; background: var(--cinema-rule); }
+.black-hole-timeline input::-moz-range-progress { height: 2px; background: var(--cinema-accent); }
+.black-hole-timeline input::-webkit-slider-thumb { appearance: none; width: 10px; height: 10px; border: 0; border-radius: 50%; margin-top: -4px; background: var(--cinema-accent); }
+.black-hole-timeline input::-moz-range-thumb { width: 10px; height: 10px; border: 0; border-radius: 50%; background: var(--cinema-accent); }
+.black-hole-timeline > div { display: flex; justify-content: space-between; gap: 20px; margin-top: 6px; color: var(--cinema-muted); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.black-hole-unavailable { position: absolute; inset: 35% 10% auto; text-align: center; color: #e0b989; }
+@media (max-width: 600px) {
+  .black-hole-header { left: 20px; right: 20px; gap: 12px; }
+  .black-hole-wordmark > span:last-child { display: none; }
+  .black-hole-actions { gap: 6px; }
+  .black-hole-actions button { padding: 0 12px; font-size: 12px; }
+  .black-hole-actions .sound-toggle { width: 44px; padding: 0; }
+  .black-hole-actions .sound-toggle-label { display: none; }
+  .black-hole-caption { left: 24px; right: 24px; bottom: max(28px, env(safe-area-inset-bottom)); }
+  .black-hole-description { max-width: 270px; margin-bottom: 22px; font-size: 13px; }
+  .black-hole-caption h1 { font-size: clamp(27px, 8vw, 38px); }
+  .black-hole-timeline > div { font-size: 8px; gap: 10px; }
+}
+@media (max-width: 360px) {
+  .black-hole-actions > button:not(:last-child) { width: 44px; padding: 0; }
+  .black-hole-actions > button:not(:last-child) > span { display: none; }
+  .black-hole-still { display: none; }
+  .black-hole-header { left: 14px; right: 14px; gap: 8px; }
+}
+@media (max-height: 500px) {
+  .black-hole-header { top: 16px; }
+  .black-hole-caption { bottom: 18px; }
+  .black-hole-caption h1 { font-size: 28px; }
+  .black-hole-description { margin: 8px 0; font-size: 12px; }
+}

@@ -1,0 +1,578 @@
+.astronaut-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  color: var(--text);
+}
+.flight-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 55px;
+  translate: -50% 0;
+  width: min(420px, calc(100% - 48px));
+  text-align: center;
+  pointer-events: none;
+  padding: 24px 30px;
+  background: radial-gradient(ellipse, var(--bg-0), transparent 75%);
+  animation: revealIn 600ms var(--ease) both;
+}
+.flight-caption > span {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 9px;
+}
+.flight-caption strong {
+  display: block;
+  margin-top: 11px;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  animation: revealIn 700ms var(--ease) both;
+}
+.flight-progress {
+  width: 100%;
+  height: 1px;
+  margin-top: 23px;
+  background: var(--border-strong);
+  overflow: hidden;
+}
+.flight-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+  background: var(--accent);
+  transition: transform 300ms linear;
+}
+.flight-caption small {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.astronaut-hud[data-traveling="true"] .universe-discovery,
+.astronaut-hud[data-traveling="true"] .flight-reticle {
+  display: none;
+}
+.astronaut-hud[data-traveling="true"] .astronaut-guidance > p {
+  opacity: 0.5;
+}
+@media (max-width: 760px) {
+  .flight-caption {
+    bottom: 175px;
+  }
+  .flight-caption strong {
+    font-size: 22px;
+  }
+}
+@media (max-height: 600px) and (min-width: 640px) {
+  .flight-caption {
+    bottom: 5px;
+    width: 290px;
+    padding: 16px;
+  }
+}
+.astronaut-hud button {
+  pointer-events: auto;
+  color: var(--text-soft);
+  font: inherit;
+  cursor: pointer;
+}
+.astronaut-hud button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.astronaut-heading {
+  position: absolute;
+  inset: 26px 40px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  z-index: 30;
+}
+.astronaut-hud .universe-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  min-height: 44px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.astronaut-mark {
+  color: var(--accent);
+  font-size: 34px;
+  font-weight: 400;
+}
+.universe-settings {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.astronaut-hud .black-hole-launch,
+.astronaut-hud .universe-sound {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 11px;
+  height: 44px;
+  padding: 0 17px;
+  border-radius: 24px;
+  border: 1px solid var(--border-strong);
+  background: var(--header-bg);
+  color: var(--text);
+  font-size: 12px;
+}
+.astronaut-hud .universe-sound[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+.universe-sound svg { width: 17px; height: 17px; }
+.black-hole-mark {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 7px #e0b98945;
+}
+.black-hole-mark::after {
+  content: "";
+  position: absolute;
+  inset: 5px -5px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
+.black-hole-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-content: center;
+  gap: 20px;
+  background: transparent;
+  color: #f3eee7;
+  text-align: center;
+}
+.black-hole-loading button { padding: 12px 20px; background: #161b23; color: #f3eee7; border: 1px solid #e0b989; border-radius: 24px; cursor: pointer; }
+@media (max-width: 760px) {
+  .astronaut-hud .black-hole-launch, .astronaut-hud .universe-sound { width: 40px; height: 42px; padding: 0; }
+  .black-hole-launch-label, .universe-sound .sound-toggle-label { display: none; }
+}
+@media (max-width: 480px) {
+  .universe-full-name { display: none; }
+  .astronaut-hud .universe-brand { gap: 9px; }
+}
+.astronaut-hud .universe-icon-button,
+.universe-options > summary {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--header-bg);
+  color: var(--text-soft);
+  font-size: 19px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.universe-options {
+  position: relative;
+  pointer-events: auto;
+}
+.universe-options > summary {
+  list-style: none;
+}
+.universe-options > summary::-webkit-details-marker {
+  display: none;
+}
+.universe-options-menu {
+  position: absolute;
+  right: 0;
+  top: 56px;
+  width: 235px;
+  padding: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background: var(--bg-1);
+  box-shadow: 0 12px 40px #0003;
+  pointer-events: auto;
+}
+.astronaut-hud .universe-options-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  width: 100%;
+  min-height: 44px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 13px;
+}
+.astronaut-hud .universe-options-menu button:hover {
+  background: var(--surface-strong);
+  color: var(--accent);
+}
+.flight-indicator {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 6;
+}
+.flight-indicator > span {
+  height: 4px;
+  width: 4px;
+  border-radius: 50%;
+  background: var(--mint);
+}
+.universe-chart {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  width: min(580px, calc(100% - 48px));
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 6;
+}
+.universe-chart > p {
+  display: none;
+}
+.universe-chart button {
+  position: relative;
+  border: 0;
+  background: transparent;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+.universe-chart button:hover,
+.universe-chart button[aria-pressed="true"] {
+  opacity: 1;
+  color: var(--accent);
+}
+.chart-star {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--stop-color);
+  box-shadow:
+    0 0 0 5px var(--bg-0),
+    0 0 0 6px var(--border);
+}
+.universe-chart button[aria-pressed="true"] .chart-star {
+  box-shadow:
+    0 0 0 5px var(--bg-0),
+    0 0 0 6px var(--accent),
+    0 0 20px var(--stop-color);
+}
+.flight-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  translate: -50% -50%;
+  opacity: 0.4;
+}
+.flight-reticle span:first-child {
+  position: absolute;
+  left: 8px;
+  height: 18px;
+  width: 1px;
+  background: var(--text-muted);
+}
+.flight-reticle span:last-child {
+  position: absolute;
+  top: 8px;
+  width: 18px;
+  height: 1px;
+  background: var(--text-muted);
+}
+.astronaut-guidance {
+  position: absolute;
+  bottom: 36px;
+  left: 40px;
+}
+.astronaut-guidance p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.astronaut-guidance strong {
+  display: block;
+  font-weight: 500;
+  color: var(--text-soft);
+  margin-bottom: 5px;
+}
+.flight-brake {
+  background: var(--header-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  min-height: 44px;
+  font-size: 12px !important;
+}
+.universe-discovery {
+  position: absolute;
+  bottom: 36px;
+  right: 40px;
+  width: 290px;
+  padding: 20px 0 0 24px;
+  border-left: 1px solid var(--border-strong);
+  background: linear-gradient(90deg, transparent, var(--header-bg));
+}
+.universe-discovery > small {
+  font-size: 11px;
+  color: var(--accent);
+}
+.universe-discovery h3 {
+  font-size: 23px;
+  font-weight: 500;
+  margin: 9px 0;
+}
+.universe-discovery p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.universe-discovery button {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--accent);
+}
+.touch-thrusters,
+.touch-flight-help,
+.mobile-look-hint {
+  display: none;
+}
+@media (max-width: 999px) {
+  .astronaut-heading {
+    inset: 22px 22px auto;
+  }
+  .astronaut-hud .universe-brand {
+    gap: 8px;
+    font-size: 15px;
+  }
+  .astronaut-mark {
+    font-size: 28px;
+  }
+  .universe-chart {
+    top: 116px;
+  }
+  .universe-chart button {
+    padding: 7px 4px;
+    font-size: 11px;
+  }
+  .flight-indicator {
+    top: 91px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 760px), (pointer: coarse) {
+  .touch-thrusters {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    left: 22px;
+    right: 22px;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    pointer-events: none;
+  }
+  .thrust-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    gap: 5px;
+  }
+  .thrust-pad .thruster:first-child {
+    grid-column: 2;
+  }
+  .thrust-pad .thruster:nth-child(2) {
+    grid-column: 1;
+  }
+  .thruster {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: var(--header-bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    touch-action: none;
+    user-select: none;
+  }
+  .thruster:active {
+    background: var(--surface-strong);
+    border-color: var(--accent);
+  }
+  .altitude-pad {
+    display: grid;
+    gap: 5px;
+  }
+  .desktop-flight-help {
+    display: none;
+  }
+  .touch-flight-help {
+    display: block;
+  }
+  .astronaut-guidance,
+  .universe-discovery {
+    bottom: 140px;
+  }
+}
+@media (max-width: 760px) {
+  .astronaut-heading {
+    inset: 18px 20px auto;
+    gap: 8px;
+  }
+  .astronaut-hud .universe-brand {
+    font-size: 13px;
+  }
+  .universe-settings {
+    gap: 6px;
+  }
+  .astronaut-hud .universe-icon-button,
+  .universe-options > summary {
+    width: 38px;
+    height: 42px;
+    font-size: 18px;
+  }
+  .mobile-look-hint {
+    display: block;
+    position: absolute;
+    top: 183px;
+    width: 100%;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+  .astronaut-guidance {
+    left: 22px;
+  }
+  .astronaut-guidance p {
+    display: none;
+  }
+  .universe-discovery {
+    right: 22px;
+    width: min(190px, calc(100vw - 150px));
+    border: 0;
+    padding: 0;
+    background: none;
+  }
+  .universe-discovery > small {
+    font-size: 10px;
+  }
+  .universe-discovery h3 {
+    font-size: 16px;
+    margin: 7px 0 0;
+  }
+  .universe-discovery p {
+    display: none;
+  }
+  .universe-discovery button {
+    font-size: 12px;
+    gap: 8px;
+  }
+}
+@media (min-width: 640px) and (max-height: 599px) {
+  .astronaut-heading {
+    inset: 12px 24px auto;
+  }
+  .universe-chart {
+    top: 78px;
+  }
+  .flight-indicator {
+    top: 58px;
+    font-size: 10px;
+  }
+}
+
+:root[data-theme="light"] .universe-chart {
+  top: 86px;
+  padding: 5px 10px;
+  border: 1px solid #a6bed2;
+  border-radius: 16px;
+  background: #f7fbfff0;
+  box-shadow: 0 6px 24px #24466512, inset 0 1px #fff;
+}
+:root[data-theme="light"] .universe-chart button {
+  flex: 1;
+  opacity: 1;
+  color: #3b5970;
+  border-radius: 10px;
+  font-weight: 500;
+}
+:root[data-theme="light"] .universe-chart button:hover,
+:root[data-theme="light"] .universe-chart button[aria-pressed="true"] {
+  color: #174d76;
+  background: #dfeef8;
+}
+:root[data-theme="light"] .chart-star {
+  background: #527b98;
+  box-shadow: 0 0 0 4px #f7fbff, 0 0 0 5px #b3c8d8;
+}
+:root[data-theme="light"] .universe-chart button[aria-pressed="true"] .chart-star {
+  background: #245d87;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 5px #477f9f;
+}
+:root[data-theme="light"] .universe-icon-button,
+:root[data-theme="light"] .universe-options > summary {
+  background: #fbfdff;
+  border-color: #a6bed2;
+  box-shadow: 0 3px 12px #2446650d;
+}
+:root[data-theme="light"] .flight-indicator {
+  color: #294b66;
+}
+@media (max-width: 999px) {
+  :root[data-theme="light"] .universe-chart {
+    top: 108px;
+    width: calc(100% - 32px);
+    gap: 4px;
+    padding: 4px;
+  }
+}
+@media (min-width: 640px) and (max-height: 599px) {
+  :root[data-theme="light"] .universe-chart {
+    top: 78px;
+  }
+}

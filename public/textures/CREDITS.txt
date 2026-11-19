@@ -1,0 +1,20 @@
+Astronomical textures used in the portfolio universe
+
+nasa-starmap.jpg
+NASA/Goddard Space Flight Center Scientific Visualization Studio.
+Deep Star Maps, Ernie Wright and Tom Bridgman (2012).
+Source: https://svs.gsfc.nasa.gov/3895/
+Original: https://svs.gsfc.nasa.gov/vis/a000000/a003800/a003895/starmap_g4k.jpg
+4,096 x 2,048; galactic coordinates. Displayed with a subtle color grade.
+
+nasa-moon.jpg and nasa-moon-height.jpg
+NASA's Scientific Visualization Studio. CGI Moon Kit, Ernie Wright.
+Lunar Reconnaissance Orbiter (LROC / LOLA) data.
+Source: https://svs.gsfc.nasa.gov/4720/
+Original color: https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg
+Original elevation: https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/ldem_3_8bit.jpg
+Color: 2,048 x 1,024. Elevation: 1,024 x 512, used for surface bump shading.
+
+NASA media usage guidelines: https://www.nasa.gov/nasa-brand-center/images-and-media/
+No NASA endorsement is implied. Scene distances and lighting are artistic.
+The earth_* maps and earth-lights.png were already part of this portfolio.

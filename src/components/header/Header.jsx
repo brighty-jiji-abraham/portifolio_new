@@ -1,6 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { FaMoon, FaSun, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
-import { useSoundscape } from "../../hooks/useSoundscape";
 import "./Header.css";
 
 const FULL_NAME = "Brighty Jiji Abraham";
@@ -12,21 +11,10 @@ const SECTIONS = [
   { id: "contact", label: "Contact" },
 ];
 
-const initialTheme = () => {
-  try {
-    const saved = localStorage.getItem("theme");
-    if (saved === "light" || saved === "dark") return saved;
-  } catch {
-    /* Storage may be disabled in a private browser. */
-  }
-  return "dark";
-};
-
-const Header = () => {
+const Header = ({ settings }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState(initialTheme);
   const [active, setActive] = useState("about");
-  const { muted, toggleMute } = useSoundscape();
+  const { theme, toggleTheme, muted, toggleMute } = settings;
 
   const navRef = useRef(null);
   const linkRefs = useRef([]);
@@ -38,21 +26,6 @@ const Header = () => {
 
   const toggleMenu = () => setMenuOpen((open) => !open);
   const closeMenu = () => setMenuOpen(false);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    try {
-      localStorage.setItem("theme", newTheme);
-    } catch {
-      /* Theme still works without storage. */
-    }
-  };
 
   useEffect(() => {
     const onSection = (e) => setActive(e.detail);

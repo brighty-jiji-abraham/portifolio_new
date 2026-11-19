@@ -5,7 +5,7 @@ export const projects = [
     tag: "Production · SaaS",
     featured: true,
     summary:
-      "An end-to-end chatbot SaaS that lets any business plug in their own knowledge base, tools, and channels and have one AI speak to customers across WhatsApp, Telegram, Messenger, Instagram, and the web. Bots reason over per-tenant docs, can call into the tenant's own systems, and quietly hand off to a human agent when needed.",
+      "A multi-tenant customer-support platform that connects business knowledge bases and tools to WhatsApp, Telegram, Messenger, Instagram, and web chat. Combines document retrieval, tool calling, and human-agent handoff in one conversation workflow.",
     stack: [
       "Python",
       "Flask",
@@ -29,7 +29,7 @@ export const projects = [
     tag: "Production · SaaS",
     featured: true,
     summary:
-      "A SaaS that turns documents or rough notes into ready-to-publish WordPress blog posts titles, HTML body, even custom CSS using fine-tuned OpenAI models. Each account has its own credit balance with token-precise billing through Stripe and Razorpay.",
+      "A content-generation platform that turns documents and notes into WordPress drafts with titles, HTML, and custom styling. Built with OpenAI models, background processing, account credits, and billing integrations for Stripe and Razorpay.",
     stack: [
       "Python",
       "Flask",
@@ -51,7 +51,7 @@ export const projects = [
     tag: "NLP · Retrieval",
     featured: true,
     summary:
-      "The retrieval brain inside the chatbot platform. Mixes classic keyword search with modern semantic search so the AI gets the right context every time, and falls back to the open web when nothing internal fits the question.",
+      "A retrieval layer for the chatbot platform that combines keyword matching and semantic search across business documents. Uses vector indexes, BM25, and fuzzy matching to assemble context, with a web-search fallback when the knowledge base has no relevant results.",
     stack: [
       "Python",
       "LangChain",
@@ -70,7 +70,7 @@ export const projects = [
     tag: "Production · MCP · NL-to-SQL",
     featured: true,
     summary:
-      "A natural-language chatbot for an MLM product where users can ask about their business data in plain English. It first tries fast structured MCP tool calls (sub-400 ms); if no tool fits, it falls back to a 9-step agentic SQL pipeline that strictly validates columns to prevent hallucinations, auto-injects row-level security (WHERE user_id = N) for non-admins, and retries up to 3× with a narrowed schema if a query is denied. Multi-turn memory, role-based access (admin / employee / user / guest), and a circuit breaker for OpenAI outages.",
+      "A conversational interface for querying MLM business data in plain English. Routes requests through structured MCP tools or a schema-validated SQL workflow, with role-based access, user-scoped queries, conversation memory, and retry handling.",
     stack: [
       "Flask",
       "OpenAI GPT-4",
@@ -88,7 +88,8 @@ export const projects = [
     tag: "Infra · Gateway",
     featured: true,
     summary:
-      "The single front door to a fleet of internal services (app1, app2, app3, …). Routes traffic, balances load, tunnels Socket.IO connections cleanly through a custom WebSocket proxy, and ships with an admin UI to manage backends in real time.",
+      "A reverse proxy that routes multiple local services through one endpoint. Supports load balancing with health checks, sticky Socket.IO sessions, streamed responses, and an outbound tunnel, with an admin interface for managing backends and API keys.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/BrightysKingdom",
     stack: [
       "Python",
       "Flask",
@@ -96,6 +97,7 @@ export const projects = [
       "Socket.IO",
       "Engine.IO",
       "Redis",
+      "MongoDB",
       "JWT",
       "Vite",
       "Node.js",
@@ -108,7 +110,7 @@ export const projects = [
     tag: "AI Dev Tooling · Automation",
     featured: true,
     summary:
-      "Custom Claude Code workflows that automate the everyday parts of building software code generation across full project scaffolds, repository-wide refactors, doc + README authoring, test-suite scaffolding, and integration into existing repos. Slash commands, sub-agents, and MCP tools wired together so a single prompt can ship work that used to take a day.",
+      "Developer workflows for project scaffolding, repository refactoring, documentation, and test preparation. Connects Claude Code commands, sub-agents, hooks, and MCP tools to automate repeatable tasks within existing repositories.",
     stack: [
       "Claude Code",
       "Anthropic API",
@@ -123,10 +125,10 @@ export const projects = [
   {
     title: "Skin Disease Prediction",
     category: "AI & ML",
-    tag: "Medical AI · Real-time",
+    tag: "Computer Vision · Research",
     featured: true,
     summary:
-      "A dermatology AI trained on four major skin-image datasets over half a million images combined. Recognises conditions in real time from a webcam and ships with the full training pipeline plus a deployment-ready model.",
+      "A computer-vision project exploring skin-image classification with EfficientNet, ResNet, and DenseNet. Includes image preprocessing, augmentation, model training, experiment tracking, and webcam inference.",
     stack: [
       "Python",
       "PyTorch",
@@ -145,7 +147,7 @@ export const projects = [
     tag: "Multimodal AI · B.Tech major",
     featured: true,
     summary:
-      "A multimodal assistant that helps visually impaired users navigate the web it sees, listens, describes, and speaks back. Combines image recognition, image captioning, speech, and natural-language understanding into one experience.",
+      "My B.Tech major project: an assistive application combining image recognition, image captioning, speech recognition, and text-to-speech. Explores how visual and voice interfaces can make information more accessible to people with visual impairments.",
     stack: [
       "Python",
       "PyTorch",
@@ -162,7 +164,7 @@ export const projects = [
     tag: "Voice AI",
     featured: true,
     summary:
-      "Picks up how someone is feeling from the way they speak not what they say. Useful for call-centre quality monitoring, mental-health apps, and assistive tech that can sense frustration before it's voiced.",
+      "An audio-classification project that extracts speech features with librosa and uses an LSTM model to predict emotion labels. Explores the relationship between vocal patterns and labelled emotional expression.",
     stack: ["Python", "TensorFlow", "LSTM", "librosa", "Audio Features"],
   },
   {
@@ -171,7 +173,7 @@ export const projects = [
     tag: "Civic",
     featured: true,
     summary:
-      "A web voting system modelled on real Electronic Voting Machines anonymous casting, auditable tallying, and proper authentication. Built to hold up to the seriousness of a real election.",
+      "A web-based voting application inspired by electronic voting machines. Brings voter authentication, ballot submission, and result tallying into a PHP and MySQL workflow.",
     stack: ["PHP", "MySQL", "JavaScript"],
   },
   {
@@ -179,7 +181,7 @@ export const projects = [
     category: "Platforms",
     tag: "Cloud · AWS",
     summary:
-      "AWS-native infrastructure where thousands of organisations share the same backend without ever seeing each other's data. Each tenant lives in its own isolated bubble.",
+      "An AWS architecture for serving multiple organisations from a shared application. Combines tenant-aware data access, IAM permissions, S3 storage, Lambda functions, and Bedrock integrations.",
     stack: ["AWS Bedrock", "S3", "Lambda", "IAM"],
   },
   {
@@ -187,39 +189,41 @@ export const projects = [
     category: "AI & ML",
     tag: "B.Tech mini project",
     summary:
-      "A personalised workout coach that learns from your fitness data, goals, and preferences. Suggests routines, adapts as you progress, and refines its recommendations every session.",
+      "My B.Tech mini project: a workout-recommendation application using fitness inputs, goals, and preferences. Applies a Random Forest model to suggest personalised routines.",
     stack: ["Random Forest", "scikit-learn", "Python"],
   },
   {
-    title: "Image Classifier (CNN)",
+    title: "CIFAR-10 Image Classifier",
     category: "AI & ML",
     tag: "Computer Vision",
     summary:
-      "A general-purpose image classifier built from the ground up. Used as the foundation for medical imaging, face detection, and object recognition experiments.",
-    stack: ["Python", "TensorFlow", "CNN", "NumPy"],
+      "An image-classification web app for the ten CIFAR-10 categories, including animals and vehicles. A Flask interface accepts an uploaded image, preprocesses it with OpenCV, and returns a prediction from a TensorFlow/Keras model.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/CIFAR-10-CLASSIFIER",
+    stack: ["Python", "TensorFlow", "Keras", "CNN", "Flask", "OpenCV", "NumPy"],
   },
   {
     title: "Online Web Stores",
     category: "Web & Creative",
     tag: "E-commerce",
     summary:
-      "A complete e-commerce platform with browsing, cart, payments, order tracking, and admin tooling built end-to-end in PHP.",
+      "E-commerce applications built with PHP, MySQL, and JavaScript, covering product browsing, shopping carts, payments, order tracking, and store administration.",
     stack: ["PHP", "MySQL", "JavaScript"],
   },
   {
-    title: "College Events Website",
+    title: "ASTRAL '23 — College Events Website",
     category: "Web & Creative",
     tag: "Web · Community",
     summary:
-      "A campus events hub where students create, promote, and RSVP for events. Calendar view, notifications, and social sharing baked in.",
-    stack: ["PHP", "Node.js", "MySQL"],
+      "A website for ASTRAL '23 at Sree Buddha College of Engineering, bringing technical events, non-technical events, workshops, and contact information into one place.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/Astral_Website_2023",
+    stack: ["HTML5", "CSS3", "JavaScript"],
   },
   {
     title: "Sentiment Analysis from Movie Reviews",
     category: "AI & ML",
     tag: "NLP",
     summary:
-      "Reads movie reviews and tells you whether the audience liked the film. Trained on real reviews to capture sarcasm, context, and tone.",
+      "A natural-language processing project that classifies movie reviews by sentiment. Uses text preprocessing and a TensorFlow LSTM model to learn patterns in review language.",
     stack: ["Python", "TensorFlow", "LSTM", "NLP"],
   },
   {
@@ -227,7 +231,8 @@ export const projects = [
     category: "Web & Creative",
     tag: "Web · 3D",
     summary:
-      "A 3D-driven portfolio with a live three.js scene, custom cursor, and animated sections. CI-built and shipped to GitHub Pages on every push to main.",
+      "An interactive React and Three.js portfolio with guided flights through a shared 3D universe, a skills network, project exhibits, and a career constellation. Includes a complete text view, reduced-motion support, and layouts for phones and desktops.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/portifolio_new",
     stack: [
       "React",
       "Vite",
@@ -244,7 +249,7 @@ export const projects = [
     category: "Web & Creative",
     tag: "Web · Freelance",
     summary:
-      "Production websites built for clients across landing pages, marketing sites, and full-stack apps. Server-rendered with Next.js, REST/Node APIs on Express, styled with Tailwind, and shipped end-to-end from design to deploy.",
+      "Client websites spanning landing pages, marketing sites, and full-stack applications. Uses Next.js and React for interfaces, Express for APIs, and Tailwind CSS for styling, from implementation through deployment.",
     stack: [
       "Next.js",
       "React",
@@ -254,6 +259,53 @@ export const projects = [
       "JavaScript",
       "MongoDB",
       "GitHub",
+    ],
+  },
+  {
+    title: "Collaborative Text Editor",
+    category: "Web & Creative",
+    tag: "Real-time · Collaboration",
+    summary:
+      "A collaborative rich-text editor built with React and Quill, backed by Express and MongoDB. Uses Socket.IO to share document changes between connected users and JWT-based authentication for accounts.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/collaborative-text-editor",
+    stack: ["React", "Quill", "Node.js", "Express", "Socket.IO", "MongoDB", "JWT", "Vite"],
+  },
+  {
+    title: "Multiplayer Bingo",
+    category: "Web & Creative",
+    tag: "Game · Real-time",
+    summary:
+      "A browser-based multiplayer Bingo game with a React interface and an Express server. Uses Socket.IO to coordinate live play between connected players.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/Bingo",
+    stack: ["React", "Node.js", "Express", "Socket.IO", "JavaScript", "Vite"],
+  },
+  {
+    title: "Treasure Hunt",
+    category: "Web & Creative",
+    tag: "Game · Full-stack",
+    summary:
+      "A treasure-hunt application with separate React interfaces for players and administrators. An Express and MongoDB backend handles the game, with Socket.IO for live updates and Tailwind CSS for the interface.",
+    sourceUrl: "https://github.com/brighty-jiji-abraham/Treasure-Hunt",
+    stack: ["React", "Node.js", "Express", "MongoDB", "Socket.IO", "Tailwind CSS", "JWT", "Vite"],
+  },
+  {
+    title: "Kingdom Chess",
+    category: "Web & Creative",
+    tag: "3D Game · Multiplayer",
+    summary:
+      "A multiplayer 3D chess game where players join opposing kingdoms and claim piece roles with different levels of control. Teams coordinate through private chat, move suggestions, and voting. Features synchronized play, animated moves and captures, customizable boards and pieces, and MongoDB-backed game rooms.",
+    stack: [
+      "React",
+      "Three.js",
+      "react-three-fiber",
+      "React Spring",
+      "Node.js",
+      "Express",
+      "Socket.IO",
+      "chess.js",
+      "Zustand",
+      "MongoDB",
+      "Vite",
     ],
   },
 ];

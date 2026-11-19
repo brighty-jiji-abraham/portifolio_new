@@ -1,0 +1,13 @@
+International Space Station (ISS) (A)
+Credit: NASA / Ames Research Center
+Source: https://science.nasa.gov/3d-resources/international-space-station-iss-a/
+Downloaded from NASA's official NASA-3D-Resources repository:
+https://github.com/nasa/NASA-3D-Resources/tree/master/3D%20Models/International%20Space%20Station%20(ISS)%20(A)
+
+NASA describes these repository assets as free and without copyright:
+https://github.com/nasa/NASA-3D-Resources/blob/master/README.md
+Usage guidelines: https://www.nasa.gov/nasa-brand-center/images-and-media/
+
+The model is used as exterior station hardware in a fictional portfolio scene.
+Runtime scale, orientation, and materials have been adapted. No NASA affiliation
+or endorsement is implied. The docking bay and RAG exhibit are original geometry.

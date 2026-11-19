@@ -1,8 +1,65 @@
-# React + Vite
+# Brighty's portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React and Three.js portfolio centred on Brighty Jiji Abraham. The website opens directly inside a shared 3D universe, with Brighty's profile beside Earth and its orbiting technology rings.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```sh
+npm ci
+npm run dev
+```
+
+Open the local URL printed by Vite, including the configured `/portifolio_new/` base path. `npm run build` produces the static site in `dist`; `npm run preview` serves that build locally.
+
+## Explore
+
+- The universe is the main portfolio. There is no entry button or scroll-based camera track. The opening composition places the profile alongside Earth on desktop and below it on phones.
+- Home, Skills, Work, Journey, and Contact start guided flights through the same world. The destination's information opens on arrival. Browser Back/Forward and direct links such as `#skills` or `#contact` work; reloading a destination opens it immediately.
+- Information panels are anchored in 3D space and move in perspective during flight. Their shared camera composition adapts to desktop, portrait phones, and landscape screens. There are no page crossings, cutscene captions, or section backgrounds layered over the universe.
+- Skills are a 3D network of luminous stars, technology icons, and fine curved connections. Select a category or a star to explore all 57 tools; matching-project links fly to the selected project. Work contains all 22 projects through floating screens, a menu, and previous/next controls. Public projects include links to their GitHub source in both views. Kingdom Chess has a dedicated chessboard exhibit, preview tile, and illustration in the text view.
+- Journey is a personal constellation with stellar light, a faint dust cloud, and light moving along its chronological path. Its origin is labelled **My beginning** without displaying the exact birthday. Career stars show the roles and teams; education, certifications, and community activities remain available inside the panel.
+- Contact uses the same Earth as the opening scene. **Preview a signal around Earth** is a local animation. The form uses FormSubmit with validation, sending, success, and retry states. Drafts survive dismissing the panel and navigating to another destination within an exploration session.
+- **Fly freely** dismisses the panel. Drag space to look around, use W/A/S/D to fly, Q/E to descend/ascend, Shift to boost, and arrow keys to look. Phones have hold-to-fly thrusters. Movement interrupts autopilot; **Stop flight** brakes immediately. Escape closes information or stops flight, keeping the visitor inside the portfolio. Typing and scrolling inside a panel do not control flight.
+- The theme button switches light/dark mode for both the interface and 3D materials, with local persistence. The **Sound** button enables a quiet universe ambience beneath the existing background music. Its adjacent arrow opens independent **Universe ambience** and **Black hole effects** volume sliders. Levels are shared between both views and remembered locally; sound still starts off after a reload. The universe level also controls its background music and interface ticks. **Portfolio options** contains pause/resume motion and **Text view**. Reduced motion bypasses automatic flights and decorative animation while allowing explicit, slower astronaut movement.
+- **Black hole** in the header starts a 22-second approach using the current universe scene and camera. Earth, the stars, and the black hole retain their exact starting positions as the view turns and moves toward the horizon. The fullscreen controls have pause/resume, a seekable timeline, replay, and **Return**; Escape also restores the original camera, portfolio section, and keyboard focus. Reduced motion starts at that same departure view with a manually controlled timeline. The flight uses one renderer and pauses in background tabs.
+- With sound enabled, the flight fades out the background music and builds a deep rumble, bass harmonics, and stereo rushing air as the horizon approaches. Seeking updates the mix, pause fades to silence, and replay starts the build again. Return brings back the universe ambience and music. Muting or switching tabs fades and suspends audio; sound can also be enabled directly inside the flight.
+- Text view is a complete, accessible scrolling portfolio with a **3D view** return button. Browsers without WebGL use this view automatically. It has no large transition gaps or scene placeholders.
+- Rendering pauses when the page is hidden, and phones use a lower pixel ratio. Models and textures are loaded separately from the initial interface.
+
+## Scene structure
+
+`PortfolioJourney.jsx` owns selections and switches between the primary universe and `TextPortfolio.jsx`. `useAstronaut.js` manages navigation, browser history, and keyboard flight. `AstronautView.jsx` supplies the main navigation, settings, and touch controls. `usePortfolioSettings.js` shares theme and sound settings between both views.
+
+`Scene3D.jsx` renders the shared world. `AstronautCamera.jsx` handles free flight, guided camera paths, and planet collision boundaries. `FittedWorld.jsx` positions every exhibit at its universe coordinates, independent of the document layout. `WorldInformation.jsx` anchors accessible HTML in the scene; `UniverseInfo.jsx` supplies the content; `spatialLayout.js` shares the responsive composition with the camera. Panels are portaled into the main interface so native links, inputs, focus, and scrolling remain accessible.
+
+`EarthWorld.jsx` supplies both Earth scenes, `NeuralSkills.jsx` renders the skill network, `CareerConstellation.jsx` renders the origin and career stars, and `WorldModels.jsx` renders project exhibits and the contact signal. Content lives in `src/data/profile.js`, `skills.jsx`, `projects.js`, `experience.js`, and `constellation.js`. The shared profile supplies both views with the same headline, biography, contact details, and introductory statistics. The constellation is a personal illustration.
+
+## Content sources
+
+Content reviewed on 19 November 2026 against [Brighty's GitHub profile and public repositories](https://github.com/brighty-jiji-abraham), the [iOSS team page](https://ioss.co/team-ioss), [ASSISTREND's indexed team profile](https://assistrend.com/), and [Sree Buddha College's enrolment records](https://sbce.ac.in/assets/documents/accreditation/Cycle3/Proof-AY-20-21-Enrolment-number-of-students-DIGI.pdf). Public project descriptions and technology stacks were checked against their README, source, and dependency files; each verified repository is stored as `sourceUrl` in `projects.js`.
+
+Kingdom Chess was added from the owner-provided local `chess` repository. Its description and stack were checked against the client, server, and package files. The configured GitHub remote returned 404 publicly, so no source or live-demo link is displayed for that project. Its 3D exhibit plays a short endgame with lifted moves, square highlights, a pawn capture, and a soft reset. It follows the shared pause and reduced-motion settings.
+
+[LinkedIn](https://www.linkedin.com/in/brightyjijiabraham/) blocked automated access. Brighty confirmed the Team Lead role in the AI Team (R&D) from June 2026 to present and the Software Engineer role from January to June 2026. The existing July 2024 Xyvin start is retained because a third-party directory's different start month could not be independently verified. The original introduction and headline are retained at the owner's request; the shared shipped-projects statistic is now **50+**, also provided by the owner. Existing certifications and private-project details remain owner-provided content; new qualifications, performance figures, and customer counts have not been inferred from search snippets.
+
+## Assets
+
+The universe uses a locally hosted [NASA Deep Star Map](https://svs.gsfc.nasa.gov/3895/) and lunar color/elevation maps from [NASA's CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/). Full credits and original download links are in `public/textures/CREDITS.txt`. These three textures add approximately 2.75 MiB to the scene assets. The distant sky follows camera translation without rotating with the observer, keeping it continuous during free flight.
+
+`PlanetEarth.jsx` combines the existing Earth color, city-light, water, and cloud textures with directional sunlight, a day/night boundary, ocean reflections, and a thin atmospheric rim. Clouds and Earth rotate slowly; the textured Moon follows a tilted orbit. The technology satellites remain as quieter portfolio details. Light mode has a layered blue sky with bright stars, white information panels, and darker technology icons and navigation controls.
+
+`BlackHole.jsx` adds a distant, camera-relative landmark with a dark shadow, a lensed accretion disk, asymmetric brightness, and visibly flowing gas. Hot arcs orbit at different speeds across the disk, fine filaments drift inward, and its halo varies gently. Its bounded shader uses an artistic ray-bending approximation inspired by [NASA's black-hole visualization](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/); it is not a scientific simulation. It uses no additional image, video, or model downloads and cannot intercept exhibit clicks. On phones its smaller placement keeps the skill and career stars clear.
+
+`BlackHoleJourney.jsx` loads its controls only when requested, in a transparent modal above the live universe. `BlackHoleCinema.jsx` captures the existing camera and black-hole transform, takes over that camera during the approach, and restores its pose on exit. It keeps the same black-hole mesh and shader throughout; `blackHoleFlight.js` supplies the flight timing. Lensing gradually samples the existing NASA map in the universe's sky orientation, and light mode gently darkens during departure. The visual direction references [DNEG's work on Interstellar](https://www.dneg.com/news/new-black-hole-imagery); the flight is an artistic sequence rather than a physical model of crossing an event horizon. No film footage, music, or new texture downloads are needed.
+
+`src/audio/cosmicAudio.js` synthesizes the original ambient and cinematic effects with Web Audio: filtered stereo noise, slowly moving air, and low oscillators with audible upper harmonics. Journey position controls their pitch, filters, and level, including a fade at the final horizon. Smoothed parameters and a master compressor keep transitions controlled. `useSoundscape.js` creates one shared audio graph only after a sound-button gesture, mixes the existing `bg-music.m4a` through it, suspends it when silent, and releases it on unmount. These effects add no audio assets or dependencies.
+
+`StellarAtmosphere.jsx` supplies local shaders for stellar cores, optical halos, softly drifting dust, and faint nebula wisps. Skills use these in place of solid badges and rims; Journey uses them in place of faceted markers. Connections carry small moving lights, selection can send a signal through the skill network, and tracing the career path follows a moving comet. A slight idle turn gives each constellation depth while labels remain readable. Distant exhibits are hidden while reading Skills or Journey to prevent their labels overlapping; they reappear for free flight. All decorative motion—including the black hole, stars, clouds, connections, Earth, and Moon—uses the same clock and freezes under **Pause motion** or reduced-motion preferences.
+
+Project previews show short project titles and field-specific diagrams instead of rotating generic shapes. `ProjectPreview.jsx` creates these lightweight textures locally. The selected project is outlined; the existing menu and previous/next controls remain the accessible alternatives. Sculptures use more restrained metal finishes, and the vision exhibit has an optical barrel with a mechanical iris. `SceneReflections.jsx` supplies locally generated softbox reflections without loading an HDR asset.
+
+The neural network, project screens, constellation, and orbit paths are built locally. The career constellation has no outer decorative ring or tick marks; its interactive stars and connecting paths remain. Project screens use portfolio titles and technologies with abstract diagrams. No runtime asset CDN is required. Legacy Kenney and NASA models retain their bundled credits.
+
+## Production bundles
+
+`vite.config.js` uses Rolldown chunk groups to separate Three.js's core and WebGL renderer from the portfolio code. Scene and text views retain their dynamic imports, and the black-hole controls load on demand. The standard 500 kB chunk warning stays enabled; the largest minified JavaScript chunk is approximately 461 kB with the current dependencies. Separating the engine also lets browsers cache it independently of portfolio edits.

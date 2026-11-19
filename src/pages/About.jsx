@@ -17,35 +17,36 @@ import {
 } from "react-icons/fi";
 import { useTilt, useMagnetic } from "../hooks/useInteractive";
 import { useScramble } from "../hooks/useScramble";
+import { profile, profileStats } from "../data/profile";
 
-const ROLE_TEXT = "AI-Native Software Engineer · R&D Specialist";
+const ROLE_TEXT = profile.headline;
 const socials = [
   {
-    href: "https://github.com/brighty-jiji-abraham",
+    href: profile.links.github,
     label: "GitHub",
     cls: "github",
     Icon: FaGithub,
   },
   {
-    href: "https://www.linkedin.com/in/brightyjijiabraham/",
+    href: profile.links.linkedin,
     label: "LinkedIn",
     cls: "linkedin",
     Icon: FaLinkedinIn,
   },
   {
-    href: "https://twitter.com/B_J_A_008",
+    href: profile.links.twitter,
     label: "Twitter / X",
     cls: "twitter",
     Icon: FaXTwitter,
   },
   {
-    href: "https://www.instagram.com/brighty.jiji.abraham/",
+    href: profile.links.instagram,
     label: "Instagram",
     cls: "instagram",
     Icon: FaInstagram,
   },
   {
-    href: "https://www.facebook.com/brighty.jiji.abraham/",
+    href: profile.links.facebook,
     label: "Facebook",
     cls: "facebook",
     Icon: FaFacebookF,
@@ -57,6 +58,7 @@ export default function About({
   reducedMotion,
   paused,
   onPauseChange,
+  sceneUnavailable = false,
 }) {
   const magnetic = useMagnetic(0.14);
   const tilt = useTilt(5);
@@ -71,15 +73,23 @@ export default function About({
     setSpinning(true);
   };
   return (
-    <div className="about">
+    <div className={`about${sceneUnavailable ? " no-scene" : ""}`}>
       <div className="about-text">
-        <span className="section-eyebrow">
-          Hello, fellow explorer{" "}
-          <span className="hello-wave" aria-hidden="true">
-            ✦
-          </span>
-        </span>
-        <h1 className="name-3d" {...tilt}>
+        <div className="profile-intro">
+          <img
+            src={profileImg}
+            alt="Brighty Jiji Abraham"
+            width="88"
+            height="88"
+          />
+          <div>
+            <span>Hello, fellow explorer</span>
+            <span className="profile-location">
+              I&apos;m Brighty. Welcome to my world.
+            </span>
+          </div>
+        </div>
+        <h1 id="about-title" tabIndex={-1} className="name-3d" {...tilt}>
           Brighty Jiji
           <br />
           Abraham<span className="name-period">.</span>
@@ -88,9 +98,7 @@ export default function About({
           {ROLE_TEXT}
         </p>
         <p className="about-bio">
-          Building systems that understand humans better than we understand
-          ourselves. I bring AI research, full-stack engineering, and a little
-          creative curiosity together to make useful things.
+          {profile.bio}
         </p>
         <div className="about-actions">
           <a
@@ -102,25 +110,22 @@ export default function About({
           </a>
           <a
             className="btn btn-ghost btn-magnetic"
-            href="#contact"
+            href="#skills"
             {...magnetic}
           >
+            Explore my skills <FiArrowDown />
+          </a>
+          <a className="about-contact-link" href="#contact">
             Let&apos;s talk
           </a>
         </div>
         <ul className="about-stats" aria-label="At a glance">
-          <li>
-            <strong>5+</strong>
-            <span>years engineering</span>
-          </li>
-          <li>
-            <strong>100+</strong>
-            <span>devs mentored</span>
-          </li>
-          <li>
-            <strong>10+</strong>
-            <span>shipped projects</span>
-          </li>
+          {profileStats.map(({ value, suffix, label }) => (
+            <li key={label}>
+              <strong>{value}{suffix}</strong>
+              <span>{label}</span>
+            </li>
+          ))}
         </ul>
         <div className="social-links" aria-label="Social profiles">
           {socials.map(({ href, label, cls, Icon }) => (
@@ -155,12 +160,6 @@ export default function About({
           </span>
         </div>
         <div className="explorer-badge">
-          <img
-            src={profileImg}
-            alt="Brighty Jiji Abraham"
-            width="64"
-            height="64"
-          />
           <div>
             <strong>Earthling. Engineer. Explorer.</strong>
             <span>Based in Kerala. Building for everywhere.</span>
@@ -194,7 +193,7 @@ export default function About({
       </div>
       <a className="scroll-hint" href="#skills">
         <span className="scroll-mouse" aria-hidden="true" />
-        <span>There&apos;s more down here</span>
+        <span>A journey through my skills</span>
         <FiArrowDown />
       </a>
     </div>

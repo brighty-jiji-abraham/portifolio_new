@@ -1,0 +1,50 @@
+.project-artwork {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  color: var(--art-color);
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in srgb, var(--art-color) 9%, transparent),
+      transparent 70%
+    ),
+    var(--bg-0);
+  border-bottom: 1px solid var(--border);
+}
+.project-artwork svg {
+  width: 100%;
+  height: 100%;
+}
+.artwork-object {
+  transform-origin: center;
+  transition: transform 850ms var(--ease);
+}
+.project-card:hover .artwork-object {
+  transform: rotate(-3deg) scale(1.05);
+}
+.artwork-index {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+.artwork-label {
+  position: absolute;
+  bottom: 16px;
+  left: 22px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+:root[data-theme="light"] .project-artwork {
+  --art-color: #497d8b !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card:hover .artwork-object {
+    transform: none;
+  }
+}

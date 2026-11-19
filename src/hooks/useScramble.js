@@ -1,74 +1,55 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from "react";
 
-const CHARS = '!<>-_\\/[]{}—=+*^?#________';
+const CHARS = "<>/{}[]_+*";
 
-/**
- * Hover-triggered character scramble.
- * Wire onMouseEnter (or onFocus) to `scramble`.
- * Element must have a stable text content; we mutate textContent.
- */
-export const useScramble = (text, { duration = 600 } = {}) => {
-    const elRef = useRef(null);
-    const rafRef = useRef(0);
-    const queueRef = useRef([]);
-    const frameRef = useRef(0);
-    const runningRef = useRef(false);
-
-    useEffect(() => {
-        if (elRef.current) elRef.current.textContent = text;
-        return () => cancelAnimationFrame(rafRef.current);
-    }, [text]);
-
-    const scramble = useCallback(() => {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        if (runningRef.current) return;
-        const el = elRef.current;
-        if (!el) return;
-        runningRef.current = true;
-        const oldText = el.textContent || '';
-        const newText = text;
-        const length = Math.max(oldText.length, newText.length);
-        const totalFrames = Math.max(20, Math.round(duration / 16));
-        const queue = [];
-        for (let i = 0; i < length; i++) {
-            const from = oldText[i] || '';
-            const to = newText[i] || '';
-            const start = Math.floor(Math.random() * (totalFrames * 0.4));
-            const end = start + Math.floor(Math.random() * (totalFrames * 0.6)) + 4;
-            queue.push({ from, to, start, end, char: '' });
-        }
-        queueRef.current = queue;
-        frameRef.current = 0;
-
-        const update = () => {
-            let output = '';
-            let complete = 0;
-            const queueArr = queueRef.current;
-            for (let i = 0; i < queueArr.length; i++) {
-                const q = queueArr[i];
-                const f = frameRef.current;
-                if (f >= q.end) {
-                    complete++;
-                    output += q.to;
-                } else if (f >= q.start) {
-                    if (!q.char || Math.random() < 0.28) {
-                        q.char = CHARS[Math.floor(Math.random() * CHARS.length)];
-                    }
-                    output += q.char;
-                } else {
-                    output += q.from;
-                }
-            }
-            if (el) el.textContent = output;
-            if (complete === queueArr.length) {
-                runningRef.current = false;
-                return;
-            }
-            frameRef.current++;
-            rafRef.current = requestAnimationFrame(update);
-        };
-        rafRef.current = requestAnimationFrame(update);
-    }, [text, duration]);
-
-    return [elRef, scramble];
+export const useScramble = (
+  text,
+  { duration = 600, disabled = false } = {},
+) => {
+  const elRef = useRef(null);
+  const raf = useRef(0);
+  const running = useRef(false);
+  const cancel = useCallback(() => {
+    cancelAnimationFrame(raf.current);
+    running.current = false;
+    if (elRef.current) elRef.current.textContent = text;
+  }, [text]);
+  useEffect(() => {
+    cancel();
+    return cancel;
+  }, [cancel, disabled]);
+  const scramble = useCallback(() => {
+    if (
+      disabled ||
+      running.current ||
+      !elRef.current ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
+    running.current = true;
+    const start = performance.now();
+    const offsets = Array.from(
+      text,
+      (_, i) => (i / text.length) * 0.55 + Math.random() * 0.18,
+    );
+    let lastTick = -1;
+    const update = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const tick = Math.floor((now - start) / 45);
+      if (tick !== lastTick && elRef.current) {
+        lastTick = tick;
+        elRef.current.textContent = Array.from(text, (char, i) =>
+          char === " " || progress >= offsets[i] + 0.23
+            ? char
+            : progress < offsets[i]
+              ? char
+              : CHARS[Math.floor(Math.random() * CHARS.length)],
+        ).join("");
+      }
+      if (progress >= 1) cancel();
+      else raf.current = requestAnimationFrame(update);
+    };
+    raf.current = requestAnimationFrame(update);
+  }, [text, duration, disabled, cancel]);
+  return [elRef, scramble];
 };

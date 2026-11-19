@@ -12,6 +12,8 @@ import { useSpotlight, useTilt } from "../hooks/useInteractive";
 import { useReveal } from "../hooks/useReveal";
 import { playTick } from "../hooks/useSoundscape";
 import { projects } from "../data/projects";
+import ProjectArtwork from "../components/journey/ProjectArtwork";
+import ProjectLinks from "../components/projects/ProjectLinks";
 import "./Projects.css";
 
 const CATEGORIES = ["All projects", "AI & ML", "Platforms", "Web & Creative"];
@@ -26,7 +28,7 @@ function ProjectCard({ project, index }) {
   const tilt = useTilt(4);
   const [ref, visible] = useReveal();
   const [expanded, setExpanded] = useState(false);
-  const { Icon, color, className } = CATEGORY_ART[project.category];
+  const { color } = CATEGORY_ART[project.category];
   return (
     <li
       ref={ref}
@@ -42,16 +44,7 @@ function ProjectCard({ project, index }) {
       }}
       onMouseLeave={tilt.onMouseLeave}
     >
-      <div className={`project-art art-${className}`} aria-hidden="true">
-        <span className="art-orbit orbit-one" />
-        <span className="art-orbit orbit-two" />
-        <span className="art-core">
-          <Icon />
-        </span>
-        <span className="art-star star-one">✦</span>
-        <span className="art-star star-two">+</span>
-        <span className="art-caption">{project.category}</span>
-      </div>
+      <ProjectArtwork index={projects.indexOf(project)} />
       <div className="project-card-body">
         <span className="project-tag">{project.tag}</span>
         <h3>{project.title}</h3>
@@ -79,6 +72,7 @@ function ProjectCard({ project, index }) {
             </span>
           ))}
         </div>
+        <ProjectLinks project={project} />
       </div>
     </li>
   );
@@ -113,8 +107,8 @@ export default function Projects() {
           <h2 className="section-title">Ideas out in the wild.</h2>
         </div>
         <p className="section-lead">
-          From curious experiments to platforms people use. A few things
-          I&apos;ve brought to life with code.
+          AI applications, SaaS platforms, and web experiments. Explore the
+          projects and the source code behind my public work.
         </p>
       </div>
       <div className="project-toolbar" id="project-filters">

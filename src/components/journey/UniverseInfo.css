@@ -1,0 +1,733 @@
+.world-info-portal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.universe-chart,
+.flight-indicator {
+  z-index: 6;
+}
+.astronaut-hud[data-reading="true"] .universe-discovery,
+.astronaut-hud[data-reading="true"] .astronaut-guidance,
+.astronaut-hud[data-reading="true"] .touch-thrusters,
+.astronaut-hud[data-reading="true"] .mobile-look-hint,
+.astronaut-hud[data-reading="true"] .flight-reticle {
+  display: none;
+}
+.spatial-panel {
+  width: var(--info-width);
+  height: var(--info-height);
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  background: linear-gradient(145deg, #19273550, transparent 50%), #080d14f5;
+  border: 1px solid #8faebe38;
+  border-radius: 18px;
+  box-shadow:
+    0 16px 70px #0004,
+    inset 0 1px #c2dfeb1a;
+  overflow: hidden;
+  pointer-events: auto;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.65;
+  backface-visibility: hidden;
+}
+:root[data-theme="light"] .spatial-panel {
+  background: #fbfdff;
+  border-color: #a9c1d6;
+  box-shadow:
+    0 20px 65px #25496c2b,
+    inset 0 1px #fff;
+}
+:root[data-theme="light"] .spatial-panel-heading,
+:root[data-theme="light"] .spatial-panel-foot {
+  background: #eef5fb;
+}
+.spatial-panel [hidden] {
+  display: none !important;
+}
+.spatial-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 10px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border-strong);
+}
+.spatial-panel-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  font-size: 15px;
+  font-weight: 500;
+}
+.spatial-panel-heading h2 > span {
+  color: var(--accent);
+  font-size: 22px;
+}
+.spatial-panel-heading h2:focus {
+  outline: none;
+}
+.spatial-panel button,
+.spatial-panel a,
+.spatial-panel select,
+.spatial-panel input,
+.spatial-panel textarea,
+.spatial-panel summary {
+  touch-action: manipulation;
+}
+.astronaut-hud .spatial-resume {
+  padding: 7px 0 7px 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  min-height: 36px;
+  white-space: nowrap;
+}
+.spatial-panel-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-2) transparent;
+  touch-action: pan-y;
+}
+.spatial-panel-scroll:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -4px;
+}
+.spatial-panel h3 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.spatial-panel h4 {
+  margin: 20px 0 9px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.spatial-panel p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-soft);
+  margin: 0 0 18px;
+}
+.spatial-profile {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin-bottom: 22px;
+}
+.spatial-profile img {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 22px;
+  border: 1px solid var(--border-strong);
+}
+.spatial-profile p {
+  font-size: 12px;
+  margin: 0;
+  color: var(--text-muted);
+}
+.spatial-panel .spatial-profile-name {
+  font-size: 33px;
+  max-width: 10ch;
+}
+.spatial-panel .spatial-role {
+  color: var(--accent);
+  font-size: 13px;
+  margin-top: -3px;
+}
+.spatial-facts {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px 0;
+  padding-block: 18px;
+  border-block: 1px solid var(--border);
+}
+.spatial-facts dt {
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--text);
+}
+.spatial-facts dd {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin: 7px 0 0;
+}
+.spatial-socials {
+  display: flex;
+  gap: 22px;
+  margin: 20px 0;
+}
+.spatial-socials a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 12px;
+  min-height: 40px;
+}
+.spatial-actions {
+  display: grid;
+  gap: 5px;
+}
+.astronaut-hud .spatial-actions button,
+.astronaut-hud .spatial-text-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 13px;
+  min-height: 44px;
+  width: 100%;
+}
+.spatial-categories,
+.spatial-tool-list,
+.spatial-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+.spatial-categories {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.astronaut-hud .spatial-categories button,
+.astronaut-hud .spatial-tool-list button,
+.astronaut-hud .spatial-years button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 10px;
+  min-height: 37px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 12px;
+}
+.spatial-tool-list svg,
+.spatial-categories svg {
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.astronaut-hud .spatial-panel button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--surface-strong);
+  color: var(--text);
+}
+.spatial-panel button:hover,
+.spatial-panel a:hover {
+  color: var(--accent);
+}
+.spatial-selected-detail {
+  margin-top: 24px;
+}
+.spatial-exhibit-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 24px;
+}
+.astronaut-hud .spatial-exhibit-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 13px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 12px;
+  transition:
+    background 200ms,
+    border-color 200ms;
+}
+.astronaut-hud .spatial-exhibit-controls button:first-child {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.astronaut-hud .spatial-exhibit-controls button:hover {
+  background: var(--surface-strong);
+  border-color: var(--accent);
+}
+.astronaut-hud .spatial-exhibit-controls button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.spatial-current-tool {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.spatial-current-tool h3 {
+  margin: 0;
+  font-size: 26px;
+}
+.spatial-current-tool p {
+  margin: 5px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.spatial-tool-emblem {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 27px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+}
+.spatial-panel .spatial-scene-hint {
+  font-size: 13px;
+}
+:root[data-theme="light"] .spatial-tool-emblem svg,
+:root[data-theme="light"] .spatial-tool-list svg,
+:root[data-theme="light"] .spatial-selected-detail h3 svg {
+  filter: brightness(0.65);
+}
+.spatial-journey-progress > span {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.spatial-journey-progress {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin: 0 0 25px;
+}
+.spatial-journey-progress > div {
+  flex: 1;
+  height: 2px;
+  background: var(--border-strong);
+}
+.spatial-journey-progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 800ms var(--ease);
+}
+.spatial-panel[data-motion="false"] .spatial-journey-progress i {
+  transition: none;
+}
+.spatial-selected-detail h3 {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.spatial-selected-detail h3 svg {
+  flex-shrink: 0;
+}
+.spatial-related {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.astronaut-hud .spatial-related button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  width: 100%;
+  padding: 12px 0;
+  min-height: 44px;
+  color: var(--text-soft);
+  font-size: 13px;
+  text-align: left;
+}
+.spatial-related svg {
+  flex-shrink: 0;
+}
+.spatial-field-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+.spatial-panel select {
+  width: 100%;
+  min-height: 44px;
+  color: var(--text);
+  background: var(--bg-1);
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+}
+.spatial-pagination {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 12px 0 26px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.astronaut-hud .spatial-pagination button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.spatial-panel .spatial-project-type {
+  color: var(--accent);
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+.spatial-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  list-style: none;
+  margin: 22px 0;
+  padding: 0;
+}
+.spatial-stack li {
+  border: 1px solid var(--border);
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.spatial-panel .spatial-company {
+  margin-bottom: 8px;
+}
+.spatial-panel .spatial-location {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.spatial-work-list,
+.spatial-archive ul {
+  padding-left: 18px;
+  color: var(--text-soft);
+  font-size: 13px;
+}
+.spatial-work-list li,
+.spatial-archive li {
+  margin-bottom: 8px;
+}
+.spatial-archive {
+  border-top: 1px solid var(--border);
+  padding-block: 13px;
+}
+.spatial-archive summary {
+  cursor: pointer;
+  color: var(--text-soft);
+  font-size: 13px;
+  padding-block: 3px;
+}
+.spatial-archive p {
+  font-size: 12px;
+}
+.spatial-panel-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 12px 24px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 10px;
+}
+.spatial-panel-foot > span {
+  width: 4px;
+  height: 4px;
+  background: var(--mint);
+  border-radius: 50%;
+}
+.spatial-panel[data-active="true"][data-motion="true"] {
+  animation: panelArrive 800ms var(--ease) both;
+}
+.spatial-panel[data-active="true"][data-motion="true"]
+  .spatial-section:not([hidden])
+  > :not(.profile-name) {
+  animation: revealIn 750ms var(--ease) backwards;
+  animation-delay: 100ms;
+}
+.spatial-panel[data-active="true"][data-motion="true"]
+  .spatial-section
+  > :nth-child(2) {
+  animation-delay: 150ms;
+}
+.spatial-panel[data-active="true"][data-motion="true"]
+  .spatial-section
+  > :nth-child(4) {
+  animation-delay: 240ms;
+}
+.spatial-panel[data-active="true"][data-motion="true"]
+  .spatial-section
+  > :nth-child(5) {
+  animation-delay: 300ms;
+}
+.spatial-panel[data-active="true"][data-motion="true"]
+  .spatial-section
+  > :nth-child(n + 6) {
+  animation-delay: 370ms;
+}
+.spatial-panel[data-motion="false"] *,
+.spatial-panel[data-active="false"] * {
+  animation: none !important;
+}
+@keyframes panelArrive {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.spatial-panel .spatial-eyebrow {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 23px;
+}
+.spatial-panel .spatial-role {
+  font-weight: 600;
+  min-height: 3.4em;
+  max-width: 43ch;
+}
+.spatial-panel .spatial-profile-name {
+  max-width: none;
+}
+.spatial-panel .spatial-profile-name .name-line:last-child {
+  color: var(--text-soft);
+}
+.spatial-facts dt {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.06em;
+}
+.spatial-socials a {
+  transition:
+    translate 250ms var(--ease),
+    color 200ms;
+}
+.spatial-socials a:hover {
+  translate: 0 -3px;
+}
+.spatial-actions button svg,
+.spatial-text-link svg {
+  transition: translate 250ms var(--ease);
+  flex-shrink: 0;
+}
+.spatial-actions button:hover svg,
+.spatial-text-link:hover svg {
+  translate: 3px -3px;
+}
+.astronaut-hud .spatial-actions .spatial-primary {
+  padding: 13px 17px;
+  margin-bottom: 8px;
+  border-radius: 9px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--bg-0);
+  transform: translate(var(--tx, 0px), var(--ty, 0px));
+  transition:
+    transform 250ms var(--ease),
+    box-shadow 250ms;
+}
+.astronaut-hud .spatial-actions .spatial-primary:hover {
+  box-shadow: 0 6px 22px var(--accent-glow);
+}
+.spatial-project-story h3 {
+  font-size: 29px;
+  text-wrap: balance;
+}
+.spatial-panel .contact-info {
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.spatial-panel .contact-info .info-value {
+  font-size: 12px;
+}
+.spatial-panel .contact-grid {
+  gap: 14px;
+  margin-top: 20px;
+}
+.spatial-panel .contact-form {
+  padding: 0;
+  background: none;
+}
+.spatial-panel .contact-form .row {
+  gap: 12px;
+}
+.spatial-panel .contact-form input,
+.spatial-panel .contact-form textarea {
+  font-size: 16px;
+}
+.astronaut-hud .spatial-panel .contact-submit {
+  font-size: 13px;
+  color: var(--bg-0);
+  padding: 12px 20px;
+}
+.spatial-panel .contact-status {
+  font-size: 12px;
+}
+
+.spatial-panel[data-information="about"] .spatial-profile-name {
+  font-size: 44px;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  margin: 0 0 18px;
+}
+.spatial-panel[data-information="about"] .spatial-profile img {
+  width: 88px;
+  height: 88px;
+}
+.spatial-panel[data-information="about"] .spatial-panel-scroll {
+  padding: 23px 30px;
+}
+.spatial-panel[data-information="about"] .spatial-eyebrow {
+  margin-bottom: 16px;
+}
+.spatial-panel[data-information="about"] .spatial-profile {
+  margin-bottom: 17px;
+}
+.spatial-panel[data-information="about"] .spatial-profile img {
+  width: 72px;
+  height: 72px;
+}
+.spatial-panel[data-information="about"] .spatial-facts {
+  margin-block: 18px;
+  padding-block: 15px;
+}
+.spatial-panel[data-information="about"] .spatial-socials {
+  margin-block: 12px;
+}
+.spatial-panel .contact-embedded .contact-head {
+  display: none;
+}
+.spatial-panel .contact-grid {
+  grid-template-columns: 1fr;
+}
+.spatial-panel .contact-info {
+  display: flex;
+  gap: 12px;
+  padding-top: 0;
+}
+.spatial-panel .info-item {
+  align-items: center;
+  gap: 12px;
+}
+.spatial-panel .info-label {
+  display: none;
+}
+.spatial-panel .info-icon {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+.spatial-panel .contact-form {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding-top: 22px;
+}
+@media (max-width: 999px) {
+  .spatial-panel[data-information="skills"] .spatial-eyebrow,
+  .spatial-panel[data-information="experience"] .spatial-eyebrow {
+    display: none;
+  }
+  .spatial-panel .spatial-scene-hint {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  .spatial-exhibit-controls {
+    margin-bottom: 18px;
+  }
+  .spatial-panel-heading {
+    padding: 10px 15px;
+  }
+  .spatial-panel-heading h2 {
+    font-size: 14px;
+  }
+  .spatial-panel-scroll,
+  .spatial-panel[data-information="about"] .spatial-panel-scroll {
+    padding: 18px;
+  }
+  .spatial-panel-foot {
+    padding: 9px 18px;
+  }
+  .spatial-panel[data-information="about"] .spatial-profile-name {
+    font-size: 28px;
+  }
+  .spatial-panel[data-information="about"] .spatial-profile img {
+    width: 64px;
+    height: 64px;
+  }
+  .spatial-categories button,
+  .spatial-tool-list button,
+  .spatial-years button {
+    min-height: 42px !important;
+  }
+}
+@media (max-height: 600px) and (min-width: 640px) {
+  .spatial-panel[data-information="about"] .spatial-eyebrow {
+    display: none;
+  }
+  .spatial-panel[data-information="about"] .spatial-profile {
+    float: right;
+    margin: 0 0 12px 12px;
+  }
+  .spatial-panel[data-information="about"] .spatial-profile p {
+    display: none;
+  }
+  .spatial-panel[data-information="about"] .spatial-profile img {
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+  }
+  .spatial-panel[data-information="about"] .spatial-role {
+    clear: both;
+  }
+}
