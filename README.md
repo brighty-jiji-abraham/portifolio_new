@@ -68,7 +68,7 @@ The neural network, project screens, constellation, and orbit paths are built lo
 
 ## Search and discoverability
 
-The canonical site is **https://brighty.pro/**. `src/data/discovery.js` owns the page description, name variants, expertise and visible profile answers. The original page title remains **Brighty Jiji Abraham Portfolio**. Keep the description in `public/site.webmanifest` in sync; a test checks this.
+The canonical site is **https://brighty.pro/**. `src/data/discovery.js` owns the page description, name variants, expertise and visible profile answers. The page title is **Brighty Jiji Abraham | Portfolio**. Keep the description in `public/site.webmanifest` in sync; a test checks this.
 
 `build/portfolioSeo.js` adds metadata, social previews and Schema.org JSON-LD to the initial HTML during development and production builds. The graph links the Person, ProfilePage, WebSite, current employer and selected projects. It uses the same profile, experience and project data as the interface. JSON-LD is embedded in the page and also exported as `portfolio.jsonld`; it is not a JSONL training dataset. No ratings, awards or unsupported “best developer” claims are added.
 

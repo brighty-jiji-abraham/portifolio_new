@@ -3,7 +3,7 @@ import { education, experiences } from "./experience.js";
 
 export const site = {
   url: "https://brighty.pro/",
-  title: "Brighty Jiji Abraham Portfolio",
+  title: "Brighty Jiji Abraham | Portfolio",
   description:
     "Brighty Jiji Abraham — software engineer and AI/ML engineer in Kerala, India. Explore AI chatbots, RAG systems and full-stack web projects.",
   image: "https://brighty.pro/og-image.jpg",
