@@ -1,12 +1,14 @@
 /* eslint-disable react/no-unknown-property */
-import { Suspense, useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { Suspense, useContext, useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { SceneQualityContext } from "./SceneQualityContext";
 
 function DeepSky({ isLight }) {
+  const { textures } = useContext(SceneQualityContext);
   const sky = useRef();
-  const texture = useTexture(`${import.meta.env.BASE_URL}textures/nasa-starmap.jpg`, (map) => {
+  const texture = useTexture(textures.sky, (map) => {
     map.colorSpace = THREE.SRGBColorSpace;
   });
   const uniforms = useMemo(() => ({
@@ -109,16 +111,21 @@ function PinpointStars({ isLight, timeRef }) {
 }
 
 export function Moon({ scale = 1, ...props }) {
+  const { textures, anisotropy, level } = useContext(SceneQualityContext);
+  const gl = useThree(state => state.gl);
   const [color, height] = useTexture([
-    `${import.meta.env.BASE_URL}textures/nasa-moon.jpg`,
-    `${import.meta.env.BASE_URL}textures/nasa-moon-height.jpg`,
+    textures.moon,
+    textures.moonHeight,
   ], (maps) => {
     maps[0].colorSpace = THREE.SRGBColorSpace;
-    maps.forEach((map) => { map.anisotropy = 4; });
+    const filtering = Math.min(anisotropy, gl.capabilities.getMaxAnisotropy() || 1);
+    for (const map of maps) {
+      if (map.anisotropy !== filtering) { map.anisotropy = filtering; map.needsUpdate = true; }
+    }
   });
   return (
     <mesh {...props} scale={scale}>
-      <sphereGeometry args={[1, 64, 48]} />
+      <sphereGeometry args={[1, level === 3 ? 128 : 64, level === 3 ? 96 : 48]} />
       <meshStandardMaterial map={color} bumpMap={height} bumpScale={0.035} roughness={1} />
     </mesh>
   );

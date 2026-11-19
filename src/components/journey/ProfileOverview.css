@@ -4,8 +4,8 @@
   border-top: 1px solid var(--border-strong);
   max-width: 72ch;
 }
-.profile-overview h3,
-.spatial-panel .profile-overview h3 {
+.profile-overview h2,
+.spatial-panel .profile-overview h2 {
   font-size: 18px;
   line-height: 1.4;
   letter-spacing: -0.02em;

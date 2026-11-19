@@ -34,6 +34,8 @@ export function createStructuredData() {
   const website = { "@id": id("website") };
   const page = { "@id": id("profile") };
   const employer = { "@id": id("employer") };
+  const techieWizard = { "@id": id("techiewizard") };
+  const techieWizardRole = "Chief Technology Officer (CTO)";
   const currentRole = experiences.find((experience) => experience.current);
   return {
     "@context": "https://schema.org",
@@ -45,8 +47,8 @@ export function createStructuredData() {
         alternateName: alternateNames,
         url: site.url,
         description: profileIntroduction,
-        jobTitle: currentRole.role,
-        worksFor: employer,
+        jobTitle: [currentRole.role, techieWizardRole],
+        worksFor: [employer, techieWizard],
         homeLocation: { "@type": "Place", name: profile.location },
         alumniOf: { "@type": "CollegeOrUniversity", name: education[0].school },
         knowsAbout: expertise,
@@ -58,6 +60,17 @@ export function createStructuredData() {
         ...employer,
         name: currentRole.company,
         alternateName: "iOSS",
+      },
+      {
+        "@type": "Organization",
+        ...techieWizard,
+        name: "TechieWizard Enterprises",
+        url: "https://techiewizard.enterprises/",
+        employee: {
+          "@type": "EmployeeRole",
+          roleName: techieWizardRole,
+          employee: person,
+        },
       },
       {
         "@type": "WebSite",

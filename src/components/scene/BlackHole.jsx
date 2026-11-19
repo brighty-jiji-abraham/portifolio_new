@@ -1,17 +1,19 @@
 /* eslint-disable react/no-unknown-property */
-import { useMemo, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { SceneQualityContext } from "./SceneQualityContext";
 
 import { blackHoleShader } from "./blackHoleShader";
 
 export default function BlackHole({ timeRef, cinemaActive = false }) {
+  const { textures } = useContext(SceneQualityContext);
   const mesh = useRef();
   const material = useRef();
   const { size } = useThree();
   const compact = size.width < 1000;
-  const sky = useTexture(`${import.meta.env.BASE_URL}textures/nasa-starmap.jpg`);
+  const sky = useTexture(textures.sky);
   const skyInverse = useMemo(() => new THREE.Matrix3().setFromMatrix4(
     new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(0.25, -1.1, 0.52)),
   ).invert(), []);

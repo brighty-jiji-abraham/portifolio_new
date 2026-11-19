@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Component, Suspense, useEffect, useRef, useState } from "react";
+import { Component, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import OpenSpace from "./OpenSpace";
 import BlackHole from "./BlackHole";
 import BlackHoleCinema from "./BlackHoleCinema";
@@ -12,10 +12,13 @@ import CareerConstellation from "./CareerConstellation";
 import AstronautCamera from "./AstronautCamera";
 import WorldInformation from "./WorldInformation";
 import FlightDust from "./FlightDust";
-import { MathUtils } from "three";
+import { MathUtils, WebGLRenderer } from "three";
 import { spatialLayout } from "../journey/spatialLayout";
 import { UNIVERSE_STOPS } from "../journey/destinations";
 import "./Scene3D.css";
+import { SceneQualityContext } from "./SceneQualityContext";
+import useSceneQuality from "./useSceneQuality";
+import AdaptiveQuality from "./AdaptiveQuality";
 
 function useTheme() {
   const [theme, setTheme] = useState(
@@ -88,7 +91,7 @@ function Universe({
       <directionalLight position={[-8.5, 4.5, 5.5]} intensity={3.2} color="#fff1df" />
       <pointLight position={[-4, -1, 3]} intensity={3} color="#7ebfd3" />
       <OpenSpace isLight={isLight} timeRef={timeRef} />
-      <SceneReflections />
+      <Suspense fallback={null}><SceneReflections /></Suspense>
       <Suspense fallback={null}><BlackHole timeRef={timeRef} cinemaActive={cinemaActive} /></Suspense>
       {cinema && <BlackHoleCinema {...cinema} timeRef={timeRef} />}
       <AstronautCamera
@@ -170,14 +173,9 @@ function ContextEvents() {
 }
 
 function supportsWebGL() {
-  try {
-    const context = document.createElement("canvas").getContext("webgl2");
-    if (!context) return false;
-    context.getExtension("WEBGL_lose_context")?.loseContext();
-    return true;
-  } catch {
-    return false;
-  }
+  // Canvas creates the actual context; createRenderer handles driver failures.
+  // A throwaway context here duplicates GPU initialization on every page load.
+  return typeof window.WebGL2RenderingContext !== "undefined";
 }
 
 function visibleIntersections(intersections) {
@@ -189,8 +187,26 @@ function visibleIntersections(intersections) {
   });
 }
 
-export default function Scene3D({ onFailure, cinemaActive = false, cinema = null, ...props }) {
+export default function Scene3D({ onFailure, cinemaActive = false, cinema = null, qualityMode = "auto", ...props }) {
   const theme = useTheme();
+  const quality = useSceneQuality(qualityMode, cinemaActive);
+  const createRenderer = useCallback((defaults) => {
+    try {
+      const renderer = new WebGLRenderer({
+        ...defaults, antialias: true, alpha: true, powerPreference: "high-performance",
+      });
+      // Driver diagnostic reads synchronize shader compilation. Keep them in
+      // development; production renders the same shaders without those stalls.
+      renderer.debug.checkShaderErrors = import.meta.env.DEV;
+      return renderer;
+    } catch (error) {
+      console.warn("The portfolio renderer is unavailable:", error.message);
+      onFailure();
+      // Fiber accepts an async renderer. The text fallback unmounts this Canvas;
+      // leave configuration suspended instead of rejecting its async setup.
+      return new Promise(() => {});
+    }
+  }, [onFailure]);
   const [supported] = useState(supportsWebGL);
   useEffect(() => {
     if (!supported) onFailure();
@@ -202,25 +218,26 @@ export default function Scene3D({ onFailure, cinemaActive = false, cinema = null
     return () => document.removeEventListener("visibilitychange", update);
   }, []);
   return (
-    <div className="scene-3d" aria-hidden="true">
+    <SceneQualityContext.Provider value={quality.value}>
+    <div className="scene-3d" aria-hidden="true" data-quality={quality.level} data-textures={quality.textureTier}>
       {supported && (
         <WebGLErrorBoundary onFailure={onFailure}>
           <Canvas
             onCreated={({ setEvents }) => setEvents({ filter: visibleIntersections })}
-            dpr={cinemaActive || window.innerWidth < 760 ? 1 : [1, 1.5]}
+            dpr={quality.dpr}
             frameloop={visible && (!cinemaActive || (cinema && !cinema.paused && !cinema.reducedMotion)) ? "always" : "demand"}
-            gl={{
-              antialias: true,
-              alpha: true,
-              powerPreference: "high-performance",
-            }}
+            gl={createRenderer}
             camera={{ position: [0, 0, 20], fov: 55, near: 0.1, far: 650 }}
           >
             <ContextEvents />
+            <AdaptiveQuality level={quality.level} onLevel={quality.reportLevel}
+              automatic={qualityMode === "auto"}
+              enabled={visible && !(cinemaActive ? !cinema || cinema.paused || cinema.reducedMotion : props.paused || props.reducedMotion)} />
             <Universe {...props} cinema={cinema} cinemaActive={cinemaActive} isLight={theme === "light"} />
           </Canvas>
         </WebGLErrorBoundary>
       )}
     </div>
+    </SceneQualityContext.Provider>
   );
 }

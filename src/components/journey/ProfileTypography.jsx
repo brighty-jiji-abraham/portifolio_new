@@ -52,7 +52,8 @@ export function ProfileRole({ active = true, motion = true, className = "" }) {
     return () => clearTimeout(timer);
   }, [active, motion, scramble]);
   return (
-    <p className={className} aria-label={ROLE} onMouseEnter={scramble}>
+    <p className={className} onMouseEnter={scramble}>
+      <span className="profile-readable-text">{ROLE}</span>
       <span ref={ref} aria-hidden="true">
         {ROLE}
       </span>
@@ -82,7 +83,8 @@ export function AnimatedNumber({ value, suffix = "+", active = true, motion = tr
     return () => cancelAnimationFrame(frame);
   }, [value, suffix, active, motion]);
   return (
-    <span aria-label={`${value}${suffix}`}>
+    <span>
+      <span className="profile-readable-text">{value}{suffix}</span>
       <span ref={ref} aria-hidden="true">
         {value}{suffix}
       </span>

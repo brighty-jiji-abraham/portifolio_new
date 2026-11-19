@@ -240,6 +240,32 @@
   white-space: nowrap;
   z-index: 6;
 }
+.universe-quality-control {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+}
+.universe-quality-control select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg-1);
+  color: var(--text);
+  padding: 8px;
+  font: inherit;
+}
+.universe-quality-control small {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.universe-quality-control select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 .flight-indicator > span {
   height: 4px;
   width: 4px;

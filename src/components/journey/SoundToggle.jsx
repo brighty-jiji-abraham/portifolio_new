@@ -29,7 +29,7 @@ export default function SoundToggle({ settings, className = "" }) {
         }
       }}>
       <button type="button" className={`sound-toggle ${className}`} onClick={toggleMute}
-      aria-label={label} aria-pressed={!muted} disabled={!soundSupported}
+      aria-label={`Sound ${muted ? "off" : "on"}. ${label}`} aria-pressed={!muted} disabled={!soundSupported}
       title={soundSupported ? label : "Sound is unavailable in this browser"}>
       {muted ? <FiVolumeX aria-hidden="true" /> : <FiVolume2 aria-hidden="true" />}
       <span className="sound-toggle-label">Sound {muted ? "off" : "on"}</span>

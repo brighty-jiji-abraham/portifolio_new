@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Bake portfolio reflections</title>
+<p>Preparing the unchanged RoomEnvironment lighting. The PNG packs the original RGB half-float bits, not a tone-mapped image.</p>
+<script type="importmap">
+{"imports":{"three":"../node_modules/three/build/three.module.js"}}
+</script>
+<script type="module">
+  import { WebGLRenderer, PMREMGenerator } from 'three';
+  import { RoomEnvironment } from '../node_modules/three/examples/jsm/environments/RoomEnvironment.js';
+  const renderer = new WebGLRenderer();
+  const room = new RoomEnvironment();
+  const generator = new PMREMGenerator(renderer);
+  const size = new URLSearchParams(location.search).get('size') === '128' ? 128 : 256;
+  const target = generator.fromScene(room, 0.04, 0.1, 100, { size });
+  const pixels = new Uint16Array(target.width * target.height * 4);
+  await renderer.readRenderTargetPixelsAsync(target, 0, 0, target.width, target.height, pixels);
+  // Two opaque RGB pixels store six bytes for each HDR texel. PNG preserves every
+  // bit without alpha premultiplication or lossy HDR/color quantization.
+  const canvas = document.createElement('canvas');
+  canvas.width = target.width * 2;
+  canvas.height = target.height;
+  const context = canvas.getContext('2d');
+  const image = context.createImageData(canvas.width, canvas.height);
+  for (let i = 0; i < pixels.length / 4; i++) {
+    const r = pixels[i * 4], g = pixels[i * 4 + 1], b = pixels[i * 4 + 2];
+    image.data.set([r & 255, r >> 8, g & 255, 255, g >> 8, b & 255, b >> 8, 255], i * 8);
+  }
+  context.putImageData(image, 0, 0);
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = size === 128 ? 'room-environment-light.png' : 'room-environment.png';
+  link.textContent = 'Download reflection texture';
+  document.body.append(link);
+  document.body.dataset.ready = 'true';
+  room.dispose(); target.dispose(); generator.dispose(); renderer.dispose();
+</script>
+</html>

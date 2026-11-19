@@ -171,6 +171,18 @@ export default function AstronautView({
                 <FiFileText />
                 Text view
               </button>
+              <div className="universe-quality-control">
+                <label htmlFor="graphics-quality">Graphics quality</label>
+                <select id="graphics-quality" value={settings.qualityMode}
+                  aria-describedby="graphics-quality-hint"
+                  onChange={event => settings.setQualityMode(event.target.value)}>
+                  <option value="auto">Automatic</option>
+                  <option value="maximum">Maximum quality</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="light">Lightweight</option>
+                </select>
+                <small id="graphics-quality-hint">Automatic adapts to your device and connection.</small>
+              </div>
             </div>
           </details>
         </div>

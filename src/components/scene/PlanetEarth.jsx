@@ -1,8 +1,9 @@
 /* eslint-disable react/no-unknown-property */
-import { useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useContext, useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { SceneQualityContext } from "./SceneQualityContext";
 
 const SUN = new THREE.Vector3(-0.85, 0.45, 0.55).normalize();
 const vertexShader = `
@@ -18,18 +19,22 @@ const vertexShader = `
 `;
 
 export default function PlanetEarth({ timeRef }) {
+  const { textures, level, anisotropy } = useContext(SceneQualityContext);
+  const gl = useThree(state => state.gl);
   const globe = useRef();
   const surface = useRef();
-  const base = import.meta.env.BASE_URL;
   const [day, night, water, clouds] = useTexture([
-    `${base}textures/earth_color.jpg`,
-    `${base}earth-lights.png`,
-    `${base}textures/earth_specular.jpg`,
-    `${base}textures/earth_clouds.png`,
+    textures.earth,
+    textures.night,
+    textures.water,
+    textures.clouds,
   ], (maps) => {
     maps[0].colorSpace = THREE.SRGBColorSpace;
     maps[1].colorSpace = THREE.SRGBColorSpace;
-    maps.forEach((map) => { map.anisotropy = 4; });
+    const filtering = Math.min(anisotropy, gl.capabilities.getMaxAnisotropy() || 1);
+    for (const map of maps) {
+      if (map.anisotropy !== filtering) { map.anisotropy = filtering; map.needsUpdate = true; }
+    }
   });
   const uniforms = useMemo(() => ({
     dayMap: { value: day }, nightMap: { value: night },
@@ -44,7 +49,7 @@ export default function PlanetEarth({ timeRef }) {
   return (
     <group rotation={[0.12, 0, -0.18]} scale={1.22} name="photographic-earth">
       <mesh ref={globe}>
-        <sphereGeometry args={[1.58, 96, 64]} />
+        <sphereGeometry args={[1.58, level === 3 ? 192 : level === 0 ? 64 : 96, level === 3 ? 128 : level === 0 ? 40 : 64]} />
         <shaderMaterial
           ref={surface} uniforms={uniforms} vertexShader={vertexShader}
           fragmentShader={`
@@ -80,7 +85,7 @@ export default function PlanetEarth({ timeRef }) {
         />
       </mesh>
       <mesh>
-        <sphereGeometry args={[1.625, 80, 56]} />
+        <sphereGeometry args={[1.625, level === 3 ? 160 : 80, level === 3 ? 112 : 56]} />
         <shaderMaterial
           uniforms={atmosphere} vertexShader={vertexShader}
           transparent depthWrite={false} side={THREE.BackSide}

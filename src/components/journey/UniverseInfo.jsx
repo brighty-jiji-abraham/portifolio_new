@@ -13,7 +13,7 @@ import {
   FiPlay,
   FiPause,
 } from "react-icons/fi";
-import profileImage from "../../assets/profile-img.jpg";
+import profileImage from "../../assets/profile-thumbnail.webp";
 import { skillGroups } from "../../data/skills";
 import { projects } from "../../data/projects";
 import { profile, profileStats } from "../../data/profile";

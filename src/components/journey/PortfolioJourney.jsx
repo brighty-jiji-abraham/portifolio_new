@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { experiences } from "../../data/experience";
-import profileImage from "../../assets/profile-img.jpg";
+import profileImage from "../../assets/profile-thumbnail.webp";
 import { setUniverseAudio } from "../../hooks/useSoundscape";
 import useAstronaut from "./useAstronaut";
 import AstronautView from "./AstronautView";
@@ -159,6 +159,7 @@ export default function PortfolioJourney({ reducedMotion, settings }) {
     <div className="portfolio-universe" data-ready={ready} data-cinematic={blackHoleOpen}>
       <Suspense fallback={null}>
         <Scene3D
+          qualityMode={settings.qualityMode}
           cinemaActive={blackHoleOpen}
           cinema={blackHoleOpen ? cinema : null}
           journey={astronaut.journey}

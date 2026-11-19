@@ -1,5 +1,6 @@
 import { useCallback, useLayoutEffect, useState } from "react";
 import { useSoundscape } from "./useSoundscape";
+import { QUALITY_MODES } from "../components/scene/qualityPolicy";
 
 function initialTheme() {
   try {
@@ -13,6 +14,17 @@ function initialTheme() {
 
 export function usePortfolioSettings() {
   const [theme, setTheme] = useState(initialTheme);
+  const [qualityMode, setQuality] = useState(() => {
+    try {
+      const saved = localStorage.getItem("graphics-quality");
+      return QUALITY_MODES.includes(saved) ? saved : "auto";
+    } catch { return "auto"; }
+  });
+  const setQualityMode = useCallback(mode => {
+    if (!QUALITY_MODES.includes(mode)) return;
+    setQuality(mode);
+    try { localStorage.setItem("graphics-quality", mode); } catch { /* Optional persistence. */ }
+  }, []);
   const sound = useSoundscape();
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -29,5 +41,5 @@ export function usePortfolioSettings() {
     () => setTheme((value) => (value === "light" ? "dark" : "light")),
     [],
   );
-  return { theme, toggleTheme, ...sound };
+  return { theme, toggleTheme, qualityMode, setQualityMode, ...sound };
 }

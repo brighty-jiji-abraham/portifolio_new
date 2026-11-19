@@ -6,7 +6,7 @@ export default function ProfileOverview({ onInspect }) {
   const headingId = useId();
   return (
     <section className="profile-overview" aria-labelledby={headingId}>
-      <h3 id={headingId}>Software &amp; AI/ML engineering in Kerala</h3>
+      <h2 id={headingId}>Software &amp; AI/ML engineering in Kerala</h2>
       <p>{profileIntroduction}</p>
       {profileQuestions.map(({ question, answer, link }) => (
         <details key={question}>
